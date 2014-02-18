@@ -11,7 +11,81 @@
 |
 */
 
+
+// Bind route parameters.
+Route::model('user', 'User');
+
+// Show pages.
 Route::get('/', function()
 {
-	return View::make('hello');
+	return View::make('index');
 });
+
+
+//Route::get('/game/create', 'GamesController@create');
+//Route::get('/game/edit/{game}', 'GamesController@edit');
+//Route::get('/game/delete/{game}', 'GamesController@delete');
+
+Route::get('/users', 'UsersController@index');
+Route::get('/users/add', 'UsersController@add');
+Route::get('/users/edit', 'UsersController@edit');
+Route::get('/users/delete', 'UsersController@delete');
+#Route::get('/users/delete}', 'UsersController@delete');
+
+// Handle form submissions.
+Route::post('/users/add', 'UsersController@handle_add');
+
+
+// secret content
+Route::get('/secret', array(
+	'before' => 'auth',
+	function()
+	{
+		return Response::make('this is a very secret content!');
+	}
+));
+
+// me
+Route::get('/me', function()
+{
+	$me = Auth::user();
+	print_r($me);
+
+	if (Auth::check())
+	{
+    	return Response::make('You logged in!');
+	}
+	else
+	{
+		return Response::make('You are not logged in..');
+	}
+});
+
+// LOGIN AND LOGOUT
+
+Route::get('/login', function()
+{
+	return View::make('login');
+})
+->before('guest');
+
+Route::get('/logout', function()
+{
+	Auth::logout();
+	return Response::make('You are now logged out. :(');
+});
+
+Route::post('/login', function()
+{	
+	$credentials = Input::only('email', 'password');
+	$remember = true;
+
+	if (Auth::attempt($credentials,$remember)) {
+		return Redirect::intended('/');
+	}
+	
+	$asd = print_r($credentials);
+	return Response::make( "error" );	
+	//return Redirect::to('login');
+});
+
