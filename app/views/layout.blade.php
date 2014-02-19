@@ -20,6 +20,7 @@
     	</div>
 
 		<div id="nav">
+				<a href="{{ action('ArticlesController@index') }}" class="navbar-brand">Articles</a> |
 				<a href="{{ action('UsersController@index') }}" class="navbar-brand">Users</a> |
 				<a href="{{ action('UsersController@add') }}" class="navbar-brand">Add new user</a>
         </div>

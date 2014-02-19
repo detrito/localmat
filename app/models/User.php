@@ -5,24 +5,17 @@ use Illuminate\Auth\Reminders\RemindableInterface;
 
 class User extends Eloquent implements UserInterface, RemindableInterface {
 
-	/**
-	 * The database table used by the model.
-	 *
-	 * @var string
-	 */
-
+	// Database table used by the model
 	protected $table = 'lm_users';
 
-	/**
-	 * The attributes excluded from the model's JSON form.
-	 *
-	 * @var array
-	 */
-
 	
-	// Change primary key
+	// Database's primary key
 	protected $primaryKey = 'uid';
 	
+	// Enable timestamps
+	public $timestamps = true;
+
+	// Attributes excluded from the model's JSON form. 
 	protected $hidden = array('password');
 
 	/**
@@ -30,6 +23,7 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 *
 	 * @return mixed
 	 */
+
 	public function getAuthIdentifier()
 	{
 		return $this->getKey();

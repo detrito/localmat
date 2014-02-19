@@ -21,20 +21,22 @@ Route::get('/', function()
 	return View::make('index');
 });
 
+// articles and related stuff
+Route::get('/fields/add', 'FieldsController@add');
+Route::get('/categories/add', 'CategoriesController@add');
+Route::get('/articles', 'ArticlesController@index');
+Route::get('/articles/add', 'ArticlesController@add');
+Route::get('/articles/delall', 'ArticlesController@delall');
 
-//Route::get('/game/create', 'GamesController@create');
-//Route::get('/game/edit/{game}', 'GamesController@edit');
-//Route::get('/game/delete/{game}', 'GamesController@delete');
-
+// users
 Route::get('/users', 'UsersController@index');
 Route::get('/users/add', 'UsersController@add');
 Route::get('/users/edit', 'UsersController@edit');
 Route::get('/users/delete', 'UsersController@delete');
 #Route::get('/users/delete}', 'UsersController@delete');
 
-// Handle form submissions.
+// users'forms
 Route::post('/users/add', 'UsersController@handle_add');
-
 
 // secret content
 Route::get('/secret', array(
@@ -44,6 +46,7 @@ Route::get('/secret', array(
 		return Response::make('this is a very secret content!');
 	}
 ));
+
 
 // me
 Route::get('/me', function()
