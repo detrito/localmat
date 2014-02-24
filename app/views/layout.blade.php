@@ -19,15 +19,27 @@
         <h1>LocalMat</h1>						
     	</div>
 
-		<div id="nav">
-				<a href="{{ action('ArticlesController@index') }}" class="navbar-brand">Articles</a> |
-				<a href="{{ action('UsersController@index') }}" class="navbar-brand">Users</a> |
-				<a href="{{ action('UsersController@add') }}" class="navbar-brand">Add new user</a>
-        </div>
+		<ul id="nav" class="drop">
+			<li><a href="#">Home</a></li>
+    		<li><a href="{{ action('ArticlesController@index') }}">Articles</a>
+				<ul>
+					<li><a href="#">Availables</a></li>
+					<li><a href="#">Tous</a></li>
+					<li><a href="#">Add new article</a></li>
+            	</ul>
+			</li>
 
-		<hr/>		
-		<br />
+			<li><a href="{{ action('UsersController@index') }}">Users</a>
+				<ul>
+            		<li><a href="{{ action('UsersController@add') }}" class="navbar-brand">Add new user</a></li>
+            	</ul>
+			</li>
 
+    		<li><a href="#">Me</a></li>
+		</ul>
+		
+		<div class="clear"></div>
+		
 		<!-- check for flash notification message -->
         @if(Session::has('flash_notice'))
         <div id="flash_notice">{{ Session::get('flash_notice') }}</div>
@@ -38,7 +50,9 @@
    	    <div id="flash_error">{{ Session::get('flash_error') }}</div>
     	@endif
 
+		<div>
         @yield('content')
+		</div>
 
     </div>
 </body>
