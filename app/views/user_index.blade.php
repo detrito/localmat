@@ -1,5 +1,11 @@
 @extends('layout')
 
+@section('title')
+Users
+
+@stop
+
+
 @section('content')
 
 @if ($users->isEmpty())

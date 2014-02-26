@@ -1,5 +1,11 @@
 @extends('layout')
 
+@section('title')
+
+<a href="{{ action('ArticlesController@index') }}">Articles</a>
+
+@stop
+
 @section('content')
 
 @if ($articles->isEmpty())

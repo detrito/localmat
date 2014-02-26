@@ -1,5 +1,12 @@
 @extends('layout')
 
+
+@section('title')
+
+Login
+
+@stop
+
 @section('content')
     
 <form action="{{ url('login') }}" method="post">

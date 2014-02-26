@@ -3,12 +3,12 @@
 
 @section('title')
 
-Home
+Administration
 
 @stop
 
 @section('content')
 
-	This is the index page    
+Admin index
 
 @stop

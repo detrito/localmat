@@ -2,20 +2,25 @@
 
 @section('title')
 
-<a href="{{ action('UsersController@index') }}">Users</a>
-> Add new user
+<a href="{{ action('ArticlesController@index') }}">Articles</a>
+> Add new article
 
 @stop
 
-
 @section('content')
 
-<form action="{{ action('UsersController@handle_add') }}" method="post">
+<form action="{{ action('ArticlesController@handle_add') }}" method="post">
 <table>
 
+@foreach($categories as $category)
+{{ $category->name }}
+@endforeach
+
 <tr>
-<td> {{ Form::label('given_name', 'Given name') }} </td>
-<td> {{ Form::text('given_name') }} </td>
+<td> {{ Form::label('category', 'Category') }} </td>
+<td> {{ Form::select('animal', array(
+    'Cats' => array('leopard' => 'Leopard'),
+    'Dogs' => array('spaniel' => 'Spaniel') )) }} </td>
 </tr>
 <tr/>
 <tr>
@@ -33,11 +38,6 @@
 <tr>
 <td> {{ Form::label('password', 'Password') }} </td>
 <td> {{ Form::password('password') }} </td>
-</tr>
-
-<tr>
-<td> {{ Form::label('password_confirmation', 'Password confirmation') }} </td>
-<td> {{ Form::password('password_confirmation') }} </td>
 </tr>
 
 <tr>

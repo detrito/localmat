@@ -10,6 +10,18 @@ class ArticlesController extends BaseController
 
 	public function add()
 	{
+		$category = new Category;
+		$categories = $category::all();
+		return View::make('article_add', compact('categories'));
+	}
+
+	public function handle_add()
+	{
+		return Redirect::action('ArticlesController@add');
+	}
+
+	public function addsome()
+	{
 	/*
 	// add a Perseuse article
 	$category = Category::whereName('Perseuse')->first();

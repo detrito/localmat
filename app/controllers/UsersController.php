@@ -21,18 +21,33 @@ class UsersController extends BaseController
 
 	public function handle_add()
 	{
-        // Show the create game form.
-		$user = new User;
-		$user->email = Input::get('email');
-		$user->given_name = Input::get('given_name');
-		$user->family_name = Input::get('family_name');
-		$user->password = Hash::make(Input::get('password'));
-		// set to 0 if the input value is absent
-		$user->active = Input::get('active',0);
-		$user->admin = Input::get('admin',0);		
-		$user->save();
-
-		return Redirect::action('UsersController@index');
+		$data = Input::all();
+		$rules = array(
+			'email' => 'required|email|unique:lm_users',
+			'given_name' => 'required|alpha',
+			'family_name' => 'required|alpha',
+			'password' => 'required|alpha_dash|confirmed|min:6',	
+		);
+		$validator = Validator::make($data, $rules);
+		
+		if ($validator->passes())
+		{
+			$user = new User;
+			$user->email = Input::get('email');
+			$user->given_name = Input::get('given_name');
+			$user->family_name = Input::get('family_name');
+			$user->password = Hash::make(Input::get('password'));
+			// set to 0 if the input value is absent
+			$user->active = Input::get('active',0);
+			$user->admin = Input::get('admin',0);		
+			$user->save();
+		
+			return Redirect::action('UsersController@add')
+				->with('flash_notice', 'User successfully added.');
+		}
+		
+		return Redirect::back()
+		->withErrors($validator);
 	}
 
 	public function edit(User $user)
