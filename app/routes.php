@@ -11,48 +11,42 @@
 |
 */
 
-
-// Bind route parameters.
+// bind route parameters.
 Route::model('user', 'User');
 
-// Show pages.
+// index
 Route::get('/', function()
 {
 	return View::make('index');
 });
 
-// articles and related stuff
+// articles
 Route::get('/articles', 'ArticlesController@index');
 Route::get('/articles/add', 'ArticlesController@add');
-
-Route::get('/articles/addsome', 'ArticlesController@addsome');
+Route::post('/articles/add', 'ArticlesController@handle_add');
 Route::get('/articles/delall', 'ArticlesController@delall');
-Route::get('/categories/add', 'CategoriesController@add');
 
-//admin
+// admin
 Route::get('/admin', function()
 {
 	return View::make('admin_index');
 });
 
-//fields
+// fields
 Route::get('/fields', 'FieldsController@index');
 Route::get('/fields/add', 'FieldsController@add');
 Route::post('/fields/add', 'FieldsController@handle_add');
-Route::get('/fields/addsome', 'FieldsController@addsome');
 
+// categories
+Route::get('/categories', 'CategoriesController@index');
+Route::get('/categories/add', 'CategoriesController@add');
 
 // users
 Route::get('/users', 'UsersController@index');
 Route::get('/users/add', 'UsersController@add');
+Route::post('/users/add', 'UsersController@handle_add');
 Route::get('/users/edit', 'UsersController@edit');
 Route::get('/users/delete', 'UsersController@delete');
-#Route::get('/users/delete}', 'UsersController@delete');
-
-// POST
-Route::post('/articles/add', 'ArticlesController@handle_add');
-Route::post('/users/add', 'UsersController@handle_add');
-
 
 // secret content
 Route::get('/secret', array(
@@ -62,7 +56,6 @@ Route::get('/secret', array(
 		return Response::make('this is a very secret content!');
 	}
 ));
-
 
 // me
 Route::get('/me', function()
@@ -80,7 +73,7 @@ Route::get('/me', function()
 	}
 });
 
-// LOGIN AND LOGOUT
+// login stuff
 
 Route::get('/login', function()
 {

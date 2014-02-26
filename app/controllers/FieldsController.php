@@ -44,24 +44,6 @@ class FieldsController extends BaseController
 		
 		return Redirect::back()
 			->withErrors($validator);
-}
-
-	public function addsome()
-	{
-	// add some fields
-	$field = new Field;
-	$field->name = "Description";
-	$field->type = "text";
-	$field->save();
-
-	$field = new Field;
-	$field->name = "Corde statique";
-	$field->type = "boolean";
-	$field->save();
-
-	$field = new Field;
-	$field->name = "Longueur";
-	$field->type = "integer";
-	$field->save();
 	}
+
 }

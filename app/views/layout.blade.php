@@ -42,8 +42,8 @@
 				<ul>
 					<li><a href="{{ action('FieldsController@index') }}">Fields</a></li>
 					<li><a href="{{ action('FieldsController@add') }}">Add new field</a></li>
-					<li><a href="#">Categores</a></li>
-					<li><a href="#">Add new category</a></li>
+					<li><a href="{{ action('CategoriesController@index') }}">Categories</a></li>
+					<li><a href="{{ action('CategoriesController@add') }}">Add new category</a></li>
             	</ul>
 			</li>
 

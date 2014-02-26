@@ -4,18 +4,12 @@ class CategoriesController extends BaseController
 {
     public function index()
     {
-		return "categories - index";
+		$categories = Category::all();
+        return View::make('category_index', compact('categories'));
     }
-
+	
 	public function add()
 	{
-	// add some categories
-	$category = new Category;
-	$category->name = "Corde";
-	$category->save();
-
-	$category = new Category;
-	$category->name = "Perseuse";
-	$category->save();
+		return 1;
 	}
 }

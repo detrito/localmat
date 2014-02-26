@@ -43,7 +43,7 @@ class CreateTablesHandleArticles extends Migration {
 			$table->string('value', 256);
 		});
 
-		Schema::create('lm_category_field', function($table)
+		Schema::create('lm_categories_fields', function($table)
 		{
 			$table->integer('category_id')->unsigned();
 			$table->foreign('category_id')->references('id')->on('lm_categories');
@@ -59,7 +59,7 @@ class CreateTablesHandleArticles extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('lm_category_field');
+		Schema::drop('lm_categories_fields');
 		Schema::drop('lm_attributes');
 		Schema::drop('lm_articles');
 		Schema::drop('lm_categories');

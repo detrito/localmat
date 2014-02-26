@@ -11,7 +11,7 @@ class Category extends Eloquent
 	// Category __has_many__ Fields
 	public function fields()
 	{
-		return $this->hasMany('Field');
+		return $this->belongsToMany('Field','lm_categories_fields');
 	}
 	
 	// Category __belongs_to_many__ Articles
@@ -19,6 +19,5 @@ class Category extends Eloquent
 	{
 		return $this->belongsToMany('Article');
 	}
-
 
 }

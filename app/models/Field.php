@@ -11,13 +11,12 @@ class Field extends Eloquent
 	// Field __belongs_to_many__ Categories
 	public function categories()
 	{
-		return $this->belongsToMany('Category');
+		return $this->belongsToMany('Category','lm_categories_fields');
 	}
 
 	// Field __belongs_to_many__ Attributes
 	public function attributes()
 	{
-		return $this->hasMany('Attribute');
+		return $this->belongsToMany('Attribute');
 	}
-
 }
