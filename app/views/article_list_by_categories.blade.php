@@ -2,7 +2,7 @@
 
 @section('title')
 
-<a href="{{ action('ArticlesController@index') }}">Articles</a>
+Articles (list by category)
 
 @stop
 
@@ -11,18 +11,22 @@
 @if ($articles->isEmpty())
         <p>There are no articles! :(</p>
 @else
+
+{{-- Loop througt categories --}}
+@foreach($categories as $category)
+	<h3>{{ $category->name }}</h3>
 	<table class="table table-striped">
             <thead>
                 <tr>
-                    <th>Article id</th>
+                    <th><a href="{{ url('articles/list') }}">Id</th>
                     <th>Category</th>
                     <th>Attributes</th>
 					<th>Admin</th>
                 </tr>
             </thead>
             <tbody>
-				{{-- Loop througt articles --}}
-				@foreach($articles as $article)
+
+				@foreach($category->articles as $article)
 				<tr>
                     <td>{{ $article->id }}</td>
                     <td>{{ $article->category->name }}</td>
@@ -42,6 +46,8 @@
 				@endforeach
             </tbody>
         </table>
+@endforeach
+
 @endif
 @stop
 

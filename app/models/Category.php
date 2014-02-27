@@ -8,16 +8,15 @@ class Category extends Eloquent
 	// Enable timestamps	
 	public $timestamps = false;
 
-	// Category __has_many__ Fields
+	// Category __belongsToMany__ Fields
 	public function fields()
 	{
 		return $this->belongsToMany('Field','lm_categories_fields');
 	}
 	
-	// Category __belongs_to_many__ Articles
+	// Category __hasMany__ Articles
 	public function articles()
 	{
-		return $this->belongsToMany('Article');
+		return $this->hasMany('Article');
 	}
-
 }

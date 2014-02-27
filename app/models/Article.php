@@ -8,7 +8,6 @@ class Article extends Eloquent
 	// Enable timestamps	
 	public $timestamps = true;
 	
-	
 	// Article __belongs_to_a__ Category
 	public function category()
 	{
@@ -20,5 +19,4 @@ class Article extends Eloquent
 	{
 		return $this->hasMany('Attribute');
 	}
-
 }

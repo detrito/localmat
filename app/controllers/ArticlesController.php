@@ -2,10 +2,19 @@
 
 class ArticlesController extends BaseController
 {
-    public function index()
+
+    public function index($order = 'id')
     {
-		$articles = Article::all();
-        return View::make('article_index', compact('articles'));
+		switch($order)
+		{
+			case "category":
+				$categories = Category::all();
+				$articles = Article::all();	
+				return View::make('article_list_by_categories', compact('categories','articles'));	
+			default:
+				$articles = Article::orderBy($order)->get();
+				return View::make('article_list', compact('articles'));
+		}
     }
 
 	public function add()
