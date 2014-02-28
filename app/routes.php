@@ -22,7 +22,7 @@ Route::get('/', function()
 
 // articles
 Route::get('/articles', 'ArticlesController@index');
-Route::get('/articles/list/{order?}', 'ArticlesController@index');
+Route::get('/articles/list/{category?}/{order?}', 'ArticlesController@index');
 Route::get('/articles/add', 'ArticlesController@add');
 Route::post('/articles/add', 'ArticlesController@handle_add');
 Route::get('/articles/delall', 'ArticlesController@delall');

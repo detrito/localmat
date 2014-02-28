@@ -2,46 +2,62 @@
 
 @section('title')
 
-Articles (list by id)
+@if(isset($category))
+	<a href="{{ url('/articles/list') }}">Articles</a>
+	> {{ $category }}
+@else
+	Articles
+@endif
+
 
 @stop
 
 @section('content')
 
-@if ($articles->isEmpty())
-        <p>There are no articles! :(</p>
+@if (empty($categories->first()->articles()))
+	<p>There are no articles! :(</p>
 @else
-	<table class="table table-striped">
+
+{{-- Loop througt categories --}}
+
+@foreach($categories as $category)
+	<h3><a href="{{ url('/articles/list/'.$category->name) }}">
+		{{ $category->name }}</a></h3>
+
+	<table>
             <thead>
                 <tr>
-                    <th>Id</th>
-                    <th><a href="{{ url('articles/list/category') }}">Category</th>
-                    <th>Attributes</th>
+                    <th>Id</th>					
+					{{-- Loop throught fields who belongs to this category --}}
+					@foreach ($category->articles()->first()->attributes as $attribute)
+						<th>{{ $attribute->field->name }}</th>
+					@endforeach
+
 					<th>Admin</th>
                 </tr>
             </thead>
             <tbody>
-				{{-- Loop througt articles --}}
-				@foreach($articles as $article)
+				
+				@foreach($category->articles as $article)
 				<tr>
                     <td>{{ $article->id }}</td>
-                    <td>{{ $article->category->name }}</td>
 					
 					{{-- Now loop througt article's attributes --}}
-					<td>
 						@foreach ($article->attributes as $attribute)
-							{{ $attribute->value }}
-							-
+							<td>{{ $attribute->value }}</td>
 						@endforeach
-					</td>
+
                     <td>
-                        <a href="#" class="btn btn-default">Edit</a>
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <a href="#">Edit</a>
+                        <a href="#">Delete</a>
                     </td>
                 </tr>
 				@endforeach
             </tbody>
         </table>
+@endforeach
+
+
 @endif
 @stop
 

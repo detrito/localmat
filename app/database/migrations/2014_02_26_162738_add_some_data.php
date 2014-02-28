@@ -90,6 +90,52 @@ class AddSomeData extends Migration {
 		$attribute->field()->associate($field);
 		$attribute->article()->associate($article);	
 		$attribute->save();
+
+		// add a Corde article
+		$category = Category::whereName('Corde')->first();
+	
+		$article = new Article;
+		$article->category()->associate($category);
+		$article->save();
+
+		/// add one attribute to the article Corde
+		$field = Field::whereName('Corde statique')->first();	
+		$attribute = new Attribute;
+		$attribute->value = "1";
+		$attribute->field()->associate($field);
+		$attribute->article()->associate($article);	
+		$attribute->save();
+
+		/// add another attribute to the article Corde
+		$field = Field::whereName('Longueur')->first();
+		$attribute = new Attribute;
+		$attribute->value = "20";
+		$attribute->field()->associate($field);
+		$attribute->article()->associate($article);	
+		$attribute->save();
+
+		// add a Corde article
+		$category = Category::whereName('Corde')->first();
+	
+		$article = new Article;
+		$article->category()->associate($category);
+		$article->save();
+
+		/// add one attribute to the article Corde
+		$field = Field::whereName('Corde statique')->first();	
+		$attribute = new Attribute;
+		$attribute->value = "1";
+		$attribute->field()->associate($field);
+		$attribute->article()->associate($article);	
+		$attribute->save();
+
+		/// add another attribute to the article Corde
+		$field = Field::whereName('Longueur')->first();
+		$attribute = new Attribute;
+		$attribute->value = "60";
+		$attribute->field()->associate($field);
+		$attribute->article()->associate($article);	
+		$attribute->save();
 	}
 
 	public function down()

@@ -3,17 +3,21 @@
 class ArticlesController extends BaseController
 {
 
-    public function index($order = 'id')
+    public function index($name = 'all', $order = 'id')
     {
-		switch($order)
+		//echo "name:".$name."|";
+		//echo "order:".$order."|";
+		
+		switch($name)
 		{
-			case "category":
+			case "all":
 				$categories = Category::all();
-				$articles = Article::all();	
-				return View::make('article_list_by_categories', compact('categories','articles'));	
+				return View::make('article_list', compact('categories'));
 			default:
-				$articles = Article::orderBy($order)->get();
-				return View::make('article_list', compact('articles'));
+				// FIXME check if $name exist
+				$categories = Category::whereName($name)->get();
+				return View::make('article_list', compact('categories'))
+					->with('category', $name);;								
 		}
     }
 
