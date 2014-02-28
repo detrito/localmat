@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration {
 			$table->string('given_name', 64);
 			$table->string('family_name', 64);
 			$table->string('password', 64);
-			$table->boolean('active');
+			$table->boolean('enabled');
 			$table->boolean('admin');
 			$table->timestamps();
 		});

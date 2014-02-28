@@ -48,5 +48,11 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return $this->email;
 	}
-
+	
+	public function errorDisabled()
+	{
+		Auth::logout();
+		return Redirect::to('/')
+			->with('flash_error', 'This user has currently been disabled.');
+	}
 }

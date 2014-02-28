@@ -41,8 +41,8 @@
 </tr>
 
 <tr>
-<td> {{ Form::label('active', 'Active') }} </td>
-<td> {{ Form::checkbox('active', 1, true); }} </td>
+<td> {{ Form::label('enabled', 'Active') }} </td>
+<td> {{ Form::checkbox('enabled', 1, true); }} </td>
 </tr>
 
 <tr>

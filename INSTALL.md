@@ -33,7 +33,11 @@ Configure MySQL (or another database)
 
 > edit app/config/database.php
 
+Populate database
+-----------------
+
 > php artisan migrate
+> php artisan db:seed
 
 Enjoy
 -----

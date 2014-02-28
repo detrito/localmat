@@ -35,7 +35,8 @@ App::after(function($request, $response)
 
 Route::filter('auth', function()
 {
-	if (Auth::guest()) return Redirect::guest('login');
+	if (Auth::guest()) return Redirect::guest('login')
+		->with('flash_error', 'You have to log in in order to view this page.');
 });
 
 
@@ -43,6 +44,32 @@ Route::filter('auth.basic', function()
 {
 	return Auth::basic();
 });
+
+// check if the user is enabled
+Route::filter('enabled', function()
+{
+	if( ! Auth::guest() )
+	{
+		if (Auth::user()->enabled != 1)
+		{
+			Auth::user()->errorDisabled();
+		}
+	}
+});
+
+// check if the user is an administrator
+Route::filter('admin', function()
+{
+	if( ! Auth::guest())
+	{
+		if (Auth::user()->admin != 1 )
+		{
+			return Redirect::to('/')
+			->with('flash_error', 'Only administrators can view this page!');
+		}
+	}
+});
+
 
 /*
 |--------------------------------------------------------------------------
@@ -59,7 +86,7 @@ Route::filter('guest', function()
 {
 	if (Auth::check()) 
 		return Redirect::to('/')
-                        ->with('flash_notice', 'You are already logged in!');
+			->with('flash_error', 'You are already logged in!');
 });
 
 /*

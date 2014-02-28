@@ -17,7 +17,7 @@ Users
                     <th>Given name</th>
                     <th>Family name</th>
 					<th>E-mail</th>
-					<th>Active</th>
+					<th>Enabled</th>
 					<th>Admin</th>
 					<th>Actions</th>                    
 					</tr>
@@ -28,7 +28,7 @@ Users
                     <td>{{ $user->given_name }}</td>
 					<td>{{ $user->family_name }}</td>                    
 					<td>{{ $user->email }}</td>
-					<td>{{ $user->active }}</td>
+					<td>{{ $user->enabled }}</td>
 					<td>{{ $user->admin }}</td>
                     <td>
                         <a href="#" class="btn btn-default">Edit</a>

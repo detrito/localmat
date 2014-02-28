@@ -28,26 +28,31 @@ Route::post('/articles/add', 'ArticlesController@handle_add');
 Route::get('/articles/delall', 'ArticlesController@delall');
 
 // admin
-Route::get('/admin', function()
+Route::group(array('before' => 'auth|enabled|admin'), function()
 {
-	return View::make('admin_index');
+	Route::get('/admin', function()
+	{
+		return View::make('admin_index');
+	});
+	
+	// fields
+	Route::get('/fields', 'FieldsController@index');
+	Route::get('/fields/add', 'FieldsController@add');
+	Route::post('/fields/add', 'FieldsController@handle_add');
+	
+	// categories
+	Route::get('/categories', 'CategoriesController@index');
+	Route::get('/categories/add', 'CategoriesController@add');
+
+	// users	
+	Route::get('/users/add', 'UsersController@add');
+	Route::post('/users/add', 'UsersController@handle_add');
+	Route::get('/users/edit', 'UsersController@edit');
+	Route::get('/users/delete', 'UsersController@delete');
 });
-
-// fields
-Route::get('/fields', 'FieldsController@index');
-Route::get('/fields/add', 'FieldsController@add');
-Route::post('/fields/add', 'FieldsController@handle_add');
-
-// categories
-Route::get('/categories', 'CategoriesController@index');
-Route::get('/categories/add', 'CategoriesController@add');
 
 // users
 Route::get('/users', 'UsersController@index');
-Route::get('/users/add', 'UsersController@add');
-Route::post('/users/add', 'UsersController@handle_add');
-Route::get('/users/edit', 'UsersController@edit');
-Route::get('/users/delete', 'UsersController@delete');
 
 // secret content
 Route::get('/secret', array(
@@ -76,29 +81,41 @@ Route::get('/me', function()
 
 // login stuff
 
-Route::get('/login', function()
-{
-	return View::make('login');
-})
-->before('guest');
+
+Route::get('/login', array(
+	'before' => 'guest',
+	function()
+	{
+		return View::make('login');
+	}
+));
 
 Route::get('/logout', function()
 {
 	Auth::logout();
-	return Response::make('You are now logged out. :(');
+	return Redirect::to(url('/'))
+		->with('flash_notice', 'You are successfully logged out.');
 });
 
 Route::post('/login', function()
-{	
+{
 	$credentials = Input::only('email', 'password');
 	$remember = true;
 
-	if (Auth::attempt($credentials,$remember)) {
-		return Redirect::intended('/');
+	if (Auth::attempt($credentials,$remember))
+	{
+		if(Auth::user()->enabled)
+		{
+			return Redirect::intended('/')
+			->with('flash_notice', 'You are successfully logged in.');
+		}
+		else
+		{
+			return Auth::user()->errorDisabled();
+		}	
 	}
-	
-	$asd = print_r($credentials);
-	return Response::make( "error" );	
-	//return Redirect::to('login');
+	else	
+		return Redirect::to('login')
+		->with('flash_error', 'Your username/password combination is incorrect.');
 });
 

@@ -4,7 +4,6 @@
 
 class UsersController extends BaseController
 {
-
     public function index()
     {
         // Show a listing of games.
@@ -38,7 +37,7 @@ class UsersController extends BaseController
 			$user->family_name = Input::get('family_name');
 			$user->password = Hash::make(Input::get('password'));
 			// set to 0 if the input value is absent
-			$user->active = Input::get('active',0);
+			$user->enabled = Input::get('enabled',0);
 			$user->admin = Input::get('admin',0);		
 			$user->save();
 		
