@@ -1,6 +1,6 @@
 <?php
 
-class Article extends Eloquent
+class Article extends BaseEloquent
 {
 	// Database table used by the model	
 	protected $table = 'lm_articles';
@@ -19,4 +19,14 @@ class Article extends Eloquent
 	{
 		return $this->hasMany('Attribute');
 	}
+
+	// Select articles who belongs to category $name
+	public function whereHasCategory($category)
+	{
+		return $this->whereHas('Category', function($query) use($category)
+		{
+			$query->where('name', $category);
+		});
+	}
 }
+
