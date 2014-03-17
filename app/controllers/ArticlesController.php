@@ -4,10 +4,7 @@ class ArticlesController extends BaseController
 {
 
     public function index($category = 'all', $field = 'id')
-    {
-		echo "name:".$category."|";
-		echo "order:".$field."|";
-		
+    {	
 		switch($category)
 		{
 			case "all":
@@ -40,7 +37,7 @@ class ArticlesController extends BaseController
 				}				
 
 				return View::make('article_list_category', compact('articles','fields'))
-					->with('category', $category);;
+					->with('category', $category);
 		}
     }
 
@@ -59,15 +56,85 @@ class ArticlesController extends BaseController
 			->lists('article_id');
 	}
 
-	public function add()
+	public function add($category='all')
 	{
-		$category = new Category;
-		$categories = $category::all();
-		return View::make('article_add', compact('categories'));
+		// FIXME check if $category exists
+		if ($category == 'all')
+		{
+			$category = new Category;
+			$categories = $category::all();
+			return View::make('article_add_list',compact('categories'));
+		}
+		else
+		{
+			// prepare list of field for an article of the required category
+			$field = new Field;
+			$fields = $field
+				->whereHas('categories', function($query) use($category)
+				{
+					$query->where('name', $category);
+				})
+				->get();
+				//->select(');			
+			return View::make('article_add', compact('fields'))
+				->with('category', $category);
+		}
 	}
 
-	public function handle_add()
+	public function handle_add($category)
 	{
-		return Redirect::action('ArticlesController@add');
+		// decode attributes names and values
+		$rawdata = Input::except('fields',0);			
+		$data = array();		
+		foreach($rawdata as $k=>$v )
+		{
+			$data[rawurldecode($k)] = rawurldecode($v);
+		}
+		
+		// load illuminate collection of fields from GET
+		// and create $rules array
+		$fields  = json_decode(Input::get('fields'));
+		$rules = array();
+		foreach ($fields as $field)
+		{
+			$rules[$field->name] = $field->rule;
+		}
+
+		// validate attributes-values
+		$validator = Validator::make($data, $rules);
+		
+		if ($validator->passes())
+		{
+			$article = new Article;
+
+			// associate the article to the category $categoryname
+			$categoryname = $category;
+			$category = Category::whereName($category)->first();
+			$article->category()->associate($category);
+			$article->save();			
+
+			// for each field
+			foreach ($fields as $field)
+			{
+				// associate an attribute to $article and to $field 
+				// and set the input value to it
+				$fieldname = $field->name;
+				$field = Field::whereName($fieldname)->first();	
+				$attribute = new Attribute;
+				// check if exist, for checkboxes
+				if(isset($data[$fieldname]))
+					$attribute->value = $data[$fieldname];
+				else
+					$attribute->value = 0;
+								
+				$attribute->field()->associate($field);
+				$attribute->article()->associate($article);	
+				$attribute->save();
+			}
+			return Redirect::action('ArticlesController@add')
+				->with('flash_notice', 'Article successfully added.');
+		}
+		return Redirect::back()
+			->withErrors($validator);
 	}
 }

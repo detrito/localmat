@@ -17,6 +17,7 @@ class CreateTablesHandleArticles extends Migration {
 			$table->increments('id');
 			$table->string('name', 64)->unique();
 			$table->string('type',64);
+			$table->string('rule',64);
 		});
 	
 		Schema::create('lm_categories', function($table)

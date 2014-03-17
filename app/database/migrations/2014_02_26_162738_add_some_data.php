@@ -18,16 +18,19 @@ class AddSomeData extends Migration {
 		$field = new Field;
 		$field->name = "Description";
 		$field->type = "text";
+		$field->rule ="required|alpha_spaces|max:64";
 		$field->save();
 
 		$field = new Field;
 		$field->name = "Corde statique";
 		$field->type = "boolean";
+		$field->rule = "integer|between:0,1";
 		$field->save();
 
 		$field = new Field;
 		$field->name = "Longueur";
-		$field->type = "integer";
+		$field->type = "integerpositive";
+		$field->rule = "required|integer|between:0,10000";
 		$field->save();
 
 		/*

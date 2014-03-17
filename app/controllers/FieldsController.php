@@ -2,11 +2,22 @@
 
 class FieldsController extends BaseController
 {
-	private $types = array('text','boolean','integer');	
+	private $types = array('text', 'integer','integerpositive', 'boolean');	
+	private $default_rule = array(
+		'text' => "required|alpha_spaces|max:64",
+		'integer' => "required|integer",
+		'integerpositive' => "required|integer|between:0,100000",
+		'boolean' => "integer|between:0,1"
+		);
 
 	public function get_types()
 	{
-		return $types;
+		return $this->types;
+	}
+
+	public function get_default_rule($type)
+	{
+		return $this->default_rule[$type];
 	}
 	
     public function index()
@@ -36,6 +47,7 @@ class FieldsController extends BaseController
 			$field = new Field;
 			$field->name = Input::get('name');
 			$field->type = Input::get('type');
+			$field->rule = $this->get_default_rule(Input::get('type'));
 			$field->save();
 			
 			return Redirect::action('FieldsController@add')

@@ -40,6 +40,8 @@
 						@foreach ($article->attributes as $attribute)
 							<td>{{ $attribute->value }}</td>
 						@endforeach
+				
+					
 
                     <td>
                         <a href="#">Edit</a>

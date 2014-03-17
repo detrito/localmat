@@ -3,52 +3,33 @@
 @section('title')
 
 <a href="{{ action('ArticlesController@index') }}">Articles</a>
-> Add new article
+> <a href="{{ action('ArticlesController@add') }}">Add new article</a>
+> {{ $category }}
 
 @stop
 
 @section('content')
 
-<form action="{{ action('ArticlesController@handle_add') }}" method="post">
+<form action="{{ action('ArticlesController@handle_add',
+	array('category'=>$category)) }}" method="post">
+
+<input type="hidden"  name="fields"  value='{{ $fields->toJson() }}'>
+
 <table>
 
-@foreach($categories as $category)
-{{ $category->name }}
+@foreach ($fields as $field)	
+	@if ($field->type == 'boolean')
+		<tr>
+		<td> {{ Form::label(rawurlencode($field->name), $field->name) }} </td>
+		<td> {{ Form::checkbox(rawurlencode($field->name), 1, true); }} </td>
+		</tr>
+	@else
+		<tr>
+		<td> {{ Form::label(rawurlencode($field->name), $field->name) }} </td>
+		<td> {{ Form::text(rawurlencode($field->name)) }} </td>
+		</tr>
+    @endif
 @endforeach
-
-<tr>
-<td> {{ Form::label('category', 'Category') }} </td>
-<td> {{ Form::select('animal', array(
-    'Cats' => array('leopard' => 'Leopard'),
-    'Dogs' => array('spaniel' => 'Spaniel') )) }} </td>
-</tr>
-<tr/>
-<tr>
-
-<tr>
-<td> {{ Form::label('family_name', 'Family name') }} </td>
-<td> {{ Form::text('family_name') }} </td>
-</tr>
-
-<tr>
-<td> {{ Form::label('email', 'E-mail') }} </td>
-<td> {{ Form::text('email') }} </td>
-</tr>
-
-<tr>
-<td> {{ Form::label('password', 'Password') }} </td>
-<td> {{ Form::password('password') }} </td>
-</tr>
-
-<tr>
-<td> {{ Form::label('active', 'Active') }} </td>
-<td> {{ Form::checkbox('active', 1, true); }} </td>
-</tr>
-
-<tr>
-<td> {{ Form::label('admin', 'Administrator') }} </td>
-<td> {{ Form::checkbox('admin', 1, false); }} </td>
-</tr>
 
 </table>
 

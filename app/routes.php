@@ -23,8 +23,8 @@ Route::get('/', function()
 // articles
 Route::get('/articles', 'ArticlesController@index');
 Route::get('/articles/list/{category?}/{order?}', 'ArticlesController@index');
-Route::get('/articles/add', 'ArticlesController@add');
-Route::post('/articles/add', 'ArticlesController@handle_add');
+Route::get('/articles/add/{category?}', 'ArticlesController@add');
+Route::post('/articles/add/{category}', 'ArticlesController@handle_add');
 Route::get('/articles/delall', 'ArticlesController@delall');
 
 // admin
@@ -117,5 +117,11 @@ Route::post('/login', function()
 	else	
 		return Redirect::to('login')
 		->with('flash_error', 'Your username/password combination is incorrect.');
+});
+
+
+Validator::extend('alpha_spaces', function($attribute, $value)
+{
+    return preg_match('/^[\pL\s]+$/u', $value);
 });
 
