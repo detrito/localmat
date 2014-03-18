@@ -37,7 +37,8 @@
 			</li>
 
     		<li><a href="#">Me</a></li>
-
+			
+			@if (Auth::check() && Auth::user()->admin)
 			<li><a href="{{ url('/admin') }}">Admin</a>
 				<ul>
 					<li><a href="{{ action('FieldsController@index') }}">Fields</a></li>
@@ -46,6 +47,7 @@
 					<li><a href="{{ action('CategoriesController@add') }}">Add new category</a></li>
             	</ul>
 			</li>
+			@endif
 
 		</ul>
 		

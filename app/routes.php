@@ -25,7 +25,8 @@ Route::get('/articles', 'ArticlesController@index');
 Route::get('/articles/list/{category?}/{order?}', 'ArticlesController@index');
 Route::get('/articles/add/{category?}', 'ArticlesController@add');
 Route::post('/articles/add/{category}', 'ArticlesController@handle_add');
-Route::get('/articles/delall', 'ArticlesController@delall');
+Route::get('/articles/edit/{article_id}', 'ArticlesController@edit');
+Route::get('/articles/delete/{article_id}', 'ArticlesController@delete');
 
 // admin
 Route::group(array('before' => 'auth|enabled|admin'), function()

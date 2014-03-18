@@ -22,19 +22,22 @@ class ArticlesController extends BaseController
 					->get();
 
 				// Array of field-names
-				$fields = array();
-				foreach ($articles->first()->attributes as $attribute)
+				$fields = array();				
+				if(! empty($articles->first()))
 				{
-					array_push($fields,$attribute->field->name);
-				}
+					foreach ($articles->first()->attributes as $attribute)
+					{
+						array_push($fields,$attribute->field->name);
+					}
 
-				// Order article's IDs by the value of a field
-				if($field!='id')
-				{
-					$ordered_ids = $this->getArticleIdsSortedByField($articles,$field);
-					//print_r($ordered_ids);
-					$articles = $articles->sortByOrder($ordered_ids);
-				}				
+					// Order article's IDs by the value of a field
+					if($field!='id')
+					{
+						$ordered_ids = $this->getArticleIdsSortedByField($articles,$field);
+						//print_r($ordered_ids);
+						$articles = $articles->sortByOrder($ordered_ids);
+					}
+				}			
 
 				return View::make('article_list_category', compact('articles','fields'))
 					->with('category', $category);
@@ -136,5 +139,30 @@ class ArticlesController extends BaseController
 		}
 		return Redirect::back()
 			->withErrors($validator);
+	}
+
+	public function edit($article_id)
+	{
+		return 1;
+	}
+
+	public function delete($article_id)
+	{
+		$article = Article::find($article_id);
+		$attribute_ids = $article->attributes->lists('id');
+		
+		// delete attributes who belongs to this article
+		foreach($attribute_ids as $attribute_id)
+		{
+			$attribute = Attribute::find($attribute_id);
+			$attribute->delete();
+		}
+
+		// now delete the article
+		$article->delete();
+
+		// FIXME check if a previous page exists
+		return Redirect::back()
+			->with('flash_notice', 'Article successfully deleted.');
 	}
 }

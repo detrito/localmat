@@ -14,15 +14,14 @@
 
 @section('content')
 
-@if (empty($categories->first()->articles()))
-	<p>There are no articles! :(</p>
-@else
-
 {{-- Loop througt categories --}}
-
 @foreach($categories as $category)
 	<h3><a href="{{ url('/articles/list/'.$category->name) }}">
 		{{ $category->name }}</a></h3>
+
+	@if (empty($category->articles->first()))
+		<p>There are no articles in this category.</p>
+	@else
 
 	<table>
             <thead>
@@ -33,11 +32,14 @@
 						<th>{{ $attribute->field->name }}</th>
 					@endforeach
 
+					@if (Auth::check() && Auth::user()->admin)
 					<th>Admin</th>
+					@endif
                 </tr>
             </thead>
             <tbody>
-				
+
+
 				@foreach($category->articles as $article)
 				<tr>
                     <td>{{ $article->id }}</td>
@@ -47,17 +49,26 @@
 							<td>{{ $attribute->value }}</td>
 						@endforeach
 
+					@if (Auth::check() && Auth::user()->admin)
                     <td>
-                        <a href="#">Edit</a>
-                        <a href="#">Delete</a>
+                        <a href="{{
+							action('ArticlesController@edit',
+							array($article->id))
+							}}">Edit</a>
+						<a href="{{
+							action('ArticlesController@delete',
+							array($article->id))
+							}}">Delete</a>
                     </td>
+					@endif
+
                 </tr>
 				@endforeach
+
             </tbody>
         </table>
+		@endif
 @endforeach
 
-
-@endif
 @stop
 
