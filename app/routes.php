@@ -26,6 +26,7 @@ Route::get('/articles/list/{category?}/{order?}', 'ArticlesController@index');
 Route::get('/articles/add/{category?}', 'ArticlesController@add');
 Route::post('/articles/add/{category}', 'ArticlesController@handle_add');
 Route::get('/articles/edit/{article_id}', 'ArticlesController@edit');
+Route::post('/articles/edit/{article_id}', 'ArticlesController@handle_edit');
 Route::get('/articles/delete/{article_id}', 'ArticlesController@delete');
 
 // admin

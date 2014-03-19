@@ -28,5 +28,27 @@ class Article extends BaseEloquent
 			$query->where('name', $category);
 		});
 	}
+
+	// Return array of fields-names of an article
+	public function getFieldNames()
+	{
+		$field_names = array();
+		foreach ($this->attributes()->get() as $attribute)
+		{
+			array_push($field_names,$attribute->field->name);
+		}
+		return $field_names;
+	}
+	
+	// Return array of fields-ids of an article
+	public function getFieldIds()
+	{
+		$field_ids = array();
+		foreach ($this->attributes()->get() as $attribute)
+		{
+			array_push($field_ids,$attribute->field->id);
+		}
+		return $field_ids;
+	}
 }
 

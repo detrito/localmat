@@ -22,9 +22,9 @@
                 <tr>
                     <th>Id</th>
 					{{-- Loop throught fields --}}
-					@foreach ($fields as $field)
-						<th><a href="{{ url('/articles/list/'.$category.'/'.$field) }}">
-							{{ $field }}
+					@foreach ($field_names as $field_name)
+						<th><a href="{{ url('/articles/list/'.$category_name.'/'.$field_name) }}">
+							{{ $field_name }}
 						</a></th>
 					@endforeach
 

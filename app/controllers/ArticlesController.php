@@ -3,9 +3,9 @@
 class ArticlesController extends BaseController
 {
 
-    public function index($category = 'all', $field = 'id')
+    public function index($category_name = 'all', $field_name = 'id')
     {	
-		switch($category)
+		switch($category_name)
 		{
 			case "all":
 				$categories = Category::with('articles','articles.attributes')->get();
@@ -14,36 +14,33 @@ class ArticlesController extends BaseController
 				
 			default:
 				// FIXME check if $category exist
-				$articles = new Article;
+				$article_model = new Article;
 
-				$articles = $articles
-					->whereHasCategory($category)
+				$field_names = $article_model
+					->whereHasCategory($category_name)
+					->first()
+					->getFieldNames();
+
+				$articles = $article_model
+					->whereHasCategory($category_name)
 					->with('attributes')
 					->get();
 
-				// Array of field-names
-				$fields = array();				
 				if(! empty($articles->first()))
 				{
-					foreach ($articles->first()->attributes as $attribute)
+					// Order article's IDs by the value of $field_name
+					if($field_name!='id')
 					{
-						array_push($fields,$attribute->field->name);
-					}
-
-					// Order article's IDs by the value of a field
-					if($field!='id')
-					{
-						$ordered_ids = $this->getArticleIdsSortedByField($articles,$field);
-						//print_r($ordered_ids);
+						$ordered_ids = $this->getArticleIdsSortedByField($articles,$field_name);
 						$articles = $articles->sortByOrder($ordered_ids);
 					}
 				}			
 
-				return View::make('article_list_category', compact('articles','fields'))
-					->with('category', $category);
+				return View::make('article_list_category', compact('articles','field_names'))
+					->with('category_name', $category_name);
 		}
     }
-
+	
 	public function getArticleIdsSortedByField($articles, $field, $order='ASC')
 	{
 		$article_ids = $articles->fetch('id')->toArray();	
@@ -78,15 +75,14 @@ class ArticlesController extends BaseController
 					$query->where('name', $category);
 				})
 				->get();
-				//->select(');			
 			return View::make('article_add', compact('fields'))
-				->with('category', $category);
+				->with('category',$category);
 		}
 	}
 
 	public function handle_add($category)
 	{
-		// decode attributes names and values
+		// decode attributes names and values	
 		$rawdata = Input::except('fields',0);			
 		$data = array();		
 		foreach($rawdata as $k=>$v )
@@ -126,10 +122,11 @@ class ArticlesController extends BaseController
 				$attribute = new Attribute;
 				// check if exist, for checkboxes
 				if(isset($data[$fieldname]))
-					$attribute->value = $data[$fieldname];
+					$value = $data[$fieldname];
 				else
-					$attribute->value = 0;
-								
+					$value = 0;
+				$attribute->value = $value;
+
 				$attribute->field()->associate($field);
 				$attribute->article()->associate($article);	
 				$attribute->save();
@@ -143,7 +140,78 @@ class ArticlesController extends BaseController
 
 	public function edit($article_id)
 	{
-		return 1;
+		$article_model = new Article;
+		//var_dump($article_model);
+
+		// get collection of this article		
+		$article = $article_model
+			->find($article_id);
+		//var_dump($article->attributes);
+		//return 1;
+
+		// get collection of this article's fields
+		$field_ids = $article_model
+			->find($article_id)
+			->getFieldIds();
+
+		$fields = Field::find($field_ids);
+		//var_dump($fields);
+
+		return View::make('article_edit', compact('article','fields'))
+				->with('article_id', $article_id);
+	}
+
+	public function handle_edit($article_id)
+	{
+		// FIXME clean this mess with some nice functions
+
+		// decode attributes names and values	
+		$rawdata = Input::except('fields',0);			
+		$data = array();		
+		foreach($rawdata as $k=>$v )
+		{
+			$data[rawurldecode($k)] = rawurldecode($v);
+		}
+		
+		// load illuminate collection of fields from GET
+		// and create $rules array
+		$fields  = json_decode(Input::get('fields'));
+		$rules = array();
+		foreach ($fields as $field)
+		{
+			$rules[$field->name] = $field->rule;
+		}
+
+		// validate attributes-values
+		$validator = Validator::make($data, $rules);
+		
+
+		if ($validator->passes())
+		{
+			$article_model = new Article;
+			
+			$article = $article_model
+				->find($article_id);
+			
+			foreach($article->attributes as $attribute)
+			{
+				$attribute_model = Attribute::find($attribute->id);
+				$fieldname = $attribute_model->field->name;
+				// check if exist, for checkboxes
+				if(isset($data[$fieldname]))
+					$value = $data[$fieldname];
+				else
+					$value = 0;
+				$attribute_model->value = $value;
+				$attribute_model->save();
+			}
+			
+		// FIXME redirect to page previous the form page
+		return Redirect::action('ArticlesController@index')
+			->with('flash_notice', 'Article successfully modified.');
+		}
+		return Redirect::back()
+			->withErrors($validator);		
 	}
 
 	public function delete($article_id)
