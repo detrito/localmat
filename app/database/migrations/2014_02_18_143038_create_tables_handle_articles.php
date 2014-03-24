@@ -32,6 +32,8 @@ class CreateTablesHandleArticles extends Migration {
 			$table->timestamps();			
 			$table->integer('category_id')->unsigned();
 			$table->foreign('category_id')->references('id')->on('lm_categories');
+			$table->integer('history_id')->unsigned()->nullable();
+			$table->foreign('history_id')->references('id')->on('lm_history');
 		});
 
 		Schema::create('lm_attributes', function($table)
@@ -66,5 +68,4 @@ class CreateTablesHandleArticles extends Migration {
 		Schema::drop('lm_categories');
 		Schema::drop('lm_fields');
 	}
-
 }

@@ -2,20 +2,25 @@
 
 class ArticlesController extends BaseController
 {
+	public function index()
+	{
+		return 1;
+	}
 
-    public function index($category_name = 'all', $field_name = 'id')
-    {	
+    public function view($status='all', $category_name = 'all', $field_name = 'id')
+    {
 		switch($category_name)
 		{
 			case "all":
 				$categories = Category::with('articles','articles.attributes')->get();
 				//return var_dump($categories);			
-				return View::make('article_list_all', compact('categories'));
+				return View::make('article_view_all', compact('categories'));
 				
 			default:
 				// FIXME check if $category exist
 				$article_model = new Article;
 
+				//return;
 				$field_names = $article_model
 					->whereHasCategory($category_name)
 					->first()
@@ -23,6 +28,7 @@ class ArticlesController extends BaseController
 
 				$articles = $article_model
 					->whereHasCategory($category_name)
+					->Status($status)
 					->with('attributes')
 					->get();
 
@@ -36,11 +42,11 @@ class ArticlesController extends BaseController
 					}
 				}			
 
-				return View::make('article_list_category', compact('articles','field_names'))
-					->with('category_name', $category_name);
+				return View::make('article_view_category', compact('articles','field_names'))
+					->with( array('status'=>$status, 'category_name'=>$category_name) );
 		}
     }
-	
+
 	public function getArticleIdsSortedByField($articles, $field, $order='ASC')
 	{
 		$article_ids = $articles->fetch('id')->toArray();	

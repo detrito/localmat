@@ -20,6 +20,12 @@ class Article extends BaseEloquent
 		return $this->hasMany('Attribute');
 	}
 
+	// Article __belongs_to_a__ History
+	public function history()
+	{
+		return $this->belongsTo('History');
+	}
+
 	// Select articles who belongs to category $name
 	public function whereHasCategory($category)
 	{
@@ -27,6 +33,20 @@ class Article extends BaseEloquent
 		{
 			$query->where('name', $category);
 		});
+	}
+
+	// Select articles who belongs to status $name
+	public function scopeStatus($query, $status)
+	{
+		switch($status)
+		{
+			case 'all':
+				return $query;
+			case 'available':
+				return $query->has('history', '==' , 'Null');
+			case 'borrowed':
+				return $query->has('history');
+		}
 	}
 
 	// Return array of fields-names of an article

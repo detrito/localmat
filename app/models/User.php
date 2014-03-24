@@ -7,10 +7,6 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	// Database table used by the model
 	protected $table = 'lm_users';
-
-	
-	// Database's primary key
-	protected $primaryKey = 'uid';
 	
 	// Enable timestamps
 	public $timestamps = true;

@@ -24,7 +24,8 @@
 			<li><a href="{{ url('/') }}">Home</a></li>
     		<li><a href="{{ action('ArticlesController@index') }}">Articles</a>
 				<ul>
-					<li><a href="#">Availables</a></li>
+					<li><a href="{{ action('ArticlesController@view',
+							array('status'=>'availables') ) }}">Availables</a></li>
 					<li><a href="#">Tous</a></li>
 					<li><a href="{{ action('ArticlesController@add') }}">Add new article</a></li>
             	</ul>

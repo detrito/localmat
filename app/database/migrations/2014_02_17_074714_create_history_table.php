@@ -3,8 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration {
-
+class CreateHistoryTable extends Migration {
 	/**
 	 * Run the migrations.
 	 *
@@ -12,15 +11,13 @@ class CreateUsersTable extends Migration {
 	 */
 	public function up()
 	{
-		Schema::create('lm_users', function($table)
+		// create a new table to handle the article's borrowing-history
+		Schema::create('lm_history', function($table)
 		{
 			$table->increments('id');
-			$table->string('email', 64)->unique();
-			$table->string('given_name', 64);
-			$table->string('family_name', 64);
-			$table->string('password', 64);
-			$table->boolean('enabled');
-			$table->boolean('admin');
+			$table->integer('user_id')->unsigned();
+			$table->foreign('user_id')->references('id')->on('lm_users');
+			$table->boolean('borrowed');
 			$table->timestamps();
 		});
 	}
@@ -32,7 +29,6 @@ class CreateUsersTable extends Migration {
 	 */
 	public function down()
 	{
-		Schema::drop('lm_users');
+		Schema::drop('lm_history');
 	}
-
 }
