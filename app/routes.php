@@ -23,11 +23,6 @@ Route::get('/', function()
 // articles
 Route::get('/articles', 'ArticlesController@index');
 Route::get('/articles/view/{status?}/{category_name?}/{field_name?}', 'ArticlesController@view');
-Route::get('/articles/add/{category?}', 'ArticlesController@add');
-Route::post('/articles/add/{category}', 'ArticlesController@handle_add');
-Route::get('/articles/edit/{article_id}', 'ArticlesController@edit');
-Route::post('/articles/edit/{article_id}', 'ArticlesController@handle_edit');
-Route::get('/articles/delete/{article_id}', 'ArticlesController@delete');
 
 // admin
 Route::group(array('before' => 'auth|enabled|admin'), function()
@@ -37,6 +32,13 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 		return View::make('admin_index');
 	});
 	
+	// articles
+	Route::get('/articles/add/{category_name?}', 'ArticlesController@add');
+	Route::post('/articles/add/{category_name}', 'ArticlesController@handle_add');
+	Route::get('/articles/edit/{article_id}', 'ArticlesController@edit');
+	Route::post('/articles/edit/{article_id}', 'ArticlesController@handle_edit');
+	Route::get('/articles/delete/{article_id}', 'ArticlesController@delete');
+
 	// fields
 	Route::get('/fields', 'FieldsController@index');
 	Route::get('/fields/add', 'FieldsController@add');

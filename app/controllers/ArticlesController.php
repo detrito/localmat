@@ -74,31 +74,34 @@ class ArticlesController extends BaseController
 			->lists('article_id');
 	}
 
-	public function add($category='all')
+	public function add($category_name='all')
 	{
+		// get list of all categories				
+		$categories = new Category;
+		$category_names = $categories->getNames();
+
 		// FIXME check if $category exists
-		if ($category == 'all')
+		if ($category_name == 'all')
 		{
-			$category = new Category;
-			$categories = $category::all();
-			return View::make('article_add_list',compact('categories'));
+			return View::make('article_add', compact('category_names'))
+				->with('category_name',$category_name);
 		}
 		else
 		{
 			// prepare list of field for an article of the required category
 			$field = new Field;
 			$fields = $field
-				->whereHas('categories', function($query) use($category)
+				->whereHas('categories', function($query) use($category_name)
 				{
-					$query->where('name', $category);
+					$query->where('name', $category_name);
 				})
 				->get();
-			return View::make('article_add', compact('fields'))
-				->with('category',$category);
+			return View::make('article_add', compact('fields','category_names'))
+				->with('category_name',$category_name);
 		}
 	}
 
-	public function handle_add($category)
+	public function handle_add($category_name)
 	{
 		// decode attributes names and values	
 		$rawdata = Input::except('fields',0);			
@@ -124,9 +127,8 @@ class ArticlesController extends BaseController
 		{
 			$article = new Article;
 
-			// associate the article to the category $categoryname
-			$categoryname = $category;
-			$category = Category::whereName($category)->first();
+			// associate the article to the category $category_name
+			$category = Category::whereName($category_name)->first();
 			$article->category()->associate($category);
 			$article->save();			
 
@@ -138,6 +140,7 @@ class ArticlesController extends BaseController
 				$fieldname = $field->name;
 				$field = Field::whereName($fieldname)->first();	
 				$attribute = new Attribute;
+
 				// check if exist, for checkboxes
 				if(isset($data[$fieldname]))
 					$value = $data[$fieldname];
@@ -149,7 +152,8 @@ class ArticlesController extends BaseController
 				$attribute->article()->associate($article);	
 				$attribute->save();
 			}
-			return Redirect::action('ArticlesController@add')
+			return Redirect::action('ArticlesController@add',
+				array('category_name'=>$category_name) )
 				->with('flash_notice', 'Article successfully added.');
 		}
 		return Redirect::back()
