@@ -19,4 +19,15 @@ class Category extends Eloquent
 	{
 		return $this->hasMany('Article');
 	}
+
+	// Return array of category-names
+	public function getNames()
+	{
+		$category_names = array('all');
+		foreach ($this->get() as $category)
+		{
+			array_push($category_names,$category->name);
+		}
+		return $category_names;
+	}
 }

@@ -3,9 +3,8 @@
 @section('title')
 
 @if(isset($category_name))
-	<a href="{{ url('/articles/list') }}">Articles</a>
-	> {{ $category_name }}
-	({{ $status }})
+	<a href="{{ action('ArticlesController@view')}}">Articles</a>
+	> {{ $category_name }} > {{ $status_name }}
 @else
 	Articles
 @endif
@@ -14,10 +13,36 @@
 
 @section('content')
 
+<p>Category
+<select name="dropdown" onChange="document.location = this.value" value="GO">
+
+@foreach($category_names as $name)
+<option value="{{ action('ArticlesController@view',
+		array('status'=>$status_name,'category'=>$name) )}}"
+	@if($name == $category_name)
+		selected
+	@endif
+	>{{ strtolower($name) }}</option>
+@endforeach
+</select>
+</p>
+
+<p>Status
+<select name="dropdown" onChange="document.location = this.value" value="GO">
+@foreach($status_names as $status)
+	<option value="{{ action('ArticlesController@view',
+		array('status'=>$status,'category'=>$category_name) )}}"
+	@if($status_name == $status)
+		selected
+	@endif
+	>{{ strtolower($status) }}</option>	
+@endforeach
+</select>
+</p>
+
 @if ( empty($articles->first()) )
 	<p>There are no articles in this category.</p>
 @else
-
 	<table>
             <thead>
                 <tr>

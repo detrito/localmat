@@ -23,8 +23,6 @@ class UserTableSeeder extends Seeder {
 
     public function run()
     {
-        DB::table('lm_users')->delete();
-
         User::create(array(
 			'email' => 'admin@local.mat',
 			'given_name' => 'admin',
@@ -59,8 +57,6 @@ class FieldTableSeeder extends Seeder {
 
     public function run()
     {
-		//DB::table('lm_fields')->delete();
-		
 		Field::create(array(
 			'name' => "Description",
 			'type' => "text",
@@ -195,3 +191,4 @@ class ArticleTableSeeder extends Seeder {
 		$attribute->save();
 	}
 }
+

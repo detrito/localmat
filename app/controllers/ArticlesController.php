@@ -4,23 +4,33 @@ class ArticlesController extends BaseController
 {
 	public function index()
 	{
-		return 1;
+		return $this->view();
 	}
 
-    public function view($status='all', $category_name = 'all', $field_name = 'id')
+    public function view($status_name='all', $category_name = 'all', $field_name = 'id')
     {
+		// get list of all categories				
+		$categories = new Category;
+		$category_names = $categories->getNames();
+
+		// get list of status
+		// FIXME implement this in an indipendent class
+		$status_names = array('all','available','borrowed');
+		
 		switch($category_name)
 		{
 			case "all":
 				$categories = Category::with('articles','articles.attributes')->get();
-				//return var_dump($categories);			
-				return View::make('article_view_all', compact('categories'));
+
+				//FIXME implement view of other status
+				return View::make('article_view_all',
+					compact('categories','category_names','status_names'))
+					->with( array('status_name'=>'all', 'category_name'=>'all') );
 				
 			default:
 				// FIXME check if $category exist
 				$article_model = new Article;
 
-				//return;
 				$field_names = $article_model
 					->whereHasCategory($category_name)
 					->first()
@@ -28,9 +38,10 @@ class ArticlesController extends BaseController
 
 				$articles = $article_model
 					->whereHasCategory($category_name)
-					->Status($status)
+					->Status($status_name)
 					->with('attributes')
 					->get();
+
 
 				if(! empty($articles->first()))
 				{
@@ -40,10 +51,11 @@ class ArticlesController extends BaseController
 						$ordered_ids = $this->getArticleIdsSortedByField($articles,$field_name);
 						$articles = $articles->sortByOrder($ordered_ids);
 					}
-				}			
+				}
 
-				return View::make('article_view_category', compact('articles','field_names'))
-					->with( array('status'=>$status, 'category_name'=>$category_name) );
+				return View::make('article_view_category',
+					compact('articles','field_names','category_names','status_names'))
+					->with( array('status_name'=>$status_name, 'category_name'=>$category_name) );
 		}
     }
 

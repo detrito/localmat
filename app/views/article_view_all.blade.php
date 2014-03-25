@@ -2,6 +2,8 @@
 
 @section('title')
 
+
+
 @if(isset($category))
 	<a href="{{ url('/articles/list') }}">Articles</a>
 	> {{ $category }}
@@ -13,6 +15,20 @@
 @stop
 
 @section('content')
+
+<p>Category
+<select name="dropdown" onChange="document.location = this.value" value="GO">
+
+@foreach($category_names as $name)
+<option value="{{ action('ArticlesController@view',
+		array('status'=>$status_name,'category'=>$name) )}}"
+	@if($name == $category_name)
+		selected
+	@endif
+	>{{ strtolower($name) }}</option>
+@endforeach
+</select>
+</p>
 
 {{-- Loop througt categories --}}
 @foreach($categories as $category)
