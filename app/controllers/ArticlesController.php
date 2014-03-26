@@ -59,18 +59,24 @@ class ArticlesController extends BaseController
 		}
     }
 
-	public function getArticleIdsSortedByField($articles, $field, $order='ASC')
+	public function getArticleIdsSortedByField($articles, $field_name, $order='ASC')
 	{
 		$article_ids = $articles->fetch('id')->toArray();	
+	
+		// retrive mysql cast type of the field $field_name
+		// in order to sort it as CHAR or as INTEGER
+		$field_type = Field::whereName($field_name)->pluck('type');
+		$field_cast_type = Field::getCastType($field_type);
 
-		$attribute = new Attribute;		
+		$attribute = new Attribute;	
 		return $attribute
-			->whereHas('Field', function($query) use($field)
+			->whereHas('Field', function($query) use($field_name)
 			{
-				$query->where('name', $field);
+				$query->where('name', $field_name);
 			})
-			->select('article_id','value')
-			->orderBy('value')
+			->select('article_id', 'value')
+			// FIXME this only works on MySQL
+			->orderBy(DB::raw('CAST(value AS '.$field_cast_type.')'), $order)
 			->lists('article_id');
 	}
 
