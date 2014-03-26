@@ -24,8 +24,11 @@
 			<li><a href="{{ url('/') }}">Home</a></li>
     		<li><a href="{{ action('ArticlesController@index') }}">Articles</a></li>
 			<li><a href="{{ action('UsersController@index') }}">Users</a></li>
-    		<li><a href="#">Me</a></li>
-			
+			@if (Auth::check())
+				<li><a href="{{ action('UsersController@view',
+					array(Auth::user()->id) ) }}">Me</a></li>
+			@endif
+
 			@if (Auth::check() && Auth::user()->admin)
 			<li><a href="{{ url('/admin') }}">Admin</a>
 				<ul>
@@ -34,7 +37,7 @@
 					<li><a href="{{ action('FieldsController@add') }}">Add new field</a></li>
 					<li><a href="{{ action('CategoriesController@index') }}">Categories</a></li>
 					<li><a href="{{ action('CategoriesController@add') }}">Add new category</a></li>
-					<li><a href="{{ action('UsersController@add') }}" class="navbar-brand">Add new user</a></li>
+					<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
             	</ul>
 			</li>
 			@endif

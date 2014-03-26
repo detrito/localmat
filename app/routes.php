@@ -24,7 +24,14 @@ Route::get('/', function()
 Route::get('/articles', 'ArticlesController@index');
 Route::get('/articles/view/{status?}/{category_name?}/{field_name?}', 'ArticlesController@view');
 
-// admin
+// routes accessibles onl to logged-in and enabled users
+Route::group(array('before' => 'auth|enabled'), function()
+{
+	//users
+	Route::get('/users/view/{user_name}', 'UsersController@view');
+});
+
+// routes accessibles onl to logged-in and enabled administrators users
 Route::group(array('before' => 'auth|enabled|admin'), function()
 {
 	Route::get('/admin', function()

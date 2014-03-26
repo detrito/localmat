@@ -12,6 +12,23 @@ class UsersController extends BaseController
         return View::make('user_index', compact('users'));
     }
 
+	public function view($user_id)
+	{
+		$user_model = new User;
+		$user = $user_model->find($user_id);
+
+		$history_model = new History;
+		$history_borrowed = $history_model
+			->whereHasUser($user_id)
+			->whereBorrowed(1)
+			->get();
+		$history_all = $history_model
+			->whereHasUser($user_id)
+			->get();
+
+		return View::make('user_view', compact('user','history_borrowed','history_all'));
+	}
+
     public function add()
     {
 
