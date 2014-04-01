@@ -11,8 +11,7 @@ class FieldsController extends BaseController
 	public function add()
 	{
 		$types = Field::getTypes();
-		var_dump($types);
-			
+		
 		// use $types as array-keys AND as array-values	
 		$field_types = array_combine($types,$types);
 		return View::make('field_add', compact('field_types') );

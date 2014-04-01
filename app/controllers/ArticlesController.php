@@ -55,7 +55,9 @@ class ArticlesController extends BaseController
 
 				return View::make('article_view_category',
 					compact('articles','field_names','category_names','status_names'))
-					->with( array('status_name'=>$status_name, 'category_name'=>$category_name) );
+					->with( array('status_name'=>$status_name,
+						'category_name'=>$category_name,
+						'field_name'=>$field_name) );
 		}
     }
 
@@ -79,6 +81,43 @@ class ArticlesController extends BaseController
 			->orderBy(DB::raw('CAST(value AS '.$field_cast_type.')'), $order)
 			->lists('article_id');
 	}
+
+	public function handle_borrow($status_name, $category_name, $field_name)
+	{
+		$article_ids = Input::all();
+		$user = User::find( Auth::user()->id );			
+
+		foreach($article_ids as $article_id)
+		{
+			$article = Article::find($article_id);
+
+			// check if article is not already borrowed			
+			if( $article->history_id == null )
+			{
+				$history = new History;
+				$history->borrowed = true;
+				$history->user()->associate($user);			
+				$history->save();
+	
+				$article->history()->associate($history);
+				$article->save();
+			}
+			else
+			{
+				return Redirect::action('ArticlesController@view',
+					array('status_name'=>$status_name,
+						'category_name'=>$category_name,
+						'field_name'=>$field_name) )
+					->with('flash_error', 'Articles $article_id already borrowed');
+			}
+		}
+		return Redirect::action('ArticlesController@view',
+			array('status_name'=>$status_name,
+				'category_name'=>$category_name,
+				'field_name'=>$field_name) )
+			->with('flash_notice', 'Articles successfully borrowed.');
+	}
+
 
 	public function add($category_name='all')
 	{

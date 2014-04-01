@@ -22,13 +22,16 @@ Route::get('/', function()
 
 // articles
 Route::get('/articles', 'ArticlesController@index');
-Route::get('/articles/view/{status?}/{category_name?}/{field_name?}', 'ArticlesController@view');
+Route::get('/articles/view/{status_name?}/{category_name?}/{field_name?}',
+	'ArticlesController@view');
 
 // routes accessibles onl to logged-in and enabled users
 Route::group(array('before' => 'auth|enabled'), function()
 {
 	//users
 	Route::get('/users/view/{user_name}', 'UsersController@view');
+	//article
+	Route::post('/articles/view/{status_name?}/{category_name?}/{field_name?}', 		'ArticlesController@handle_borrow');		
 });
 
 // routes accessibles onl to logged-in and enabled administrators users

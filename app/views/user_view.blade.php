@@ -33,6 +33,7 @@
 		<thead>
 			<tr>
 				<th>Id</th>
+				<th>Aid</th>
 				<th>Category</th>
 				<th>Borrowed date</th>
 			</tr>
@@ -41,6 +42,7 @@
 			@foreach($history_borrowed as $history_item)
 				<tr>
 					<td>{{$history_item->id}}</td>
+					<td>{{$history_item->article->id}}</td>
 					<td>{{$history_item->article->category->name}}</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 				</tr>		
@@ -58,6 +60,7 @@
 		<thead>
 			<tr>
 				<th>Id</th>
+				<th>Aid</th>
 				<th>Category</th>
 				<th>Borrowed date</th>
 				<th>Time span</th>
@@ -67,6 +70,7 @@
 			@foreach($history_all as $history_item)
 				<tr>
 					<td>{{$history_item->id}}</td>
+					<td>{{$history_item->article->id}}</td>
 					<td>{{$history_item->article->category->name}}</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 					<td>{{$history_item->getTimeSpan()}}</td>
