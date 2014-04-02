@@ -69,6 +69,10 @@
         @yield('content')
 		</div>
 
+		<div id="footer">
+			<a href="{{ Config::get('localmat.url')}}">LocalMat</a>
+			{{ Config::get('localmat.version')}}
+		</div>
     </div>
 </body>
 </html>
