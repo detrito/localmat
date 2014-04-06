@@ -39,13 +39,13 @@
 	@foreach ($fields as $field)	
 		@if ($field->type == 'boolean')
 			<tr>
-			<td> {{ Form::label(rawurlencode($field->name), $field->name) }} </td>
-			<td> {{ Form::checkbox(rawurlencode($field->name), 1, true); }} </td>
+			<td> {{ Form::label($field->name, $field->name) }} </td>
+			<td> {{ Form::checkbox($field->name, 1, true) }} </td>
 			</tr>
 		@else
 			<tr>
-			<td> {{ Form::label(rawurlencode($field->name), $field->name) }} </td>
-			<td> {{ Form::text(rawurlencode($field->name)) }} </td>
+			<td> {{ Form::label($field->name, $field->name) }} </td>
+			<td> {{ Form::text($field->name) }} </td>
 			</tr>
 		@endif
 	@endforeach

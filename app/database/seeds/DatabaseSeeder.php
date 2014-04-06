@@ -46,7 +46,7 @@ class FieldTableSeeder extends Seeder {
 		));
 		
 		Field::create(array(
-			'name' => "Corde statique",
+			'name' => "Corde_statique",
 			'type' => "boolean",
 			'rule' => "integer|between:0,1",
 		));

@@ -24,13 +24,13 @@
 
 	@if ($field->type == 'boolean')
 		<tr>
-		<td> {{ Form::label(rawurlencode($field->name), $field->name) }} </td>
-		<td> {{ Form::checkbox(rawurlencode($field->name), 1, $value); }} </td>
+		<td> {{ Form::label($field->name, $field->name) }} </td>
+		<td> {{ Form::checkbox($field->name, 1, $value); }} </td>
 		</tr>
 	@else
 		<tr>
-		<td> {{ Form::label(rawurlencode($field->name), $field->name) }} </td>
-		<td> {{ Form::text(rawurlencode($field->name),$value) }} </td>
+		<td> {{ Form::label($field->name, $field->name) }} </td>
+		<td> {{ Form::text($field->name,$value) }} </td>
 		</tr>
     @endif
 @endfor

@@ -13,9 +13,8 @@ class ArticlesController extends BaseController
 		$categories = new Category;
 		$category_names = $categories->getNames();
 
-		// get list of status
-		// FIXME implement this in an indipendent class
-		$status_names = array('all','available','borrowed');
+		// get list of status names
+		$status_names = History::getStatusNames();
 		
 		switch($category_name)
 		{
@@ -28,59 +27,40 @@ class ArticlesController extends BaseController
 					->with( array('status_name'=>'all', 'category_name'=>'all') );
 				
 			default:
-				// FIXME check if $category exist
-				$article_model = new Article;
-
-				$field_names = $article_model
-					->whereCategory($category_name)
-					->first()
-					->getFieldNames();
-
-				$articles = $article_model
-					->whereCategory($category_name)
-					->whereStatus($status_name)
-					->with('attributes')
-					->get();
-
-				if(! empty($articles->first()))
+				if ( Category::whereName($category_name)->exists() )
 				{
-					// Order article's IDs by the value of $field_name
-					if($field_name!='id')
+					$field_names = Article::whereCategory($category_name)
+						->first()
+						->getFieldNames();
+
+					$articles = Article::whereCategory($category_name)
+						->whereStatus($status_name)
+						->with('attributes')
+						->get();
+
+					if(! empty($articles->first()))
 					{
-						$ordered_ids = $this->getArticleIdsSortedByField($articles,$field_name);
-						$articles = $articles->sortByOrder($ordered_ids);
+						// Order article's IDs by the value of $field_name
+						if($field_name!='id')
+						{
+							$ordered_ids = Article::getArticleIdsSortedByField($articles,$field_name);
+							$articles = $articles->sortByOrder($ordered_ids);
+						}
 					}
+				
+					return View::make('article_view_category',
+						compact('articles','field_names','category_names','status_names'))
+						->with( array('status_name'=>$status_name,
+							'category_name'=>$category_name,
+							'field_name'=>$field_name) );
 				}
-				
-				return View::make('article_view_category',
-					compact('articles','field_names','category_names','status_names'))
-					->with( array('status_name'=>$status_name,
-						'category_name'=>$category_name,
-						'field_name'=>$field_name) );
-				
+				else
+				{
+					return Redirect::action('ArticlesController@view')
+						->with('flash_notice', 'Category '.$category_name.' not found');
+				}
 		}
     }
-
-	public function getArticleIdsSortedByField($articles, $field_name, $order='ASC')
-	{
-		$article_ids = $articles->fetch('id')->toArray();	
-	
-		// retrive mysql cast type of the field $field_name
-		// in order to sort it as CHAR or as INTEGER
-		$field_type = Field::whereName($field_name)->pluck('type');
-		$field_cast_type = Field::getCastType($field_type);
-
-		$attribute = new Attribute;	
-		return $attribute
-			->whereHas('Field', function($query) use($field_name)
-			{
-				$query->where('name', $field_name);
-			})
-			->select('article_id', 'value')
-			// FIXME this only works on MySQL
-			->orderBy(DB::raw('CAST(value AS '.$field_cast_type.')'), $order)
-			->lists('article_id');
-	}
 
 	public function add($category_name='all')
 	{
@@ -88,7 +68,6 @@ class ArticlesController extends BaseController
 		$categories = new Category;
 		$category_names = $categories->getNames();
 
-		// FIXME check if $category exists
 		if ($category_name == 'all')
 		{
 			return View::make('article_add', compact('category_names'))
@@ -96,37 +75,32 @@ class ArticlesController extends BaseController
 		}
 		else
 		{
-			// prepare list of field for an article of the required category
-			$field = new Field;
-			$fields = $field
-				->whereHas('categories', function($query) use($category_name)
-				{
-					$query->where('name', $category_name);
-				})
-				->get();
-			return View::make('article_add', compact('fields','category_names'))
-				->with('category_name',$category_name);
+			if ( Category::whereName($category_name)->exists() )
+			{
+				// prepare list of field for an article of the required category
+				$fields = Field::whereCategory($category_name)->get();
+
+				return View::make('article_add', compact('fields','category_names'))
+					->with('category_name',$category_name);
+			}
+			else
+			{
+				return Redirect::action('ArticlesController@add')
+						->with('flash_notice', 'Category '.$category_name.' not found');
+			}
 		}
 	}
 
 	public function handle_add($category_name)
 	{
-		// decode attributes names and values	
-		$rawdata = Input::except('fields',0);			
-		$data = array();		
-		foreach($rawdata as $k=>$v )
-		{
-			$data[rawurldecode($k)] = rawurldecode($v);
-		}
-		
-		// load illuminate collection of fields from GET
-		// and create $rules array
+		// get form data
+		$data = Input::except('fields',0);			
+
+		// decode fields array
 		$fields  = json_decode(Input::get('fields'));
-		$rules = array();
-		foreach ($fields as $field)
-		{
-			$rules[$field->name] = $field->rule;
-		}
+
+		// get rules array
+		$rules = Field::getRulesArray($fields);
 
 		// validate attributes-values
 		$validator = Validator::make($data, $rules);
@@ -138,7 +112,7 @@ class ArticlesController extends BaseController
 			// associate the article to the category $category_name
 			$category = Category::whereName($category_name)->first();
 			$article->category()->associate($category);
-			$article->save();			
+			$article->save();
 
 			// for each field
 			foreach ($fields as $field)
@@ -170,22 +144,13 @@ class ArticlesController extends BaseController
 
 	public function edit($article_id)
 	{
-		$article_model = new Article;
-		//var_dump($article_model);
-
 		// get collection of this article		
-		$article = $article_model
-			->find($article_id);
-		//var_dump($article->attributes);
-		//return 1;
-
+		$article = Article::find($article_id);
+	
 		// get collection of this article's fields
-		$field_ids = $article_model
-			->find($article_id)
-			->getFieldIds();
+		$field_ids = Article::find($article_id)->getFieldIds();
 
 		$fields = Field::find($field_ids);
-		//var_dump($fields);
 
 		return View::make('article_edit', compact('article','fields'))
 				->with('article_id', $article_id);
@@ -193,47 +158,33 @@ class ArticlesController extends BaseController
 
 	public function handle_edit($article_id)
 	{
-		// FIXME clean this mess with some nice functions
+		// get form data
+		$data = Input::except('fields',0);			
 
-		// decode attributes names and values	
-		$rawdata = Input::except('fields',0);			
-		$data = array();		
-		foreach($rawdata as $k=>$v )
-		{
-			$data[rawurldecode($k)] = rawurldecode($v);
-		}
-		
-		// load illuminate collection of fields from GET
-		// and create $rules array
+		// decode fields array
 		$fields  = json_decode(Input::get('fields'));
-		$rules = array();
-		foreach ($fields as $field)
-		{
-			$rules[$field->name] = $field->rule;
-		}
+
+		// get rules array
+		$rules = Field::getRulesArray($fields);
 
 		// validate attributes-values
 		$validator = Validator::make($data, $rules);
-		
 
 		if ($validator->passes())
 		{
-			$article_model = new Article;
-			
-			$article = $article_model
-				->find($article_id);
+			$article = Article::find($article_id);
 			
 			foreach($article->attributes as $attribute)
 			{
-				$attribute_model = Attribute::find($attribute->id);
-				$fieldname = $attribute_model->field->name;
+				$field_name = $attribute->field->name;
+
 				// check if exist, for checkboxes
-				if(isset($data[$fieldname]))
-					$value = $data[$fieldname];
+				if(isset($data[$field_name]))					
+					$value = $data[$field_name];
 				else
 					$value = 0;
-				$attribute_model->value = $value;
-				$attribute_model->save();
+				$attribute->value = $value;
+				$attribute->save();
 			}
 			
 		// FIXME redirect to page previous the form page

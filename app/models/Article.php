@@ -29,7 +29,7 @@ class Article extends BaseEloquent
 	// Select articles who belongs to category $name
 	public function scopewhereCategory($query, $category_name)
 	{
-		return $this->whereHas('Category', function($query) use($category_name)
+		return $query->whereHas('Category', function($query) use($category_name)
 		{
 			$query->where('name', $category_name);
 		});
@@ -47,6 +47,27 @@ class Article extends BaseEloquent
 			case 'borrowed':
 				return $query->where('borrowed','=',1);
 		}
+	}
+
+	public static function getArticleIdsSortedByField($articles, $field_name, $order='ASC')
+	{
+		$article_ids = $articles->fetch('id')->toArray();	
+	
+		// retrive mysql cast type of the field $field_name
+		// in order to sort it as CHAR or as INTEGER
+		$field_type = Field::whereName($field_name)->pluck('type');
+		$field_cast_type = Field::getCastType($field_type);
+
+		$attribute = new Attribute;	
+		return $attribute
+			->whereHas('Field', function($query) use($field_name)
+			{
+				$query->where('name', $field_name);
+			})
+			->select('article_id', 'value')
+			// FIXME this only works on MySQL
+			->orderBy(DB::raw('CAST(value AS '.$field_cast_type.')'), $order)
+			->lists('article_id');
 	}
 
 	// Return array of fields-names of an article
@@ -70,5 +91,6 @@ class Article extends BaseEloquent
 		}
 		return $field_ids;
 	}
+
 }
 

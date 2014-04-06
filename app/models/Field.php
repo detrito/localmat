@@ -53,4 +53,23 @@ class Field extends Eloquent
 	{
 		return self::$default_rules[$type_name];
 	}
+
+	// fetch the rule of each field an store them in an array
+	public static function getRulesArray($fields)
+	{
+		$rules = array();
+		foreach ($fields as $field)
+		{
+			$rules[$field->name] = $field->rule;
+		}
+		return $rules;
+	}
+
+	public function scopewhereCategory($query, $category_name)
+	{
+		return $query->whereHas('categories', function($query) use($category_name)
+		{
+			$query->where('name', $category_name);
+		});
+	}
 }

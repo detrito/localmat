@@ -8,6 +8,9 @@ class History extends Eloquent
 	// Enable timestamps	
 	public $timestamps = true;
 
+	// Status-names allowed for the articles
+	protected static $status_names = array('all','available','borrowed');	
+
 	// History __has_one__ Article
 	public function article()
 	{
@@ -33,6 +36,11 @@ class History extends Eloquent
 	public function scopewhereBorrowed($query)
 	{
 		return $query->whereNull('returned_at');
+	}
+
+	public static function getStatusNames()
+	{
+		return self::$status_names;
 	}
 
 	public function isBorrowed()
