@@ -12,10 +12,10 @@ class DatabaseSeeder extends Seeder {
 		Eloquent::unguard();
 
 		$this->call('UserTableSeeder');
-		$this->call('HistoryTableSeeder');
 		$this->call('FieldTableSeeder');
 		$this->call('CategoryTableSeeder');
 		$this->call('ArticleTableSeeder');
+		$this->call('HistoryTableSeeder');
 	}
 }
 
@@ -34,24 +34,6 @@ class UserTableSeeder extends Seeder {
     }
 }
 
-class HistoryTableSeeder extends Seeder {
-
-    public function run()
-    {
-		$user_id = DB::table('lm_users')
-			->select('id')
-			->where('given_name', 'admin')
-			->first()
-			->id;
-		
-		$article_id = 1;
-
-        History::create(array(
-			'borrowed' => true,
-			'user_id' => $user_id
-		));
-    }
-}
 
 class FieldTableSeeder extends Seeder {
 
@@ -105,9 +87,9 @@ class ArticleTableSeeder extends Seeder {
     {
 		// add a Perseuse article
 		$category = Category::whereName('Perforateur')->first();
-	
 		$article = new Article;
 		$article->category()->associate($category);
+		$article->borrowed = true;
 		$article->save();
 	
 		// add one attribute to the Article perseuse
@@ -124,8 +106,6 @@ class ArticleTableSeeder extends Seeder {
 
 		$article = new Article;
 		$article->category()->associate($category);
-		// set this article as borrowed by user 'admin'
-		$article->history()->associate($history);
 		$article->save();
 
 		/// add one attribute to the article Corde
@@ -190,5 +170,24 @@ class ArticleTableSeeder extends Seeder {
 		$attribute->article()->associate($article);	
 		$attribute->save();
 	}
+}
+
+class HistoryTableSeeder extends Seeder {
+
+    public function run()
+    {
+		$user_id = DB::table('lm_users')
+			->select('id')
+			->where('given_name', 'admin')
+			->first()
+			->id;
+		
+		$article_id = 1;
+
+        History::create(array(
+			'user_id' => $user_id,
+			'article_id' => $article_id
+		));
+    }
 }
 

@@ -44,7 +44,7 @@
 	<p>There are no articles in this category.</p>
 @else
 	@if (Auth::check() && Auth::user()->enabled)	
-		<form action="{{ action('ArticlesController@handle_borrow',
+		<form action="{{ action('HistoryController@handle_borrow',
 			array('category_name'=>$category_name, 'field_name'=>$field_name,
 				'status_name'=>$status_name)) }}" method="post">
 	@endif
@@ -81,10 +81,12 @@
 					@if (Auth::check() && Auth::user()->enabled)
 					<th><input name="{{$article->id}}" type="checkbox" value="{{$article->id}}"
 					{{-- disable the checkbox if the artice is already borrowed --}}					
-					@if(isset($article->history_id))
+
+					@if($article->borrowed)
 						disabled
 					@endif
 					></th>
+
 					@endif
 
                     <td>{{ $article->id }}</td>
@@ -95,7 +97,7 @@
 						@endforeach
 					
 					<td>
-					@if (isset($article->history_id))
+					@if ($article->borrowed)
 						Borrowed
 					@else
 						Available

@@ -29,18 +29,32 @@
 @if ( empty($history_borrowed->first()) )
 	<p>There are no articles borrowed by this user.</p>
 @else
+	@if (Auth::check() && Auth::user()->enabled && Auth::user()->id == $user->id)
+		<form action="{{ action('HistoryController@handle_return',
+			array('user_id'=>$user->id) ) }}"
+			method="post">
+	@endif
+	
 	<table>
 		<thead>
 			<tr>
+				@if (Auth::check() && Auth::user()->enabled && Auth::user()->id == $user->id)
+				<th></th>				
+				@endif
 				<th>Id</th>
 				<th>Aid</th>
 				<th>Category</th>
 				<th>Borrowed date</th>
 			</tr>
 		</thead>
-		</tbody>
+		<tbody>
 			@foreach($history_borrowed as $history_item)
 				<tr>
+					@if (Auth::check() && Auth::user()->enabled && Auth::user()->id == $user->id)
+						<th><input name="{{$history_item->id}}"
+							type="checkbox"
+							value="{{$history_item->id}}"></th>
+					@endif
 					<td>{{$history_item->id}}</td>
 					<td>{{$history_item->article->id}}</td>
 					<td>{{$history_item->article->category->name}}</td>
@@ -49,6 +63,12 @@
 			@endforeach
 		</tbody>
 	</table>
+
+	@if (Auth::check() && Auth::user()->enabled && Auth::user()->id == $user->id)
+		<p><input type="submit" value="Return articles"></p>
+		</form>
+	@endif
+
 @endif
 
 <h3>Borrowing history:</h3>
@@ -66,7 +86,7 @@
 				<th>Time span</th>
 			</tr>
 		</thead>
-		</tbody>
+		<tbody>
 			@foreach($history_all as $history_item)
 				<tr>
 					<td>{{$history_item->id}}</td>

@@ -29,9 +29,10 @@ Route::get('/articles/view/{status_name?}/{category_name?}/{field_name?}',
 Route::group(array('before' => 'auth|enabled'), function()
 {
 	//users
-	Route::get('/users/view/{user_name}', 'UsersController@view');
+	Route::get('/users/view/{user_id}', 'UsersController@view');
 	//article
-	Route::post('/articles/view/{status_name?}/{category_name?}/{field_name?}', 		'ArticlesController@handle_borrow');		
+	Route::post('/articles/borrow/{status_name}/{category_name}/{field_name}', 'HistoryController@handle_borrow');
+	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
 });
 
 // routes accessibles onl to logged-in and enabled administrators users

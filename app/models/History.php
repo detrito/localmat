@@ -11,7 +11,7 @@ class History extends Eloquent
 	// History __has_one__ Article
 	public function article()
 	{
-		return $this->hasOne('Article');
+		return $this->belongsTo('Article');
 	}
 
 	// History __belongs_to_one__ User
@@ -21,14 +21,45 @@ class History extends Eloquent
 	}
 
 	// Select articles who belongs to category $name
-	public function whereHasUser($user_id)
+	public function scopewhereUser($query,$user_id)
 	{
-		return $this->whereHas('User', function($query) use($user_id)
+		return $query->whereHas('User', function($query) use($user_id)
 		{
 			$query->where('id', $user_id);
 		});
 	}
 	
+	// Select articles who belongs to category $name
+	public function scopewhereBorrowed($query)
+	{
+		return $query->whereNull('returned_at');
+	}
+
+	public function isBorrowed()
+	{
+		if( $this->returned_at == NULL )
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	public function setReturnedDate()
+	{
+		$dt = new DateTime;
+		$this->returned_at = $dt->format('y-m-d H:i:s');
+		return 1;
+	}
+
+	public function carbonReturnedDate()
+	{
+		return \Carbon\Carbon::createFromTimeStamp(
+			strtotime($this->returned_at) );
+	}
+
 	public function getFormattedDate($field_name)
 	{
 		// If more than a month has passed, use the formatted date string
@@ -50,15 +81,17 @@ class History extends Eloquent
 
 	public function getTimeSpan()
 	{
-		if ($this->borrowed)
+		if ($this->isBorrowed())
 		{
-			return 'Still borrowed';
+			return "Still borrowed";
 		}
 		else
 		{
 			$borrowed_date = $this->created_at;
-			$returned_date = $this->updated_at;
+			$returned_date = $this->carbonReturnedDate();
 			return $borrowed_date->diffInDays($returned_date).' days';
 		}
+
 	}
 }
+

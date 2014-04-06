@@ -23,29 +23,29 @@ class Article extends BaseEloquent
 	// Article __belongs_to_a__ History
 	public function history()
 	{
-		return $this->belongsTo('History');
+		return $this->hasMany('History');
 	}
 
 	// Select articles who belongs to category $name
-	public function whereHasCategory($category)
+	public function scopewhereCategory($query, $category_name)
 	{
-		return $this->whereHas('Category', function($query) use($category)
+		return $this->whereHas('Category', function($query) use($category_name)
 		{
-			$query->where('name', $category);
+			$query->where('name', $category_name);
 		});
 	}
 
-	// Select articles who belongs to status $name
-	public function scopeStatus($query, $status)
+	// Select articles with status $status_name
+	public function scopewhereStatus($query, $status_name)
 	{
-		switch($status)
+		switch($status_name)
 		{
 			case 'all':
 				return $query;
 			case 'available':
-				return $query->has('history', '==' , 'Null');
+				return $query->where('borrowed','=',0);
 			case 'borrowed':
-				return $query->has('history');
+				return $query->where('borrowed','=',1);
 		}
 	}
 

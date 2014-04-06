@@ -19,11 +19,12 @@ class UsersController extends BaseController
 
 		$history_model = new History;
 		$history_borrowed = $history_model
-			->whereHasUser($user_id)
-			->whereBorrowed(1)
+			->whereUser($user_id)
+			->whereBorrowed()
 			->get();
+
 		$history_all = $history_model
-			->whereHasUser($user_id)
+			->whereUser($user_id)
 			->get();
 
 		return View::make('user_view', compact('user','history_borrowed','history_all'));
@@ -31,7 +32,6 @@ class UsersController extends BaseController
 
     public function add()
     {
-
         return View::make('user_add'); 
 	}
 

@@ -17,8 +17,10 @@ class CreateHistoryTable extends Migration {
 			$table->increments('id');
 			$table->integer('user_id')->unsigned();
 			$table->foreign('user_id')->references('id')->on('lm_users');
-			$table->boolean('borrowed');
+			$table->integer('article_id')->unsigned();
+			$table->foreign('article_id')->references('id')->on('lm_articles');
 			$table->timestamps();
+			$table->timestamp('returned_at')->nullable()->default(NULL);
 		});
 	}
 
