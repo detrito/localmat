@@ -32,7 +32,7 @@ class ArticlesController extends BaseController
 					$field_names = Article::whereCategory($category_name)
 						->first()
 						->getFieldNames();
-
+					
 					$articles = Article::whereCategory($category_name)
 						->whereStatus($status_name)
 						->with('attributes')
@@ -78,7 +78,8 @@ class ArticlesController extends BaseController
 			if ( Category::whereName($category_name)->exists() )
 			{
 				// prepare list of field for an article of the required category
-				$fields = Field::whereCategory($category_name)->get();
+				$field_ids = Article::whereCategory($category_name)->first()->getFieldIds();
+				$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();
 
 				return View::make('article_add', compact('fields','category_names'))
 					->with('category_name',$category_name);
@@ -144,13 +145,14 @@ class ArticlesController extends BaseController
 
 	public function edit($article_id)
 	{
-		// get collection of this article		
-		$article = Article::find($article_id);
-	
-		// get collection of this article's fields
+		// get collection of this article
+		$article = Article::with('attributes')->find($article_id);
+
+		// get collection of this article's fields ordered by attributes
 		$field_ids = Article::find($article_id)->getFieldIds();
 
-		$fields = Field::find($field_ids);
+		// order the field collection by the attribute order and reset the keys
+		$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();
 
 		return View::make('article_edit', compact('article','fields'))
 				->with('article_id', $article_id);

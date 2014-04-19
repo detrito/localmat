@@ -18,19 +18,20 @@
 
 @for ($i = 0; $i < $article->attributes->count(); $i++)
 	<?php
-	$field = $fields[$i];
-	$value = $article->attributes->get($i)->value
+	$attribute = $article->attributes->get($i);
+	$field = $fields->get($i);
 	?>
+
 
 	@if ($field->type == 'boolean')
 		<tr>
 		<td> {{ Form::label($field->name, $field->name) }} </td>
-		<td> {{ Form::checkbox($field->name, 1, $value); }} </td>
+		<td> {{ Form::checkbox($field->name, 1, $attribute->value); }} </td>
 		</tr>
 	@else
 		<tr>
 		<td> {{ Form::label($field->name, $field->name) }} </td>
-		<td> {{ Form::text($field->name,$value) }} </td>
+		<td> {{ Form::text($field->name,$attribute->value) }} </td>
 		</tr>
     @endif
 @endfor
