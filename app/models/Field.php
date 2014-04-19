@@ -11,15 +11,15 @@ class Field extends BaseEloquent
 	// Data-types allowed for the field $value
 	protected static $types = array('string', 'integer','integerpositive', 'boolean');	
 	
-	// default rules for the data-types
-	protected static $default_rules = array(
+	// Rules for the data-types
+	protected static $rules = array(
 		'string' => "required|alpha_spaces|max:64",
 		'integer' => "required|integer",
 		'integerpositive' => "required|integer|between:0,100000",
 		'boolean' => "integer|between:0,1"
 		);
 	
-	// data-types accepted by the MySQL CAST function
+	// Data-types accepted by the MySQL CAST function
 	protected static $mysql_cast_types = array(
 		'string' => 'CHAR',
 		'integer' => 'UNSIGNED',
@@ -49,18 +49,18 @@ class Field extends BaseEloquent
 		return self::$mysql_cast_types[$type_name];
 	}
 
-	public static function getDefaultRule($type_name)
+	public static function getRule($type_name)
 	{
-		return self::$default_rules[$type_name];
+		return self::$rules[$type_name];
 	}
 
-	// fetch the rule of each field an store them in an array
+	// Fetch the rule of each field an store them in an array
 	public static function getRulesArray($fields)
 	{
 		$rules = array();
 		foreach ($fields as $field)
 		{
-			$rules[$field->name] = $field->rule;
+			$rules[$field->name] = self::getRule($field->type);
 		}
 		return $rules;
 	}
@@ -72,6 +72,5 @@ class Field extends BaseEloquent
 			$query->where('name', $category_name);
 		});
 	}
-
 
 }

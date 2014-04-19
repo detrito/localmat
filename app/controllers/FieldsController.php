@@ -34,7 +34,6 @@ class FieldsController extends BaseController
 			$field = new Field;
 			$field->name = Input::get('name');
 			$field->type = Input::get('type');
-			$field->rule = $field->getDefaultRule(Input::get('type'));
 			$field->save();
 			
 			return Redirect::action('FieldsController@add')
@@ -75,7 +74,6 @@ class FieldsController extends BaseController
 			$field = Field::find($field_id);
 			$field->name = Input::get('name');
 			$field->type = Input::get('type');
-			$field->rule = $field->getDefaultRule(Input::get('type'));
 			$field->save();
 			
 			return Redirect::action('FieldsController@index')
