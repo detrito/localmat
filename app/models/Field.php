@@ -1,6 +1,6 @@
 <?php
 
-class Field extends Eloquent
+class Field extends BaseEloquent
 {
 	// Database table used by the model	
 	protected $table = 'lm_fields';
@@ -32,11 +32,11 @@ class Field extends Eloquent
 	{
 		return $this->belongsToMany('Category','lm_categories_fields');
 	}
-
+	
 	// Field __belongs_to_many__ Attributes
 	public function attributes()
 	{
-		return $this->belongsToMany('Attribute');
+		return $this->hasMany('Attribute');
 	}
 	
 	public static function getTypes()
@@ -72,4 +72,6 @@ class Field extends Eloquent
 			$query->where('name', $category_name);
 		});
 	}
+
+
 }

@@ -24,8 +24,14 @@
                     <td>{{ $field->name }}</td>
 					<td>{{ $field->type }}</td>
                     <td>
-                        <a href="#" class="btn btn-default">Edit</a>
-                        <a href="#" class="btn btn-danger">Delete</a>
+                        <a href="{{
+							action('FieldsController@edit',
+							array('field_id'=>$field->id))
+							}}">Edit</a>
+                        <a href="{{
+							action('FieldsController@delete',
+							array($field->id))
+							}}">Delete</a>
                     </td>
                 </tr>
 				@endforeach

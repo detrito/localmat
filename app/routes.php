@@ -54,6 +54,9 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/fields', 'FieldsController@index');
 	Route::get('/fields/add', 'FieldsController@add');
 	Route::post('/fields/add', 'FieldsController@handle_add');
+	Route::get('/fields/edit/{field_id}', 'FieldsController@edit');
+	Route::post('/fields/edit/{field_id}', 'FieldsController@handle_edit');
+	Route::get('/fields/delete/{field_id}', 'FieldsController@delete');
 	
 	// categories
 	Route::get('/categories', 'CategoriesController@index');
