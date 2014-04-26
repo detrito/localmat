@@ -14,17 +14,13 @@ class UsersController extends BaseController
 
 	public function view($user_id)
 	{
-		$user_model = new User;
-		$user = $user_model->find($user_id);
+		$user = User::find($user_id);
 
-		$history_model = new History;
-		$history_borrowed = $history_model
-			->whereUser($user_id)
+		$history_borrowed = History::whereUser($user_id)
 			->whereBorrowed()
 			->get();
 
-		$history_all = $history_model
-			->whereUser($user_id)
+		$history_all = History::whereUser($user_id)
 			->get();
 
 		return View::make('user_view', compact('user','history_borrowed','history_all'));
@@ -32,50 +28,110 @@ class UsersController extends BaseController
 
     public function add()
     {
-        return View::make('user_add'); 
+        return View::make('user_form')
+			->with('action', 'add');; 
 	}
 
 	public function handle_add()
 	{
 		$data = Input::all();
-		$rules = array(
-			'email' => 'required|email|unique:lm_users',
-			'given_name' => 'required|alpha',
-			'family_name' => 'required|alpha',
-			'password' => 'required|alpha_dash|confirmed|min:6',	
-		);
-		$validator = Validator::make($data, $rules);
-		
-		if ($validator->passes())
-		{
-			$user = new User;
-			$user->email = Input::get('email');
-			$user->given_name = Input::get('given_name');
-			$user->family_name = Input::get('family_name');
-			$user->password = Hash::make(Input::get('password'));
-			// set to 0 if the input value is absent
-			$user->enabled = Input::get('enabled',0);
-			$user->admin = Input::get('admin',0);		
-			$user->save();
-		
-			return Redirect::action('UsersController@add')
-				->with('flash_notice', 'User successfully added.');
-		}
-		
-		return Redirect::back()
-		->withErrors($validator);
+		return $this->insert_data($data,'add');
 	}
 
-	public function edit(User $user)
-    {
-        // Show the create game form.
-        return View::make('user_create');
-    }
+	private function insert_data($data, $action, $user_id=Null)
+	{
+		$rules = array(
+			'given_name' => 'required|alpha',
+			'family_name' => 'required|alpha',
+			'email' => 'required|email|unique:lm_users'
+		);
 
-	public function delete(User $user)
+		// force unique rule on email to ignore $user_id
+		if( $action == 'edit')
+		{
+			$rules['email'] .= ',email,'.$user_id;
+		}
+
+		// require password when
+		// 1. editing a user and a password has been entered
+		// 2. adding a new user		
+		if( $action == 'edit' &&  !empty($data['password']) || $action == 'add')
+		{
+			// add password-rule to $rules
+			$rules['password'] = 'required|alpha_dash|confirmed|min:6';
+		}
+
+		$validator = Validator::make($data, $rules);
+		
+		if ( $validator->passes() )
+		{
+			if ($action == 'add')
+			{
+				$user = new User;
+			}
+			elseif ($action == 'edit')
+			{
+				$user = User::find($user_id);
+			}
+
+			$user->email = $data['email'];
+			$user->given_name = $data['given_name'];
+			$user->family_name = $data['family_name'];
+			if( $action == 'edit' &&  !empty($data['password']) || $action == 'add')
+			{
+				$user->password = Hash::make($data['password']);
+			}			
+			// set to false if the input value has not be checked in the form
+			$user->enabled = isset($data['enabled']) ? true : false;
+			$user->admin = isset($data['admin']) ? true : false;		
+			$user->save();
+			
+			if($action == 'add')
+			{
+				return Redirect::action('UsersController@add')
+					->with('flash_notice', 'User successfully added.');
+			}
+			elseif($action == 'edit')
+			{
+				return Redirect::action('UsersController@index')
+					->with('flash_notice', 'User successfully modified.');
+			}
+		}
+		return Redirect::back()
+			->withErrors($validator);
+	}
+
+	public function edit($user_id)
     {
-        // Show the create game form.
-        return View::make('user_create');
+		$user = User::find($user_id);
+
+		return View::make('user_form',compact('user'))
+			->with('action', 'edit');
+    }
+	
+	public function handle_edit($user_id)
+	{
+		$data = Input::all();
+		return $this->insert_data($data, 'edit', $user_id);
+	}
+
+	public function delete($user_id)
+    {
+        $user = User::find($user_id);
+		$history_borrowed = History::whereUser($user_id)
+			->whereBorrowed()
+			->get();
+
+		if ( $history_borrowed->isEmpty() )
+		{
+			// softDelete this user
+			$user->delete();
+			return Redirect::action('UsersController@index')
+				->with('flash_notice', 'User successfully deleted.');
+		}
+		return Redirect::action('UsersController@index')
+				->with('flash_error', 'This user still has borrowed articles!
+					Make sure that he returned all his articles before to delete it.');
     }
 }
 

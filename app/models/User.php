@@ -7,9 +7,18 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 	// Database table used by the model
 	protected $table = 'lm_users';
-	
+
 	// Enable timestamps
 	public $timestamps = true;
+
+	// Enable softDelete
+	protected $softDelete = true;
+
+	// User __hasMany__ History
+	public function histories()
+	{
+		return $this->hasMany('History');
+	}
 
 	// Attributes excluded from the model's JSON form. 
 	protected $hidden = array('password');

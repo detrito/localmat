@@ -22,6 +22,7 @@ class CreateUsersTable extends Migration {
 			$table->boolean('enabled');
 			$table->boolean('admin');
 			$table->timestamps();
+			$table->softDeletes();
 		});
 	}
 

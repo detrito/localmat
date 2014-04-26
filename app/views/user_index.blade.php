@@ -34,8 +34,12 @@ Users
 						<td>{{ $user->enabled }}</td>
 						<td>{{ $user->admin }}</td>
                     	<td>
-                        	<a href="#">Edit</a>
-                        	<a href="#">Delete</a>
+                        	<a href="{{
+							action('UsersController@edit',
+							array('user_id'=>$user->id)) }}">Edit</a>
+                        	<a href="{{
+							action('UsersController@delete',
+							array($user->id)) }}">Delete</a>
                     	</td>
 					@endif
                 </tr>
