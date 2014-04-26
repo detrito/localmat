@@ -28,7 +28,7 @@ Administration tasks:
 		</ul>
 	<li>Users</li>
 		<ul>
-			<li><a href="{{ action('UsersController@add') }}" >Manage users</a></li>
+			<li><a href="{{ action('UsersController@index') }}" >Manage users</a></li>
 			<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
 		</ul>
 </ul>

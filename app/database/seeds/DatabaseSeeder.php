@@ -185,10 +185,35 @@ class HistoryTableSeeder extends Seeder {
 		
 		foreach ($users as $user)
 		{
+			// history for some returned articles
+			while ( $faker->boolean(90) )
+			{
+				$article_id = $faker->randomNumber(1, $max_id);
+				$date_borrowed = $faker->dateTimeThisDecade('now');
+				$date_interval = DateInterval::createFromDateString(
+					$faker->randomNumber(1,30).' day' );
+				$date_returned = clone $date_borrowed;
+				$date_returned->add($date_interval);
+
+				History::create(array(
+					'user_id' => $user->id,
+					'article_id' => $article_id,
+					'created_at' => $date_borrowed->format('Y-m-d H:i:s'),
+					'updated_at' => $date_borrowed->format('Y-m-d H:i:s'),
+					'returned_at' => $date_returned->format('Y-m-d H:i:s') ));
+			}
+
 			// currently borrowed articles
 			while ( $faker->boolean(50) )
 			{
 				$article_id = $faker->unique()->randomNumber(1, $max_id);
+
+				// check if article is available
+				if (Article::find($article_id)->pluck('borrowed') == true)
+				{
+					break;
+				}
+
 				$date_borrowed = $faker->dateTimeThisYear('now');
 
 				$article = Article::find($article_id);
@@ -201,28 +226,6 @@ class HistoryTableSeeder extends Seeder {
 					'created_at' => $date_borrowed->format('Y-m-d H:i:s'),
 					'updated_at' => $date_borrowed->format('Y-m-d H:i:s') ));
 			}
-
-			// history for some returned articles
-			while ( $faker->boolean(90) )
-			{
-				$article_id = $faker->randomNumber(1, $max_id);
-				$date_borrowed = $faker->dateTimeThisDecade('now');
-				$date_interval = DateInterval::createFromDateString(
-					$faker->randomNumber(1,30).' day' );
-				$date_returned = clone $date_borrowed;
-				$date_returned->add($date_interval);
-
-				$article = Article::find($article_id);
-				$article->borrowed = false;
-				$article->save();
-
-				History::create(array(
-					'user_id' => $user->id,
-					'article_id' => $article_id,
-					'created_at' => $date_borrowed->format('Y-m-d H:i:s'),
-					'updated_at' => $date_borrowed->format('Y-m-d H:i:s'),
-					'returned_at' => $date_returned->format('Y-m-d H:i:s') ));
-			}	
 		}
     }
 }
