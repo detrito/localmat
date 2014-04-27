@@ -16,8 +16,9 @@
 			<a href="{{ url('login') }}">Login</a>
 		@endif
 
-		<div>
-        <h1>LocalMat</h1>						
+		<div id="title">
+		<h1>{{ Config::get('localmat.title')}}</h1>
+		<h2>{{ Config::get('localmat.subtitle')}}</h2>
     	</div>
 
 		<ul id="nav" class="drop">

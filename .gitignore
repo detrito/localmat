@@ -1,4 +1,9 @@
-/app/config
+# ignore all config files..
+/app/config/*
+# .. except localmat.php
+!/app/config/localmat.php
+
+# laravel files
 /bootstrap/compiled.php
 /vendor
 composer.phar
@@ -7,6 +12,8 @@ composer.lock
 .env.php
 .DS_Store
 Thumbs.db
+
+# vim backup files
 *~
 *.swp
 *.swo
