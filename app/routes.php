@@ -61,6 +61,10 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	// categories
 	Route::get('/categories', 'CategoriesController@index');
 	Route::get('/categories/add', 'CategoriesController@add');
+	Route::post('/categories/add', 'CategoriesController@handle_add');
+	Route::get('/categories/edit/{user_id}', 'CategoriesController@edit');
+	Route::post('/categories/edit/{user_id}', 'CategoriesController@handle_edit');
+	Route::get('/categories/delete/{user_id}', 'CategoriesController@delete');
 
 	// users	
 	Route::get('/users/add', 'UsersController@add');

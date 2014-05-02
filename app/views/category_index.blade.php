@@ -27,14 +27,15 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->name }}</td>
 					<td>
-						@foreach ($category->fields as $field)
-							{{ $field->name }}
-							- 
-						@endforeach
+						{{ implode(", ", $category->fields()->lists('name')) }}
 					</td>
                     <td>
-                        <a href="#">Edit</a>
-                        <a href="#">Delete</a>
+                        	<a href="{{
+							action('CategoriesController@edit',
+							array('category_id'=>$category->id)) }}">Edit</a>
+                        	<a href="{{
+							action('CategoriesController@delete',
+							array($category->id)) }}">Delete</a>
                     </td>
                 </tr>
 				@endforeach
