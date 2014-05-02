@@ -42,8 +42,7 @@
 				<th></th>				
 				@endif
 				<th>Id</th>
-				<th>Aid</th>
-				<th>Category</th>
+				<th>Article</th>
 				<th>Borrowed date</th>
 			</tr>
 		</thead>
@@ -56,8 +55,11 @@
 							value="{{$history_item->id}}"></th>
 					@endif
 					<td>{{$history_item->id}}</td>
-					<td>{{$history_item->article->id}}</td>
-					<td>{{$history_item->article->category->name}}</td>
+                    <td><a href="{{
+						action('ArticlesController@view',
+							array('article_id'=>$history_item->article->id) )}}">
+						{{ $history_item->article->category->name }}</a>
+					</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 				</tr>		
 			@endforeach
@@ -80,8 +82,7 @@
 		<thead>
 			<tr>
 				<th>Id</th>
-				<th>Aid</th>
-				<th>Category</th>
+				<th>Article</th>
 				<th>Borrowed date</th>
 				<th>Time span</th>
 			</tr>
@@ -90,8 +91,11 @@
 			@foreach($history_all as $history_item)
 				<tr>
 					<td>{{$history_item->id}}</td>
-					<td>{{$history_item->article->id}}</td>
-					<td>{{$history_item->article->category->name}}</td>
+                    <td><a href="{{
+						action('ArticlesController@view',
+							array('article_id'=>$history_item->article->id) )}}">
+						{{ $history_item->article->category->name }}</a>
+					</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 					<td>{{$history_item->getTimeSpan()}}</td>
 				</tr>		

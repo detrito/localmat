@@ -3,7 +3,7 @@
 @section('title')
 
 @if(isset($category_name))
-	<a href="{{ action('ArticlesController@view')}}">Articles</a>
+	<a href="{{ action('ArticlesController@lists')}}">Articles</a>
 	> {{ $category_name }} > {{ $status_name }}
 @else
 	Articles
@@ -17,7 +17,7 @@
 <select name="dropdown" onChange="document.location = this.value" value="GO">
 
 @foreach($category_names as $name)
-<option value="{{ action('ArticlesController@view',
+<option value="{{ action('ArticlesController@lists',
 		array('status_name'=>$status_name,'category_name'=>$name) )}}"
 	@if($name == $category_name)
 		selected
@@ -30,7 +30,7 @@
 <p>Status
 <select name="dropdown" onChange="document.location = this.value" value="GO">
 @foreach($status_names as $status)
-	<option value="{{ action('ArticlesController@view',
+	<option value="{{ action('ArticlesController@lists',
 		array('status_name'=>$status,'category_name'=>$category_name) )}}"
 	@if($status_name == $status)
 		selected
@@ -59,7 +59,7 @@
                     <th>Id</th>
 					{{-- Loop throught fields --}}
 					@foreach ($field_names as $field_name)
-						<th><a href="{{ action('ArticlesController@view',
+						<th><a href="{{ action('ArticlesController@lists',
 						array('status_name'=>$status_name,
 						'category_name'=>$category_name,
 						'field_name'=>$field_name) ) }}">
@@ -89,7 +89,11 @@
 
 					@endif
 
-                    <td>{{ $article->id }}</td>
+                    <td><a href="{{
+						action('ArticlesController@view',
+							array('article_id'=>$article->id) )}}">
+						{{ $article->id }}</a>
+					</td>
 					
 					{{-- Loop througt article's attributes --}}
 						@foreach ($article->attributes as $attribute)

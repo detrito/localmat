@@ -22,8 +22,9 @@ Route::get('/', function()
 
 // articles
 Route::get('/articles', 'ArticlesController@index');
-Route::get('/articles/view/{status_name?}/{category_name?}/{field_name?}',
-	'ArticlesController@view');
+Route::get('/articles/lists/{status_name?}/{category_name?}/{field_name?}',
+	'ArticlesController@lists');
+Route::get('/articles/view/{article_id}', 'ArticlesController@view');
 
 // routes accessibles onl to logged-in and enabled users
 Route::group(array('before' => 'auth|enabled'), function()

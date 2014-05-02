@@ -20,7 +20,7 @@
 <select name="dropdown" onChange="document.location = this.value" value="GO">
 
 @foreach($category_names as $name)
-<option value="{{ action('ArticlesController@view',
+<option value="{{ action('ArticlesController@lists',
 		array('status'=>$status_name,'category'=>$name) )}}"
 	@if($name == $category_name)
 		selected
@@ -32,7 +32,7 @@
 
 {{-- Loop througt categories --}}
 @foreach($categories as $category)
-	<h3><a href="{{ action('ArticlesController@view',
+	<h3><a href="{{ action('ArticlesController@lists',
 	array('status'=>'all','category_name'=>$category->name) ) }}">
 		{{ $category->name }}</a></h3>
 

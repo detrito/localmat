@@ -4,10 +4,10 @@ class ArticlesController extends BaseController
 {
 	public function index()
 	{
-		return $this->view();
+		return $this->lists();
 	}
 
-    public function view($status_name='all', $category_name = 'all', $field_name = 'id')
+    public function lists($status_name='all', $category_name = 'all', $field_name = 'id')
     {
 		// get list of all categories				
 		$categories = new Category;
@@ -22,7 +22,7 @@ class ArticlesController extends BaseController
 				$categories = Category::with('articles','articles.attributes')->get();
 
 				//FIXME implement view of other status
-				return View::make('article_view_all',
+				return View::make('article_lists_all',
 					compact('categories','category_names','status_names'))
 					->with( array('status_name'=>'all', 'category_name'=>'all') );
 				
@@ -48,7 +48,7 @@ class ArticlesController extends BaseController
 						}
 					}
 				
-					return View::make('article_view_category',
+					return View::make('article_lists_category',
 						compact('articles','field_names','category_names','status_names'))
 						->with( array('status_name'=>$status_name,
 							'category_name'=>$category_name,
@@ -56,11 +56,20 @@ class ArticlesController extends BaseController
 				}
 				else
 				{
-					return Redirect::action('ArticlesController@view')
+					return Redirect::action('ArticlesController@lists')
 						->with('flash_notice', 'Category '.$category_name.' not found');
 				}
 		}
     }
+
+	public function view($article_id)
+	{
+		$article = Article::find($article_id);
+		$field_names = $article->getFieldNames();
+		$history = $article->history()->with('user')->get();
+
+		return View::make('article_view', compact('article','field_names','history'));
+	}
 
 	public function add($category_name='all')
 	{

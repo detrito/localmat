@@ -24,14 +24,14 @@ class HistoryController extends BaseController
 			}
 			else
 			{
-				return Redirect::action('ArticlesController@view',
+				return Redirect::action('ArticlesController@lists',
 					array('status_name'=>$status_name,
 						'category_name'=>$category_name,
 						'field_name'=>$field_name) )
 					->with('flash_error', 'Articles $article_id already borrowed');
 			}
 		}
-		return Redirect::action('ArticlesController@view',
+		return Redirect::action('ArticlesController@lists',
 			array('status_name'=>$status_name,
 				'category_name'=>$category_name,
 				'field_name'=>$field_name) )
