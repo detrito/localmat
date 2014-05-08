@@ -24,7 +24,7 @@ class FieldsController extends BaseController
 		$types = Field::getTypes();
 
 		$rules = array(
-			'name' => 'required|alpha_dash|unique:lm_fields',
+			'name' => 'required|alpha_num_dash_spaces|unique:lm_fields',
 			'type' => 'in:'.implode(',', $types)	
 		);
 
@@ -63,7 +63,7 @@ class FieldsController extends BaseController
 		$types = Field::getTypes();
 
 		$rules = array(
-			'name' => 'required|alpha_dash',
+			'name' => 'required|alpha_num_dash_spaces',
 			'type' => 'in:'.implode(',', $types)	
 		);
 

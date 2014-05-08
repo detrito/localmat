@@ -7,33 +7,31 @@ class ArticlesController extends BaseController
 		return $this->lists();
 	}
 
-    public function lists($status_name='all', $category_name = 'all', $field_name = 'id')
+    public function lists($status_name='all', $category_id = Null, $field_id = Null)
     {
-		// get list of all categories				
-		$categories = new Category;
-		$category_names = $categories->getNames();
-
 		// get list of status names
 		$status_names = History::getStatusNames();
 		
-		switch($category_name)
+		switch($category_id)
 		{
-			case "all":
+			case Null:
+				// get list of all categories with artcles and attributes
 				$categories = Category::with('articles','articles.attributes')->get();
 
 				//FIXME implement view of other status
 				return View::make('article_lists_all',
-					compact('categories','category_names','status_names'))
-					->with( array('status_name'=>'all', 'category_name'=>'all') );
+					compact('categories','status_names'))
+					->with( array('status_name'=>$status_name,
+						'category_id'=>$category_id) );
 				
 			default:
-				if ( Category::whereName($category_name)->exists() )
+				// get list of all categories				
+				$categories = Category::all();
+
+				if ( Category::find($category_id)->exists() )
 				{
-					$field_names = Article::whereCategory($category_name)
-						->first()
-						->getFieldNames();
-					
-					$articles = Article::whereCategory($category_name)
+					$fields = Category::find($category_id)->fields()->get();					
+					$articles = Article::whereCategory($category_id)
 						->whereStatus($status_name)
 						->with('attributes')
 						->get();
@@ -41,18 +39,18 @@ class ArticlesController extends BaseController
 					if(! empty($articles->first()))
 					{
 						// Order article's IDs by the value of $field_name
-						if($field_name!='id')
+						if($field_id!=Null)
 						{
-							$ordered_ids = Article::getArticleIdsSortedByField($articles,$field_name);
+							$ordered_ids = Article::getArticleIdsSortedByField($articles,$field_id);
 							$articles = $articles->sortByOrder($ordered_ids);
 						}
 					}
-				
+
 					return View::make('article_lists_category',
-						compact('articles','field_names','category_names','status_names'))
+						compact('categories','articles','fields','status_names'))
 						->with( array('status_name'=>$status_name,
-							'category_name'=>$category_name,
-							'field_name'=>$field_name) );
+							'category_id'=>$category_id,
+							'field_id'=>$field_id) );
 				}
 				else
 				{
@@ -71,27 +69,24 @@ class ArticlesController extends BaseController
 		return View::make('article_view', compact('article','field_names','history'));
 	}
 
-	public function add($category_name='all')
+	public function add($category_id=Null)
 	{
-		// get list of all categories				
-		$categories = new Category;
-		$category_names = $categories->getNames();
+		// get list of all categories		
+		$categories = Category::all();
 
-		if ($category_name == 'all')
+		if ($category_id == Null)
 		{
-			return View::make('article_add', compact('category_names'))
-				->with('category_name',$category_name);
+			return View::make('article_add', compact('categories'));
 		}
 		else
 		{
-			if ( Category::whereName($category_name)->exists() )
+			if ( Category::find($category_id)->exists() )
 			{
-				// prepare list of field for an article of the required category
-				$field_ids = Article::whereCategory($category_name)->first()->getFieldIds();
+				$category = Category::find($category_id);
+				$field_ids = $category->getFieldIds();
 				$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();
 
-				return View::make('article_add', compact('fields','category_names'))
-					->with('category_name',$category_name);
+				return View::make('article_add', compact('categories','fields','category'));
 			}
 			else
 			{
@@ -101,14 +96,14 @@ class ArticlesController extends BaseController
 		}
 	}
 
-	public function handle_add($category_name)
+	public function handle_add($category_id)
 	{
 		// get form data
 		$data = Input::except('fields',0);			
 
 		// decode fields array
 		$fields  = json_decode(Input::get('fields'));
-
+		
 		// get rules array
 		$rules = Field::getRulesArray($fields);
 
@@ -120,22 +115,20 @@ class ArticlesController extends BaseController
 			$article = new Article;
 
 			// associate the article to the category $category_name
-			$category = Category::whereName($category_name)->first();
+			$category = Category::find($category_id);
 			$article->category()->associate($category);
 			$article->save();
 
 			// for each field
-			foreach ($fields as $field)
+			foreach ($fields as $field_item)
 			{
 				// associate an attribute to $article and to $field 
 				// and set the input value to it
-				$fieldname = $field->name;
-				$field = Field::whereName($fieldname)->first();	
+				$field = Field::whereName($field_item->name)->first();	
 				$attribute = new Attribute;
-
 				// check if exist, for checkboxes
-				if(isset($data[$fieldname]))
-					$value = $data[$fieldname];
+				if(isset($data[$field_item->name]))
+					$value = $data[$field_item->name];
 				else
 					$value = 0;
 				$attribute->value = $value;
@@ -145,7 +138,7 @@ class ArticlesController extends BaseController
 				$attribute->save();
 			}
 			return Redirect::action('ArticlesController@add',
-				array('category_name'=>$category_name) )
+				array('category_id'=>$category_id) )
 				->with('flash_notice', 'Article successfully added.');
 		}
 		return Redirect::back()
@@ -157,8 +150,8 @@ class ArticlesController extends BaseController
 		// get collection of this article
 		$article = Article::with('attributes')->find($article_id);
 
-		// get collection of this article's fields ordered by attributes
-		$field_ids = Article::find($article_id)->getFieldIds();
+		// get collection of fields-ids of this category
+		$field_ids = Category::find($article->category->id)->getFieldIds();
 
 		// order the field collection by the attribute order and reset the keys
 		$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();

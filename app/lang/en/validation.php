@@ -72,6 +72,14 @@ return array(
 
 	/*
 	|--------------------------------------------------------------------------
+	| Custom Validation Rules
+	|--------------------------------------------------------------------------
+	|
+	*/
+	"alpha_spaces"     => "The :attribute may only contain letters and spaces.",
+	"alpha_num_dash_spaces"     => "The :attribute may only contain letters, numbers, dashes and spaces.",
+	/*
+	|--------------------------------------------------------------------------
 	| Custom Validation Language Lines
 	|--------------------------------------------------------------------------
 	|

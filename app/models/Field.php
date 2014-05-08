@@ -13,7 +13,7 @@ class Field extends BaseEloquent
 	
 	// Rules for the data-types
 	protected static $rules = array(
-		'string' => "required|alpha_spaces|max:64",
+		'string' => "required|alpha_num_dash_spaces|max:64",
 		'integer' => "required|integer",
 		'integerpositive' => "required|integer|between:0,100000",
 		'boolean' => "integer|between:0,1"

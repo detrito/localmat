@@ -2,7 +2,7 @@
 
 class HistoryController extends BaseController
 {	
-	public function handle_borrow($status_name, $category_name, $field_name)
+	public function handle_borrow($status_name='all', $category_id=Null, $field_id=Null)
 	{
 		$article_ids = Input::all();
 		$user = User::find( Auth::user()->id );			
@@ -26,15 +26,15 @@ class HistoryController extends BaseController
 			{
 				return Redirect::action('ArticlesController@lists',
 					array('status_name'=>$status_name,
-						'category_name'=>$category_name,
-						'field_name'=>$field_name) )
+						'category_id'=>$category_id,
+						'field_id'=>$field_id) )
 					->with('flash_error', 'Articles $article_id already borrowed');
 			}
 		}
 		return Redirect::action('ArticlesController@lists',
 			array('status_name'=>$status_name,
-				'category_name'=>$category_name,
-				'field_name'=>$field_name) )
+				'category_id'=>$category_id,
+				'field_id'=>$field_id) )
 			->with('flash_notice', 'Articles successfully borrowed.');
 	}
 

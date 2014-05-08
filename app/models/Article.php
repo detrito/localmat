@@ -27,11 +27,11 @@ class Article extends BaseEloquent
 	}
 
 	// Select articles who belongs to category $name
-	public function scopewhereCategory($query, $category_name)
+	public function scopewhereCategory($query, $category_id)
 	{
-		return $query->whereHas('Category', function($query) use($category_name)
+		return $query->whereHas('Category', function($query) use($category_id)
 		{
-			$query->where('name', $category_name);
+			$query->where('id', $category_id);
 		});
 	}
 
@@ -49,20 +49,20 @@ class Article extends BaseEloquent
 		}
 	}
 
-	public static function getArticleIdsSortedByField($articles, $field_name, $order='ASC')
+	public static function getArticleIdsSortedByField($articles, $field_id, $order='ASC')
 	{
 		$article_ids = $articles->fetch('id')->toArray();	
 	
 		// retrive mysql cast type of the field $field_name
 		// in order to sort it as CHAR or as INTEGER
-		$field_type = Field::whereName($field_name)->pluck('type');
+		$field_type = Field::find($field_id)->type;
 		$field_cast_type = Field::getCastType($field_type);
 
 		$attribute = new Attribute;	
 		return $attribute
-			->whereHas('Field', function($query) use($field_name)
+			->whereHas('Field', function($query) use($field_id)
 			{
-				$query->where('name', $field_name);
+				$query->where('id', $field_id);
 			})
 			->select('article_id', 'value')
 			// FIXME this only works on MySQL
@@ -91,6 +91,5 @@ class Article extends BaseEloquent
 		}
 		return $field_ids;
 	}
-
 }
 

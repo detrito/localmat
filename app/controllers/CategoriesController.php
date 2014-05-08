@@ -59,7 +59,7 @@ class CategoriesController extends BaseController
 	private function insert_data($data, $field_ids, $action, $category_id=Null)
 	{
 		$rules = array(
-			'name' => 'required|alpha|unique:lm_categories'
+			'name' => 'required|alpha_spaces|unique:lm_categories'
 		);
 
 		// force unique category-name to ignore $category_id

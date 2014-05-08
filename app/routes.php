@@ -22,17 +22,17 @@ Route::get('/', function()
 
 // articles
 Route::get('/articles', 'ArticlesController@index');
-Route::get('/articles/lists/{status_name?}/{category_name?}/{field_name?}',
+Route::get('/articles/lists/{status_name?}/{category_id?}/{field_id?}',
 	'ArticlesController@lists');
 Route::get('/articles/view/{article_id}', 'ArticlesController@view');
 
-// routes accessibles onl to logged-in and enabled users
+// routes accessibles only to logged-in and enabled users
 Route::group(array('before' => 'auth|enabled'), function()
 {
 	//users
 	Route::get('/users/view/{user_id}', 'UsersController@view');
 	//article
-	Route::post('/articles/borrow/{status_name}/{category_name}/{field_name}', 'HistoryController@handle_borrow');
+	Route::post('/articles/borrow/{status_name}/{category_id}/{field_id?}', 'HistoryController@handle_borrow');
 	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
 });
 
@@ -45,8 +45,8 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	});
 	
 	// articles
-	Route::get('/articles/add/{category_name?}', 'ArticlesController@add');
-	Route::post('/articles/add/{category_name}', 'ArticlesController@handle_add');
+	Route::get('/articles/add/{category_id?}', 'ArticlesController@add');
+	Route::post('/articles/add/{category_id}', 'ArticlesController@handle_add');
 	Route::get('/articles/edit/{article_id}', 'ArticlesController@edit');
 	Route::post('/articles/edit/{article_id}', 'ArticlesController@handle_edit');
 	Route::get('/articles/delete/{article_id}', 'ArticlesController@delete');
@@ -148,5 +148,10 @@ Route::post('/login', function()
 Validator::extend('alpha_spaces', function($attribute, $value)
 {
     return preg_match('/^[\pL\s]+$/u', $value);
+});
+
+Validator::extend('alpha_num_dash_spaces', function($attribute, $value)
+{
+	return preg_match('/^[\w ]+$/u', $value);
 });
 

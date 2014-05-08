@@ -15,14 +15,16 @@
 
 <p>Category
 <select name="dropdown" onChange="document.location = this.value" value="GO">
-
-@foreach($category_names as $name)
-<option value="{{ action('ArticlesController@lists',
-		array('status_name'=>$status_name,'category_name'=>$name) )}}"
-	@if($name == $category_name)
+<option value=""></option>
+@foreach($categories as $category_item)
+<option value="{{ action('ArticlesController@lists', array(
+		'status_name'=>$status_name,
+		'category_id'=>$category_item->id,
+		'field_id'=>$field_id)) }}"
+	@if($category_item->id == $category_id)
 		selected
 	@endif
-	>{{ strtolower($name) }}</option>
+	>{{ strtolower($category_item->name) }}</option>
 @endforeach
 </select>
 </p>
@@ -30,8 +32,10 @@
 <p>Status
 <select name="dropdown" onChange="document.location = this.value" value="GO">
 @foreach($status_names as $status)
-	<option value="{{ action('ArticlesController@lists',
-		array('status_name'=>$status,'category_name'=>$category_name) )}}"
+<option value="{{ action('ArticlesController@lists', array(
+		'status_name'=>$status,
+		'category_id'=>$category_id,
+		'field_id' => $field_id)) }}"
 	@if($status_name == $status)
 		selected
 	@endif
@@ -45,7 +49,7 @@
 @else
 	@if (Auth::check() && Auth::user()->enabled)	
 		<form action="{{ action('HistoryController@handle_borrow',
-			array('category_name'=>$category_name, 'field_name'=>$field_name,
+			array('category_id'=>$category_id, 'field_id'=>$field_id,
 				'status_name'=>$status_name)) }}" method="post">
 	@endif
 	<table>
@@ -56,14 +60,20 @@
 					<th></th>
 					@endif
 
-                    <th>Id</th>
+					{{-- ID column --}}
+                    <th><a href="{{ action('ArticlesController@lists',
+						array('status_name'=>$status_name,
+						'category_id'=>$category_id,
+						'field_id'=>Null) ) }}">Id</a>
+					</th>
+
 					{{-- Loop throught fields --}}
-					@foreach ($field_names as $field_name)
+					@foreach ($fields as $field_item)
 						<th><a href="{{ action('ArticlesController@lists',
 						array('status_name'=>$status_name,
-						'category_name'=>$category_name,
-						'field_name'=>$field_name) ) }}">
-						{{ $field_name }}</a></th>
+						'category_id'=>$category_id,
+						'field_id'=>$field_item->id) ) }}">
+						{{ $field_item->name }}</a></th>
 					@endforeach
 
 					<th>Status</th>
@@ -95,11 +105,21 @@
 						{{ $article->id }}</a>
 					</td>
 					
-					{{-- Loop througt article's attributes --}}
-						@foreach ($article->attributes as $attribute)
-							<td>{{ $attribute->value }}</td>
-						@endforeach
-					
+					{{-- Loop througt article's attributes using field-ids as keys --}}
+					@foreach($fields as $field)
+						<?php
+						$attributes = $article->attributes;
+						$attribute = $attributes->filter(function($item) use($field) {
+							return $item->field->id == $field->id;
+						})->first();
+						?>
+						<td>
+						@if(!empty($attribute))
+							{{ $attribute->value }}
+						@endif
+						</td>
+					@endforeach
+				
 					<td>
 					@if ($article->borrowed)
 						Borrowed

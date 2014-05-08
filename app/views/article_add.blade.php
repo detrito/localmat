@@ -3,9 +3,9 @@
 @section('title')
 
 <a href="{{ action('ArticlesController@index') }}">Articles</a> >
-@if($category_name != 'all')
+@if(!empty($category))
 	<a href="{{ action('ArticlesController@add') }}">Add new article</a>
-	> {{ $category_name }}
+	> {{ $category->name }}
 @else
 	Add new article
 @endif
@@ -16,21 +16,21 @@
 
 <p>Category
 <select name="dropdown" onChange="document.location = this.value" value="GO">
-
-@foreach($category_names as $name)
+<option value=""></option>
+@foreach($categories as $category_item)
 	<option value="{{ action('ArticlesController@add',
-		array('category_name'=>$name) )}}"
-	@if($name == $category_name)
+		array('category_id'=>$category_item->id) )}}"
+	@if( !(empty($category)) && $category_item->id == $category->id )
 		selected
 	@endif
-	>{{ strtolower($name) }}</option>
+	>{{ strtolower($category_item->name) }}</option>
 @endforeach
 </select>
 </p>
 
-@if($category_name != 'all')
+@if(!empty($category))
 	<form action="{{ action('ArticlesController@handle_add',
-		array('category'=>$category_name)) }}" method="post">
+		array('category_id'=>$category->id)) }}" method="post">
 
 	<input type="hidden"  name="fields"  value='{{ $fields->toJson() }}'>
 

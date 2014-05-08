@@ -16,25 +16,30 @@
 
 <table>
 
-@for ($i = 0; $i < $article->attributes->count(); $i++)
+{{-- Loop througt article's attributes using field-ids as keys --}}
+@foreach($fields as $field)
 	<?php
-	$attribute = $article->attributes->get($i);
-	$field = $fields->get($i);
+	$attributes = $article->attributes;
+	$attribute = $attributes->filter(function($item) use($field) {
+		return $item->field->id == $field->id;
+		})->first();
 	?>
-
 
 	@if ($field->type == 'boolean')
 		<tr>
 		<td> {{ Form::label($field->name, $field->name) }} </td>
-		<td> {{ Form::checkbox($field->name, 1, $attribute->value); }} </td>
+		<td> {{ Form::checkbox($field->name, 1,
+			isset($attribute) ? $attribute->value : "") }} </td>
 		</tr>
 	@else
 		<tr>
 		<td> {{ Form::label($field->name, $field->name) }} </td>
-		<td> {{ Form::text($field->name,$attribute->value) }} </td>
+		<td> {{ Form::text($field->name,
+			isset($attribute) ? $attribute->value : "") }} </td>
 		</tr>
     @endif
-@endfor
+
+@endforeach
 
 </table>
 
