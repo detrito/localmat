@@ -2,25 +2,32 @@
 
 class DatabaseSeeder extends Seeder {
 
-	protected static $number_articles_category = 30;
+	protected static $number_articles_category = 20;
 
 	protected static $categories = array(
-		'Perforateur' => array('Description', 'Année'),
-		'Corde' => array('Longueur', 'Année', 'Code', 'Corde_statique'),
-		'Casque' => array('Année', 'Code'),
+		'Perforateur' => array('Code', 'Description', 'Année', 'Remarque'),
+		'Corde' => array('Code', 'Longueur', 'Année', 'Corde statique', 'Remarque'),
+		'Casque' => array('Code', 'Année', 'Remarque'),
+		'Boudrier' => array('Code', 'Année', 'Remarque'),
+		'Poignée' => array('Code', 'Année', 'Remarque'),
+		'Bloqueur ventral' => array('Code', 'Année', 'Remarque'),
+		'Kit' => array('Code', 'Description', 'Remarque'),
+		'Pharmacie' => array('Code', 'Description', 'Remarque')
 	);
 
 	protected static $fields = array(
 		"Description" => array(
-			'type' => "text"),
+			'type' => "string"),
 		"Année" => array(
 			'type' => "integerpositive"),
-		"Corde_statique" => array(
+		"Corde statique" => array(
 			'type' => "boolean"),
 		"Longueur" => array(
 			'type' => "integerpositive"),
 		"Code" => array(
 			'type' => "integerpositive"),
+		"Remarque" => array(
+			'type' => "string"),
 	);
 
 	public static function get_categories()
@@ -154,15 +161,18 @@ class ArticleTableSeeder extends Seeder {
 						case 'Année':
 							$attribute->value = $faker->randomNumber(1990,2013);
 							break;
-						case 'Corde_statique':
+						case 'Corde statique':
 							$attribute->value = $faker->boolean(80);
 							break;
 						case 'Longueur':
 							$attribute->value = round($faker->randomNumber(10,150), -1);
 							break;
 						case 'Code':
-							$attribute->value = $faker->unique()->randomNumber(2);
+							$attribute->value = $faker->unique()->randomNumber(3);
 							break;
+						case 'Remarque':
+							if($faker->boolean(10))
+								$attribute->value = $faker->sentence(6);
 					}
 
 					$attribute->field()->associate($field);
