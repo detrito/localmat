@@ -7,8 +7,10 @@ class UsersController extends BaseController
     public function index()
     {
         // Show a listing of games.
-        $users = User::all();
-
+        $users = User::
+			orderBy('given_name', 'asc')
+			->orderBy('family_name', 'asc')
+			->get();
         return View::make('user_index', compact('users'));
     }
 
@@ -18,9 +20,11 @@ class UsersController extends BaseController
 
 		$history_borrowed = History::whereUser($user_id)
 			->whereBorrowed()
+			->orderBy('created_at','desc')
 			->get();
 
 		$history_all = History::whereUser($user_id)
+			->orderBy('created_at','desc')
 			->get();
 
 		return View::make('user_view', compact('user','history_borrowed','history_all'));

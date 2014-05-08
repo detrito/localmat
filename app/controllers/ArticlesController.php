@@ -64,7 +64,10 @@ class ArticlesController extends BaseController
 	{
 		$article = Article::find($article_id);
 		$field_names = $article->getFieldNames();
-		$history = $article->history()->with('user')->get();
+		$history = $article->history()
+			->with('user')
+			->orderBy('created_at','desc')
+			->get();
 
 		return View::make('article_view', compact('article','field_names','history'));
 	}
