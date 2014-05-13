@@ -17,17 +17,23 @@ class DatabaseSeeder extends Seeder {
 
 	protected static $fields = array(
 		"Description" => array(
-			'type' => "string"),
+			'type' => "string",
+			'required' => false),
 		"Année" => array(
-			'type' => "integerpositive"),
+			'type' => "integerpositive",
+			'required' => false),
 		"Corde statique" => array(
-			'type' => "boolean"),
+			'type' => "boolean",
+			'required' => false),
 		"Longueur" => array(
-			'type' => "integerpositive"),
+			'type' => "integerpositive",
+			'required' => true),
 		"Code" => array(
-			'type' => "integerpositive"),
+			'type' => "integerpositive",
+			'required' => true),
 		"Remarque" => array(
-			'type' => "string"),
+			'type' => "string",
+			'required' => false)
 	);
 
 	public static function get_categories()
@@ -103,7 +109,8 @@ class FieldTableSeeder extends Seeder {
 		{
 			Field::create(array(
 				'name' => $field_name,
-				'type' => $data['type']));
+				'type' => $data['type'],
+				'required' => $data['required'] ));
 		}
 	}
 }

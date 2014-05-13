@@ -36,6 +36,18 @@
 <tr/>
 
 <tr>
+<td> {{ Form::label('required', 'Required') }}</td>
+<td>
+@if($action == 'add')
+	{{ Form::checkbox('required', 1) }}
+@elseif($action == 'edit')
+	{{ Form::checkbox('required', 1, $field->required) }}
+@endif
+</td>
+</tr>
+<tr/>
+
+<tr>
 {{ $errors->first('type', '<span class="error">:message</span>') }}
 <td> {{ Form::label('type', 'Type') }} </td>
 <td> 

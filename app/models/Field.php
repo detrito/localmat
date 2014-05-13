@@ -13,9 +13,9 @@ class Field extends BaseEloquent
 	
 	// Rules for the data-types
 	protected static $rules = array(
-		'string' => "required|alpha_num_dash_spaces|max:64",
-		'integer' => "required|integer",
-		'integerpositive' => "required|integer|between:0,100000",
+		'string' => "alpha_num_dash_spaces|max:64",
+		'integer' => "integer",
+		'integerpositive' => "integer|between:0,100000",
 		'boolean' => "integer|between:0,1"
 		);
 	
@@ -49,9 +49,13 @@ class Field extends BaseEloquent
 		return self::$mysql_cast_types[$type_name];
 	}
 
-	public static function getRule($type_name)
+	public static function getRule($type_name, $required)
 	{
-		return self::$rules[$type_name];
+		$rule = self::$rules[$type_name];
+		// for boolean field: unchecked checkboboxes are automatically set to false
+		if($required && $type_name !== 'boolean')
+			$rule .= "|required";
+		return $rule;
 	}
 
 	// Fetch the rule of each field an store them in an array
@@ -60,7 +64,7 @@ class Field extends BaseEloquent
 		$rules = array();
 		foreach ($fields as $field)
 		{
-			$rules[$field->name] = self::getRule($field->type);
+			$rules[$field->name] = self::getRule($field->type, $field->required);
 		}
 		return $rules;
 	}

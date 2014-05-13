@@ -40,7 +40,7 @@
 		@if ($field->type == 'boolean')
 			<tr>
 			<td> {{ Form::label($field->name, $field->name) }} </td>
-			<td> {{ Form::checkbox($field->name, 1, true) }} </td>
+			<td> {{ Form::checkbox($field->name, 1) }} </td>
 			</tr>
 		@else
 			<tr>
