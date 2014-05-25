@@ -8,10 +8,10 @@ class Attribute extends Eloquent
 	// Enable timestamps	
 	public $timestamps = false;
 	
-	// Attribute __belongs_to_an__ Article
-	public function article()
+	// Attribute __belongs_to_an__ ArticleSingle
+	public function article_single()
 	{
-		return $this->belongsTo('Article');
+		return $this->belongsTo('ArticleSingle');
 	}
 
 	// Attribute __belongs_to_a__ Field

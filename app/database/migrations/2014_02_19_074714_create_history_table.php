@@ -19,6 +19,8 @@ class CreateHistoryTable extends Migration {
 			$table->foreign('user_id')->references('id')->on('lm_users');
 			$table->integer('article_id')->unsigned();
 			$table->foreign('article_id')->references('id')->on('lm_articles');
+			// amount_items set to Null if article belongs to articles_singles
+			$table->integer('amount_items')->unsigned();
 			$table->timestamps();
 			$table->timestamp('returned_at')->nullable()->default(NULL);
 		});

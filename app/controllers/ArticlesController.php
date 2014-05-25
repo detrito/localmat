@@ -4,6 +4,7 @@ class ArticlesController extends BaseController
 {
 	public function index()
 	{
+		//return "ok";
 		return $this->lists();
 	}
 
@@ -16,7 +17,9 @@ class ArticlesController extends BaseController
 		{
 			case Null:
 				// get list of all categories with artcles and attributes
-				$categories = Category::with('articles','articles.attributes')->get();
+				$categories = Category::with('articles','articles.proprieties')->get();
+				//var_dump($categories);
+
 
 				//FIXME implement view of other status
 				return View::make('article_lists_all',
@@ -30,8 +33,21 @@ class ArticlesController extends BaseController
 
 				if ( Category::find($category_id)->exists() )
 				{
+					$category = Category::find($category_id);
+				}
+				else
+				{
+					return Redirect::action('ArticlesController@lists')
+						->with('flash_notice', 'Category '.$category_name.' not found');
+				}
+			
+
+				switch($category->article_class)
+				{
+					case 'ArticleSingle':
 					$fields = Category::find($category_id)->fields()->get();					
-					$articles = Article::whereCategory($category_id)
+					$articles = Article::with('proprieties')
+						->whereCategory($category_id)
 						->whereStatus($status_name)
 						->with('attributes')
 						->get();
@@ -46,17 +62,22 @@ class ArticlesController extends BaseController
 						}
 					}
 
-					return View::make('article_lists_category',
+					return View::make('article_single_lists',
 						compact('categories','articles','fields','status_names'))
 						->with( array('status_name'=>$status_name,
 							'category_id'=>$category_id,
 							'field_id'=>$field_id) );
+
+					case 'ArticleAmount':
+						$article = $category->articles()->first();
+
+						return View::make('article_amount_lists',
+							compact('categories','status_names','article'))
+							->with( array('status_name'=>$status_name,
+								'category_id'=>$category_id,
+								'field_id'=>$field_id) );
 				}
-				else
-				{
-					return Redirect::action('ArticlesController@lists')
-						->with('flash_notice', 'Category '.$category_name.' not found');
-				}
+
 		}
     }
 
