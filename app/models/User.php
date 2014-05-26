@@ -53,6 +53,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	{
 		return $this->email;
 	}
+
+	/**
+	 * Laravel 4.1.26 introduces security improvements for "remember me" cookies.
+	 */
+	public function getRememberToken()
+	{
+		return $this->remember_token;
+	}
+
+	public function setRememberToken($value)
+	{
+		$this->remember_token = $value;
+	}
+
+	public function getRememberTokenName()
+	{
+		return 'remember_token';
+	}
 	
 	public function errorDisabled()
 	{

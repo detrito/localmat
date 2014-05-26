@@ -23,6 +23,10 @@ class CreateUsersTable extends Migration {
 			$table->boolean('admin');
 			$table->timestamps();
 			$table->softDeletes();
+			/**
+			 * Laravel 4.1.26 introduces security improvements for "remember me" cookies.
+			 */
+			$table->string('remember_token',100);
 		});
 	}
 
