@@ -44,7 +44,7 @@
 </select>
 </p>
 
-@if ( empty($articles->first()) )
+@if ( empty($articles_singles->first()) )
 	<p>There are no articles in this category.</p>
 @else
 	@if (Auth::check() && Auth::user()->enabled)	
@@ -85,14 +85,15 @@
             </thead>
             <tbody>
 				
-				@foreach($articles as $article)
+				@foreach($articles_singles as $article_single)
 				<tr>
 					{{-- display checkbox for borrowing only if user is logged in --}}
 					@if (Auth::check() && Auth::user()->enabled)
-					<th><input name="{{$article->id}}" type="checkbox" value="{{$article->id}}"
-					{{-- disable the checkbox if the artice is already borrowed --}}					
+					<th><input name="{{$article_single->article->id}}"
+						type="checkbox" value="{{$article_single->article->id}}"
 
-					@if($article->borrowed)
+					{{-- disable the checkbox if the artice is already borrowed --}}					
+					@if($article_single->borrowed)
 						disabled
 					@endif
 					></th>
@@ -101,14 +102,14 @@
 
                     <td><a href="{{
 						action('ArticlesController@view',
-							array('article_id'=>$article->id) )}}">
-						{{ $article->id }}</a>
+							array('article_id'=>$article_single->article->id) )}}">
+						{{ $article_single->article->id }}</a>
 					</td>
 					
 					{{-- Loop througt article's attributes using field-ids as keys --}}
 					@foreach($fields as $field)
 						<?php
-						$attributes = $article->attributes;
+						$attributes = $article_single->attributes;
 						$attribute = $attributes->filter(function($item) use($field) {
 							return $item->field->id == $field->id;
 						})->first();
@@ -121,7 +122,7 @@
 					@endforeach
 				
 					<td>
-					@if ($article->borrowed)
+					@if ($article_single->borrowed)
 						Borrowed
 					@else
 						Available
@@ -132,11 +133,11 @@
                     <td>
                         <a href="{{
 							action('ArticlesController@edit',
-							array($article->id))
+							array($article_single->article->id))
 							}}">Edit</a>
 						<a href="{{
 							action('ArticlesController@delete',
-							array($article->id))
+							array($article_single->article->id))
 							}}">Delete</a>
                     </td>
 					@endif

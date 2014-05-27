@@ -9,7 +9,7 @@ class ArticleSingle extends BaseEloquent
 
     public function article()
     {
-        return $this->morphMany('Article', 'proprieties');
+        return $this->morphOne('Article', 'proprieties');
     }
 
 	// Article __has_many__ Attributes
@@ -18,9 +18,36 @@ class ArticleSingle extends BaseEloquent
 		return $this->hasMany('Attribute');
 	}
 
-	public static function getArticleIdsSortedByField($articles, $field_id, $order='ASC')
+	// Select ArticlesSingles who belongs to category $name
+	public function scopewhereCategory($query, $category_id)
 	{
-		$article_ids = $articles->fetch('id')->toArray();	
+		return $query->whereHas('Article', function($query) use($category_id)
+		{
+			return $query->whereHas('Category', function($query) use($category_id)
+			{
+				$query->where('id', $category_id);
+			});
+		});
+	}
+
+	// Select ArticlesSingles with status $status_name
+	public function scopewhereStatus($query, $status_name)
+	{
+		switch($status_name)
+		{
+			case 'all':
+				return $query;
+			case 'available':
+				return $query->where('borrowed','=',0);
+			case 'borrowed':
+				return $query->where('borrowed','=',1);
+		}
+	}
+
+	// Return
+	public static function getArticleIdsSortedByField($articles_singles, $field_id, $order='ASC')
+	{
+		$article_ids = $articles_singles->fetch('id')->toArray();	
 	
 		// retrive mysql cast type of the field $field_name
 		// in order to sort it as CHAR or as INTEGER
@@ -33,10 +60,10 @@ class ArticleSingle extends BaseEloquent
 			{
 				$query->where('id', $field_id);
 			})
-			->select('article_id', 'value')
+			->select('article_single_id', 'value')
 			// FIXME this only works on MySQL
 			->orderBy(DB::raw('CAST(value AS '.$field_cast_type.')'), $order)
-			->lists('article_id');
+			->lists('article_single_id');
 	}
 
 	// Return array of fields-names of an article
@@ -61,4 +88,181 @@ class ArticleSingle extends BaseEloquent
 		return $field_ids;
 	}
 
+	/*
+	 * Functions called from ArticleController to add, view, edit, delete, ...
+	*/
+
+	public function lists($status_name, $category_id, $field_id)
+	{
+		// Get list of all categories				
+		$categories = Category::all();
+
+		// Get list of status names
+		$status_names = History::getStatusNames();
+
+		// Get fields who belongs to this category
+		$fields = Category::find($category_id)->fields()->get();					
+
+		// Get the articles who belongs to $category and to $status
+		$articles_singles = ArticleSingle::whereCategory($category_id)
+			->whereStatus($status_name)
+			->with('article','attributes')
+			->get();
+
+		if(! empty($articles_singles->first()))
+		{
+			// Order article's IDs by the value of $field_name
+			if($field_id!=Null)
+			{
+				$ordered_ids = ArticleSingle::getArticleIdsSortedByField($articles_singles,$field_id);
+				$articles_singles = $articles_singles->sortByOrder($ordered_ids);
+			}
+		}
+
+		return View::make('article_single_lists',
+			compact('categories','status_names','fields','articles_singles'))
+			->with( array('status_name'=>$status_name,
+				'category_id'=>$category_id,
+				'field_id'=>$field_id) );
+	}
+
+	public function view()
+	{
+		$article = $this->article;
+		$field_names = $this->getFieldNames();
+		$history = $this->article->history()
+			->with('user')
+			->orderBy('created_at','desc')
+			->get();
+
+		return View::make('article_single_view', compact('article','field_names','history'));
+	}
+	
+	public function add($category)
+	{
+		// Get list of all categories				
+		$categories = Category::all();
+	
+		// Get list of fields
+		$field_ids = $category->getFieldIds();
+		$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();
+		
+		return View::make('article_single_add', compact('categories','fields','category'));
+	}
+
+	public static function load_form_data()
+	{
+		// Get form data
+		$data = Input::except('fields',0);			
+
+		// Decode fields array
+		$fields  = json_decode(Input::get('fields'));
+		
+		// Get rules array
+		$rules = Field::getRulesArray($fields);
+
+		// Validator for attributes-values
+		$validator = Validator::make($data, $rules);
+		
+		return array($data,$fields,$validator);
+	}
+
+	public function handle_add($category)
+	{
+		// load input data and prepare validator
+		list($data,$fields,$validator) = self::load_form_data();
+		
+		if ($validator->passes())
+		{
+			// Create Article and associate it to $category
+			$article = new Article;
+			$article->category()->associate($category);
+			$article->save();
+
+			// Create ArticleSingle
+			$article_single = new ArticleSingle;
+			$article_single->save();
+
+			foreach ($fields as $field_item)
+			{
+				// Check if input value of $field_item exist, for checkboxes
+				if(isset($data[$field_item->name]))
+					$value = $data[$field_item->name];
+				else
+					$value = 0;
+
+				// Create a new Attribute to and set its value to the input value
+				$attribute = new Attribute;
+				$attribute->value = $value;
+
+				// Associate the Attribute to $field and to $article_single
+				$field = Field::whereName($field_item->name)->first();					
+				$attribute->field()->associate($field);
+				$attribute->article_single()->associate($article_single);
+				$attribute->save();
+				
+				// Save the polymorphic relation of $article_single to $article
+				$article_single->article()->save($article);
+				
+			}
+			return Redirect::action('ArticlesController@add',
+				array('category_id'=>$category->id) )
+				->with('flash_notice', 'Article successfully added.');
+		}
+		return Redirect::back()
+			->withErrors($validator);
+	}
+	
+	public function edit($article)
+	{
+		// Load ArticleSingle (proprieties) and attributes of the article
+		$article->load('proprieties','proprieties.attributes');
+
+		// Get collection of fields-ids of this category
+		$field_ids = Category::find($article->category->id)->getFieldIds();
+
+		// Order the field collection by the attribute order and reset the keys
+		$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();
+
+		return View::make('article_single_edit', compact('article','fields'))
+				->with('article_id', $article->id);
+
+	}
+
+	public function handle_edit($article)
+	{
+		$article = Article::find(1);
+	
+		// load input data and prepare validator
+		list($data,$fields,$validator) = self::load_form_data();
+		$attributes = $article->proprieties->attributes;
+		var_dump($article);
+		var_dump($article->proprieties->attributes);
+		
+		if ($validator->passes())
+		{
+			foreach($article->proprieties->attributes as $attribute)
+			{
+
+				return 1;
+				$field_name = $attribute->field->name;
+
+				// Check if input value of $field_name exist, for checkboxes
+				if(isset($data[$field_name]))					
+					$value = $data[$field_name];
+				else
+					$value = 0;
+				
+				// Set the new value to $attribute	
+				$attribute->value = $value;
+				$attribute->save();
+			}
+			
+		// FIXME redirect to page previous the form page
+		return Redirect::action('ArticlesController@index')
+			->with('flash_notice', 'Article successfully modified.');
+		}
+		return Redirect::back()
+			->withErrors($validator);		
+	}
 }

@@ -19,7 +19,8 @@
 {{-- Loop througt article's attributes using field-ids as keys --}}
 @foreach($fields as $field)
 	<?php
-	$attributes = $article->attributes;
+	$attributes = $article->proprieties->attributes;
+	var_dump($attributes);
 	$attribute = $attributes->filter(function($item) use($field) {
 		return $item->field->id == $field->id;
 		})->first();

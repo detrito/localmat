@@ -202,7 +202,6 @@ class ArticleSingleTableSeeder extends Seeder {
 				$article->category()->associate($category);
 				$article->save();
 				// save polymorphic relation
-				//$article->proprieties()->save($article_single);
 				$article_single->article()->save($article);				
 
 				foreach ($field_names as $field_name)

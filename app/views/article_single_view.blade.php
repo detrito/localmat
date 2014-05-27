@@ -28,7 +28,7 @@
                     <td>{{ $article->id }}</td>
 					
 					{{-- Loop througt article's attributes --}}
-						@foreach ($article->attributes as $attribute)
+						@foreach ($article->proprieties->attributes as $attribute)
 							<td>{{ $attribute->value }}</td>
 						@endforeach
                 </tr>
