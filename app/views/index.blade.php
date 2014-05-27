@@ -15,12 +15,12 @@ Home
 
 <p>LocalMat is a MVC (Model View Controller) web application created to manage
 the equipement of caving organisations.<p>
-First, enter the Categories (e.g. helmet, rope, ...) and the Fields
-(i.e the types of Attributes, e.g. brand, cord length, serial number, year of
-introduction, ...) that you wish. You can then start to add some Articles to
-those Categories. These Articles can be browsed and listed by their status
-(borrowed or available) and by their Attributes. Users can borrow and return the
-Articles, and their History can also be visualised.
+First, enter the Categories (e.g. helmet, rope, ...) and the Fields (e.g. brand,
+cord length, serial number, year of introduction, ...) that you wish. You can
+then start to add some Articles to those Categories. These Articles can be
+browsed and listed by their status (borrowed or available) and by their
+FieldData. Users can borrow and return the Articles, and their History can also
+be visualised.
 </p>
 
 <p>You can <a href="{{url('login')}}">login</a> as <strong>administrator</strong>

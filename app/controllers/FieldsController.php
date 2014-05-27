@@ -95,7 +95,7 @@ class FieldsController extends BaseController
 	public function delete($field_id)
 	{
 		$field = Field::find($field_id);
-		if ( $field->attributes()->get()->isEmpty() )
+		if ( $field->fieldData()->get()->isEmpty() )
 		{
 			$field->delete();
 			return Redirect::action('FieldsController@index')

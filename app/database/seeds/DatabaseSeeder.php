@@ -206,37 +206,34 @@ class ArticleSingleTableSeeder extends Seeder {
 
 				foreach ($field_names as $field_name)
 				{
-					$attribute = new Attribute;
+					$field_datum = new FieldDatum;
 					$field = Field::whereName($field_name)->first();				
 	
 					switch($field_name)
 					{
 						case 'Description':
-							$attribute->value = $faker->sentence(3);
+							$field_datum->value = $faker->sentence(3);
 							break;
 						case 'Année':
-							$attribute->value = $faker->randomNumber(1990,2013);
+							$field_datum->value = $faker->randomNumber(1990,2013);
 							break;
 						case 'Corde statique':
-							$attribute->value = $faker->boolean(80);
+							$field_datum->value = $faker->boolean(80);
 							break;
 						case 'Longueur':
-							$attribute->value = round($faker->randomNumber(10,150), -1);
+							$field_datum->value = round($faker->randomNumber(10,150), -1);
 							break;
 						case 'Code':
-							$attribute->value = $faker->unique()->randomNumber(3);
+							$field_datum->value = $faker->unique()->randomNumber(3);
 							break;
 						case 'Remarque':
 							if($faker->boolean(10))
-								$attribute->value = $faker->sentence(6);
+								$field_datum->value = $faker->sentence(6);
 					}
 
-					$attribute->field()->associate($field);
-					$attribute->article_single()->associate($article_single);	
-					$attribute->save();
-
-					//var_dump($attribute);
-					//var_dump($article_single);					
+					$field_datum->field()->associate($field);
+					$field_datum->articleSingle()->associate($article_single);	
+					$field_datum->save();					
 				}
 			}
 		}

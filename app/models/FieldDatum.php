@@ -1,15 +1,15 @@
 <?php
 
-class Attribute extends Eloquent
+class FieldDatum extends Eloquent
 {
 	// Database table used by the model	
-	protected $table = 'lm_attributes';
+	protected $table = 'lm_field_data';
 
 	// Enable timestamps	
 	public $timestamps = false;
 	
 	// Attribute __belongs_to_an__ ArticleSingle
-	public function article_single()
+	public function articleSingle()
 	{
 		return $this->belongsTo('ArticleSingle');
 	}

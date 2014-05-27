@@ -14,7 +14,7 @@ class ArticlesController extends BaseController
 			// If no category is specified, make list of all categories
 			case Null:
 				// Get list of all categories with articles and proprieties
-				// (attributes or amounts)
+				// (field-data or amounts)
 				$categories = Category::with('articles','articles.proprieties')->get();
 
 				// FIXME implement view of other status
@@ -111,13 +111,13 @@ class ArticlesController extends BaseController
 	public function delete($article_id)
 	{
 		$article = Article::find($article_id);
-		$attribute_ids = $article->attributes->lists('id');
+		$field_data_ids = $article->fieldData->lists('id');
 		
-		// delete attributes who belongs to this article
-		foreach($attribute_ids as $attribute_id)
+		// delete fieldData who belongs to this article
+		foreach($field_data_ids as $field_datum_id)
 		{
-			$attribute = Attribute::find($attribute_id);
-			$attribute->delete();
+			$field_datum = FieldData::find($field_datum_id);
+			$field_datum->delete();
 		}
 
 		// now delete the article

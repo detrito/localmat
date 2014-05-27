@@ -16,12 +16,11 @@
 
 <table>
 
-{{-- Loop througt article's attributes using field-ids as keys --}}
+{{-- Loop througt article's field-data using field-ids as keys --}}
 @foreach($fields as $field)
 	<?php
-	$attributes = $article->proprieties->attributes;
-	var_dump($attributes);
-	$attribute = $attributes->filter(function($item) use($field) {
+	$field_data = $article->proprieties->fieldData;
+	$field_data = $field_data->filter(function($item) use($field) {
 		return $item->field->id == $field->id;
 		})->first();
 	?>
@@ -30,13 +29,13 @@
 		<tr>
 		<td> {{ Form::label($field->name, $field->name) }} </td>
 		<td> {{ Form::checkbox($field->name, 1,
-			isset($attribute) ? $attribute->value : "") }} </td>
+			isset($field_data) ? $field_data->value : "") }} </td>
 		</tr>
 	@else
 		<tr>
 		<td> {{ Form::label($field->name, $field->name) }} </td>
 		<td> {{ Form::text($field->name,
-			isset($attribute) ? $attribute->value : "") }} </td>
+			isset($field_data) ? $field_data->value : "") }} </td>
 		</tr>
     @endif
 

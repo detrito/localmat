@@ -12,10 +12,10 @@ class ArticleSingle extends BaseEloquent
         return $this->morphOne('Article', 'proprieties');
     }
 
-	// Article __has_many__ Attributes
-	public function attributes()
+	// Article __has_many__ FiedDatum
+	public function fieldData()
 	{
-		return $this->hasMany('Attribute');
+		return $this->hasMany('FieldDatum');
 	}
 
 	// Select ArticlesSingles who belongs to category $name
@@ -54,8 +54,8 @@ class ArticleSingle extends BaseEloquent
 		$field_type = Field::find($field_id)->type;
 		$field_cast_type = Field::getCastType($field_type);
 
-		$attribute = new Attribute;	
-		return $attribute
+		$field_data = new FieldDatum;	
+		return $field_data
 			->whereHas('Field', function($query) use($field_id)
 			{
 				$query->where('id', $field_id);
@@ -70,9 +70,9 @@ class ArticleSingle extends BaseEloquent
 	public function getFieldNames()
 	{
 		$field_names = array();
-		foreach ($this->attributes()->get() as $attribute)
+		foreach ($this->fieldData()->get() as $field_datum)
 		{
-			array_push($field_names,$attribute->field->name);
+			array_push($field_names, $field_datum->field->name);
 		}
 		return $field_names;
 	}
@@ -81,9 +81,9 @@ class ArticleSingle extends BaseEloquent
 	public function getFieldIds()
 	{
 		$field_ids = array();
-		foreach ($this->attributes()->get() as $attribute)
+		foreach ($this->fieldData()->get() as $field_datum)
 		{
-			array_push($field_ids,$attribute->field->id);
+			array_push($field_ids, $field_datum->field->id);
 		}
 		return $field_ids;
 	}
@@ -106,7 +106,7 @@ class ArticleSingle extends BaseEloquent
 		// Get the articles who belongs to $category and to $status
 		$articles_singles = ArticleSingle::whereCategory($category_id)
 			->whereStatus($status_name)
-			->with('article','attributes')
+			->with('article','fieldData')
 			->get();
 
 		if(! empty($articles_singles->first()))
@@ -161,16 +161,16 @@ class ArticleSingle extends BaseEloquent
 		// Get rules array
 		$rules = Field::getRulesArray($fields);
 
-		// Validator for attributes-values
+		// Validator for field-data values
 		$validator = Validator::make($data, $rules);
 		
-		return array($data,$fields,$validator);
+		return array($data, $fields, $validator);
 	}
 
 	public function handle_add($category)
 	{
 		// load input data and prepare validator
-		list($data,$fields,$validator) = self::load_form_data();
+		list($data, $fields, $validator) = self::load_form_data();
 		
 		if ($validator->passes())
 		{
@@ -191,15 +191,15 @@ class ArticleSingle extends BaseEloquent
 				else
 					$value = 0;
 
-				// Create a new Attribute to and set its value to the input value
-				$attribute = new Attribute;
-				$attribute->value = $value;
+				// Create a new FieldDatum to and set its value to the input value
+				$field_datum = new FieldDatum;
+				$field_datum->value = $value;
 
-				// Associate the Attribute to $field and to $article_single
+				// Associate the FieldDatum bute to $field and to $article_single
 				$field = Field::whereName($field_item->name)->first();					
-				$attribute->field()->associate($field);
-				$attribute->article_single()->associate($article_single);
-				$attribute->save();
+				$field_datum->field()->associate($field);
+				$field_datum->articleSingle()->associate($article_single);
+				$field_datum->save();
 				
 				// Save the polymorphic relation of $article_single to $article
 				$article_single->article()->save($article);
@@ -215,13 +215,13 @@ class ArticleSingle extends BaseEloquent
 	
 	public function edit($article)
 	{
-		// Load ArticleSingle (proprieties) and attributes of the article
-		$article->load('proprieties','proprieties.attributes');
+		// Load ArticleSingle (proprieties) and fieldData of the article
+		$article->load('proprieties','proprieties.fieldData');
 
 		// Get collection of fields-ids of this category
 		$field_ids = Category::find($article->category->id)->getFieldIds();
 
-		// Order the field collection by the attribute order and reset the keys
+		// Order the field collection by the fieldData order and reset the keys
 		$fields = Field::find($field_ids)->sortByOrder($field_ids)->values();
 
 		return View::make('article_single_edit', compact('article','fields'))
@@ -230,22 +230,15 @@ class ArticleSingle extends BaseEloquent
 	}
 
 	public function handle_edit($article)
-	{
-		$article = Article::find(1);
-	
+	{	
 		// load input data and prepare validator
 		list($data,$fields,$validator) = self::load_form_data();
-		$attributes = $article->proprieties->attributes;
-		var_dump($article);
-		var_dump($article->proprieties->attributes);
 		
 		if ($validator->passes())
 		{
-			foreach($article->proprieties->attributes as $attribute)
+			foreach($article->proprieties->fieldData as $field_datum)
 			{
-
-				return 1;
-				$field_name = $attribute->field->name;
+				$field_name = $field_datum->field->name;
 
 				// Check if input value of $field_name exist, for checkboxes
 				if(isset($data[$field_name]))					
@@ -253,9 +246,9 @@ class ArticleSingle extends BaseEloquent
 				else
 					$value = 0;
 				
-				// Set the new value to $attribute	
-				$attribute->value = $value;
-				$attribute->save();
+				// Set the new value to $field_datum	
+				$field_datum->value = $value;
+				$field_datum->save();
 			}
 			
 		// FIXME redirect to page previous the form page

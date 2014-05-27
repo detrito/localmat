@@ -33,10 +33,10 @@ class Field extends BaseEloquent
 		return $this->belongsToMany('Category','lm_categories_fields');
 	}
 	
-	// Field __belongs_to_many__ Attributes
-	public function attributes()
+	// Field __belongs_to_many__ FieldDatum
+	public function fieldData()
 	{
-		return $this->hasMany('Attribute');
+		return $this->hasMany('FieldDatum');
 	}
 	
 	public static function getTypes()

@@ -109,14 +109,14 @@
 					{{-- Loop througt article's attributes using field-ids as keys --}}
 					@foreach($fields as $field)
 						<?php
-						$attributes = $article_single->attributes;
-						$attribute = $attributes->filter(function($item) use($field) {
+						$field_data = $article_single->fieldData;
+						$field_data = $field_data->filter(function($item) use($field) {
 							return $item->field->id == $field->id;
 						})->first();
 						?>
 						<td>
-						@if(!empty($attribute))
-							{{ $attribute->value }}
+						@if(!empty($field_data))
+							{{ $field_data->value }}
 						@endif
 						</td>
 					@endforeach

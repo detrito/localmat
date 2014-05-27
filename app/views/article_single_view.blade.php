@@ -27,9 +27,9 @@
 				<tr>
                     <td>{{ $article->id }}</td>
 					
-					{{-- Loop througt article's attributes --}}
-						@foreach ($article->proprieties->attributes as $attribute)
-							<td>{{ $attribute->value }}</td>
+					{{-- Loop througt article's field-data --}}
+						@foreach ($article->proprieties->fieldData as $field_data)
+							<td>{{ $field_data->value }}</td>
 						@endforeach
                 </tr>
             </tbody>

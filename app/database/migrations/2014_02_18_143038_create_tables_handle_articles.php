@@ -50,7 +50,7 @@ class CreateTablesHandleArticles extends Migration {
 			$table->integer('total_items')->unsigned();
 		});
 
-		Schema::create('lm_attributes', function($table)
+		Schema::create('lm_field_data', function($table)
 		{
 			$table->increments('id');
 			$table->integer('article_single_id')->unsigned();
@@ -77,7 +77,7 @@ class CreateTablesHandleArticles extends Migration {
 	public function down()
 	{
 		Schema::drop('lm_categories_fields');
-		Schema::drop('lm_attributes');
+		Schema::drop('lm_field_data');
 		Schema::drop('lm_articles');
 		Schema::drop('lm_articles_singles');
 		Schema::drop('lm_articles_amounts');
