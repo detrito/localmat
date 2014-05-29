@@ -38,7 +38,7 @@ class ArticlesController extends BaseController
 			
 				// Call the lists method of the $article_class model
 				$article_class = new $category->article_class;
-				return $article_class->lists($status_name, $category_id, $field_id);
+				return $article_class->callLists($status_name, $category_id, $field_id);
 		}
     }
 
@@ -46,15 +46,15 @@ class ArticlesController extends BaseController
 	{
 		// Call the view method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->view();
+		return $article->proprieties->callView();
 	}
 
 	public function add($category_id=Null)
 	{
 		if ($category_id == Null)
 		{
-			// Get list of all categories		
-			$categories = Category::all();
+			// Get list of categories of Articles of type ArticleSingle
+			$categories = Category::where('article_class','=','ArticleSingle')->get();
 
 			// This only shows a dropdown menu to select a category
 			return View::make('article_single_add', compact('categories'));
@@ -70,7 +70,7 @@ class ArticlesController extends BaseController
 				{
 					// Call the add method of the $article_class model
 					$article_class = new $category->article_class;
-					return $article_class->add($category);
+					return $article_class->callAdd($category);
 				}
 			}
 			else
@@ -90,7 +90,7 @@ class ArticlesController extends BaseController
 		{
 			// Call the handle_add method of the $article_class model
 			$article_class = new $category->article_class;
-			return $article_class->handle_add($category);
+			return $article_class->callHandleAdd($category);
 		}
 	}
 
@@ -98,33 +98,21 @@ class ArticlesController extends BaseController
 	{
 		// Call the edit method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->edit($article);
+		return $article->proprieties->callEdit($article);
 	}
 
 	public function handle_edit($article_id)
 	{
 		// Call the handle_edit method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->handle_edit($article);
+		return $article->proprieties->callHandleEdit($article);
 	}
 
 	public function delete($article_id)
 	{
+		// Call the handle_edit method of the $article_class model
 		$article = Article::find($article_id);
-		$field_data_ids = $article->fieldData->lists('id');
-		
-		// delete fieldData who belongs to this article
-		foreach($field_data_ids as $field_datum_id)
-		{
-			$field_datum = FieldData::find($field_datum_id);
-			$field_datum->delete();
-		}
-
-		// now delete the article
-		$article->delete();
-
-		// FIXME check if a previous page exists
-		return Redirect::back()
-			->with('flash_notice', 'Article successfully deleted.');
+		return $article->proprieties->callDelete($article);
 	}
+
 }

@@ -34,6 +34,24 @@
                 </tr>
             </tbody>
         </table>
+        
+@if (Auth::check())
+	<h3>Actions</h3>
+	<a href="#">Borrow</a> -
+
+	@if (Auth::user()->admin)
+    <a href="{{
+		action('ArticlesController@edit',
+		array($article->id))
+		}}">Edit</a> - 
+	<a href="{{
+		action('ArticlesController@delete',
+		array($article->id))
+		}}">Delete</a>
+	@endif
+	
+@endif
+
 
 <h3>Status</h3>
 	@if ($article->borrowed)
@@ -43,6 +61,9 @@
 	@endif	
 
 <h3>History</h3>
+@if ( empty($history->first()) )
+	<p>This article has never be borrowed.</p>
+@else
 	<table>
 		<thead>
 			<tr>
@@ -69,5 +90,7 @@
 			@endforeach
 		</tbody>
 	</table>
+@endif
+
 @stop
 

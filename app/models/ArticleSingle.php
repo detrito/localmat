@@ -92,7 +92,7 @@ class ArticleSingle extends BaseEloquent
 	 * Functions called from ArticleController to add, view, edit, delete, ...
 	*/
 
-	public function lists($status_name, $category_id, $field_id)
+	public function callLists($status_name, $category_id, $field_id)
 	{
 		// Get list of all categories				
 		$categories = Category::all();
@@ -126,7 +126,7 @@ class ArticleSingle extends BaseEloquent
 				'field_id'=>$field_id) );
 	}
 
-	public function view()
+	public function callView()
 	{
 		$article = $this->article;
 		$field_names = $this->getFieldNames();
@@ -138,7 +138,7 @@ class ArticleSingle extends BaseEloquent
 		return View::make('article_single_view', compact('article','field_names','history'));
 	}
 	
-	public function add($category)
+	public function callAdd($category)
 	{
 		// Get list of all categories				
 		$categories = Category::all();
@@ -150,7 +150,7 @@ class ArticleSingle extends BaseEloquent
 		return View::make('article_single_add', compact('categories','fields','category'));
 	}
 
-	public static function load_form_data()
+	public static function loadFormData()
 	{
 		// Get form data
 		$data = Input::except('fields',0);			
@@ -167,10 +167,10 @@ class ArticleSingle extends BaseEloquent
 		return array($data, $fields, $validator);
 	}
 
-	public function handle_add($category)
+	public function callHandleAdd($category)
 	{
 		// load input data and prepare validator
-		list($data, $fields, $validator) = self::load_form_data();
+		list($data, $fields, $validator) = self::loadFormData();
 		
 		if ($validator->passes())
 		{
@@ -213,7 +213,7 @@ class ArticleSingle extends BaseEloquent
 			->withErrors($validator);
 	}
 	
-	public function edit($article)
+	public function callEdit($article)
 	{
 		// Load ArticleSingle (proprieties) and fieldData of the article
 		$article->load('proprieties','proprieties.fieldData');
@@ -229,10 +229,10 @@ class ArticleSingle extends BaseEloquent
 
 	}
 
-	public function handle_edit($article)
+	public function callHandleEdit($article)
 	{	
 		// load input data and prepare validator
-		list($data,$fields,$validator) = self::load_form_data();
+		list($data,$fields,$validator) = self::loadFormData();
 		
 		if ($validator->passes())
 		{
@@ -257,5 +257,25 @@ class ArticleSingle extends BaseEloquent
 		}
 		return Redirect::back()
 			->withErrors($validator);		
+	}
+	
+	public function callDelete($article)
+	{
+		// delete the history of this Article
+		$article->history()->delete();
+		
+		// delete the fieldData of this Article
+		$article->proprieties->fieldData()->delete();
+
+		// delete the ArticleSingle
+		$article_single = $article->proprieties()->delete();
+
+		// now delete the Article
+		$article->delete();
+
+		// FIXME check if a previous page exists
+		return Redirect::back()
+			->with('flash_notice', 'Article successfully deleted.');
+
 	}
 }

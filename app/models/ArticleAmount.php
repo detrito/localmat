@@ -16,7 +16,7 @@ class ArticleAmount extends BaseEloquent
 	 * Functions called from ArticleController to add, view, edit, delete, ...
 	*/
 
-	public function lists($status_name, $category_id, $field_id)
+	public function callLists($status_name, $category_id, $field_id)
 	{
 		// Get list of all categories				
 		$categories = Category::all();
