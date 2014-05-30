@@ -7,16 +7,12 @@
 @if ($categories->isEmpty())
         <p>There are no fields! :(</p>
 @else
-
-{{-- print_r($categories) --}}
-{{-- var_dump($categories) --}}
-
 	<table>
             <thead>
                 <tr>
                     <th>Id</th>
                     <th>Name</th>
-                    <th>Fields</th>
+                    <th>Article class</th>
 					<th>Admin</th>
                 </tr>
             </thead>
@@ -27,7 +23,7 @@
                     <td>{{ $category->id }}</td>
                     <td>{{ $category->name }}</td>
 					<td>
-						{{ implode(", ", $category->fields()->lists('name')) }}
+						{{ $category->article_class }}
 					</td>
                     <td>
                         	<a href="{{

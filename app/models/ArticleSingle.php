@@ -274,7 +274,7 @@ class ArticleSingle extends BaseEloquent
 		$article->delete();
 
 		// FIXME check if a previous page exists
-		return Redirect::back()
+		return Redirect::action('ArticlesController@index')
 			->with('flash_notice', 'Article successfully deleted.');
 
 	}

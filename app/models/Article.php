@@ -7,6 +7,12 @@ class Article extends BaseEloquent
 
 	// Enable timestamps	
 	public $timestamps = true;
+
+	// Classes of Articles
+	protected static $article_classes = array(
+		'ArticleSingle',
+		'ArticleAmount'
+	);
 	
 	// Article __belongs_to_a__ Category
 	public function category()
@@ -25,6 +31,12 @@ class Article extends BaseEloquent
     public function proprieties()
     {
         return $this->morphTo();
+	}
+	
+	// Get types of article classes
+	public static function getArticleClasses()
+	{
+		return self::$article_classes;
 	}
 }
 
