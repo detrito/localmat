@@ -31,12 +31,15 @@
 @foreach($categories as $category)
 	<h3><a href="{{ action('ArticlesController@lists',
 	array('status'=>'all','category_id'=>$category->id) ) }}">
-		{{ $category->name }}</a> ({{ $category->article_class }})</h3>
-
+		{{ $category->name }}</a></h3>
+		
 	@if (empty($category->articles->first()))
 		<p>There are no articles in this category.</p>
 	@else
-	Here some infos about the article avaibility...
+		<p>
+		{{ $category->countAvailableArticles() }} availables /
+		{{ $category->countTotalArticles() }} totals
+		</p>
 	@endif
 @endforeach
 

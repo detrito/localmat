@@ -53,4 +53,28 @@ class Category extends Eloquent
 		return $field_names;
 	}
 	
+	public function countTotalArticles()
+	{
+		if ($this->article_class == 'ArticleSingle')
+		{
+			return $this->articles->count();
+		}
+		elseif($this->article_class == 'ArticleAmount')
+		{
+			return $this->articles->first()->proprieties->total_items;
+		}
+	}
+	
+	public function countAvailableArticles()
+	{
+		if ($this->article_class == 'ArticleSingle')
+		{
+			return ArticleSingle::whereCategory($this->id)
+				->whereStatus('available')->count();
+		}
+		elseif($this->article_class == 'ArticleAmount')
+		{
+			return $this->articles->first()->proprieties->available_items;
+		}
+	}
 }
