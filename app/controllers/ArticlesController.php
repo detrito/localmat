@@ -15,7 +15,9 @@ class ArticlesController extends BaseController
 			case Null:
 				// Get list of all categories with articles and proprieties
 				// (field-data or amounts)
-				$categories = Category::with('articles','articles.proprieties')->get();
+				$categories = Category::with('articles','articles.proprieties')
+					->orderBy('name')
+					->get();
 
 				// FIXME implement view of other status
 				return View::make('article_lists_all',
@@ -37,16 +39,18 @@ class ArticlesController extends BaseController
 				}
 			
 				// Call the lists method of the $article_class model
-				$article_class = new $category->article_class;
-				return $article_class->callLists($status_name, $category_id, $field_id);
+				$article_class = $category->article_class;
+				return $article_class::callLists($status_name, $category_id, $field_id);
 		}
     }
 
 	public function view($article_id)
 	{
-		// Call the view method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->callView();
+		
+		// Call the view method of the $article_class model
+		$article_class = $article->proprieties_type;
+		return $article_class::callView($article);
 	}
 
 	public function add($category_id=Null)
@@ -69,8 +73,8 @@ class ArticlesController extends BaseController
 				if($category->article_class == 'ArticleSingle')
 				{
 					// Call the add method of the $article_class model
-					$article_class = new $category->article_class;
-					return $article_class->callAdd($category);
+					$article_class = $category->article_class;
+					return $article_class::callAdd($category);
 				}
 			}
 			else
@@ -89,8 +93,8 @@ class ArticlesController extends BaseController
 		if($category->article_class == 'ArticleSingle')
 		{
 			// Call the handle_add method of the $article_class model
-			$article_class = new $category->article_class;
-			return $article_class->callHandleAdd($category);
+			$article_class = $category->article_class;
+			return $article_class::callHandleAdd($category);
 		}
 	}
 
@@ -98,21 +102,24 @@ class ArticlesController extends BaseController
 	{
 		// Call the edit method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->callEdit($article);
+		$article_class = $article->proprieties_type;
+		return $article_class::callEdit($article);
 	}
 
 	public function handle_edit($article_id)
 	{
 		// Call the handle_edit method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->callHandleEdit($article);
+		$article_class = $article->proprieties_type;
+		return $article_class::callHandleEdit($article);
 	}
 
 	public function delete($article_id)
 	{
 		// Call the handle_edit method of the $article_class model
 		$article = Article::find($article_id);
-		return $article->proprieties->callDelete($article);
+		$article_class = $article->proprieties_type;
+		return $article_class::callDelete($article);
 	}
 
 }

@@ -48,9 +48,7 @@
 	<p>There are no articles in this category.</p>
 @else
 	@if (Auth::check() && Auth::user()->enabled)	
-		<form action="{{ action('HistoryController@handle_borrow',
-			array('category_id'=>$category_id, 'field_id'=>$field_id,
-				'status_name'=>$status_name)) }}" method="post">
+		<form action="{{ action('HistoryController@handle_borrow') }}" method="post">
 	@endif
 	<table>
             <thead>

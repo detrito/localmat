@@ -32,7 +32,7 @@ Route::group(array('before' => 'auth|enabled'), function()
 	//users
 	Route::get('/users/view/{user_id}', 'UsersController@view');
 	//article
-	Route::post('/articles/borrow/{status_name}/{category_id}/{field_id?}', 'HistoryController@handle_borrow');
+	Route::post('/articles/borrow/', 'HistoryController@handle_borrow');
 	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
 });
 

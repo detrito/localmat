@@ -43,6 +43,7 @@
 				@endif
 				<th>Id</th>
 				<th>Article</th>
+				<th>Items</th>				
 				<th>Borrowed date</th>
 			</tr>
 		</thead>
@@ -59,6 +60,13 @@
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article->id) )}}">
 						{{ $history_item->article->category->name }}</a>
+					</td>
+					<td>
+						@if($history_item->amount_items == 0)
+							1
+						@else
+							{{ $history_item->amount_items }}
+						@endif
 					</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 				</tr>		
@@ -83,6 +91,7 @@
 			<tr>
 				<th>Id</th>
 				<th>Article</th>
+				<th>Items</th>
 				<th>Borrowed date</th>
 				<th>Time span</th>
 			</tr>
@@ -95,6 +104,13 @@
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article->id) )}}">
 						{{ $history_item->article->category->name }}</a>
+					</td>
+					<td>
+						@if($history_item->amount_items == 0)
+							1
+						@else
+							{{ $history_item->amount_items }}
+						@endif
 					</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 					<td>{{$history_item->getTimeSpan()}}</td>

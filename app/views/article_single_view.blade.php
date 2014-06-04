@@ -35,10 +35,12 @@
             </tbody>
         </table>
         
-@if (Auth::check())
+@if (Auth::check() && Auth::user()->enabled)
 	<h3>Actions</h3>
-	<a href="#">Borrow</a> -
-
+	@if(!$article->proprieties->borrowed)
+		<a href="#">Borrow</a> -
+	@endif
+	
 	@if (Auth::user()->admin)
     <a href="{{
 		action('ArticlesController@edit',
@@ -54,7 +56,7 @@
 
 
 <h3>Status</h3>
-	@if ($article->borrowed)
+	@if ($article->proprieties->borrowed)
 		Borrowed
 	@else
 		Available

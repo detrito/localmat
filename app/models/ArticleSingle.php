@@ -92,10 +92,10 @@ class ArticleSingle extends BaseEloquent
 	 * Functions called from ArticleController to add, view, edit, delete, ...
 	*/
 
-	public function callLists($status_name, $category_id, $field_id)
+	public static function callLists($status_name, $category_id, $field_id)
 	{
 		// Get list of all categories				
-		$categories = Category::all();
+		$categories = Category::all()->sortBy('name');
 
 		// Get list of status names
 		$status_names = History::getStatusNames();
@@ -126,11 +126,12 @@ class ArticleSingle extends BaseEloquent
 				'field_id'=>$field_id) );
 	}
 
-	public function callView()
+	public static function callView($article)
 	{
-		$article = $this->article;
-		$field_names = $this->getFieldNames();
-		$history = $this->article->history()
+		$article_single = $article->proprieties;
+		$field_names = $article_single->getFieldNames();
+		
+		$history = $article->history()
 			->with('user')
 			->orderBy('created_at','desc')
 			->get();
@@ -138,7 +139,7 @@ class ArticleSingle extends BaseEloquent
 		return View::make('article_single_view', compact('article','field_names','history'));
 	}
 	
-	public function callAdd($category)
+	public static function callAdd($category)
 	{
 		// Get list of all categories				
 		$categories = Category::all();
@@ -153,7 +154,7 @@ class ArticleSingle extends BaseEloquent
 	public static function loadFormData()
 	{
 		// Get form data
-		$data = Input::except('fields',0);			
+		$data = Input::except('fields',0);		
 
 		// Decode fields array
 		$fields  = json_decode(Input::get('fields'));
@@ -167,7 +168,7 @@ class ArticleSingle extends BaseEloquent
 		return array($data, $fields, $validator);
 	}
 
-	public function callHandleAdd($category)
+	public static function callHandleAdd($category)
 	{
 		// load input data and prepare validator
 		list($data, $fields, $validator) = self::loadFormData();
@@ -213,7 +214,7 @@ class ArticleSingle extends BaseEloquent
 			->withErrors($validator);
 	}
 	
-	public function callEdit($article)
+	public static function callEdit($article)
 	{
 		// Load ArticleSingle (proprieties) and fieldData of the article
 		$article->load('proprieties','proprieties.fieldData');
@@ -229,7 +230,7 @@ class ArticleSingle extends BaseEloquent
 
 	}
 
-	public function callHandleEdit($article)
+	public static function callHandleEdit($article)
 	{	
 		// load input data and prepare validator
 		list($data,$fields,$validator) = self::loadFormData();
@@ -259,7 +260,7 @@ class ArticleSingle extends BaseEloquent
 			->withErrors($validator);		
 	}
 	
-	public function callDelete($article)
+	public static function callDelete($article)
 	{
 		// delete the history of this Article
 		$article->history()->delete();
@@ -276,6 +277,5 @@ class ArticleSingle extends BaseEloquent
 		// FIXME check if a previous page exists
 		return Redirect::action('ArticlesController@index')
 			->with('flash_notice', 'Article successfully deleted.');
-
 	}
 }
