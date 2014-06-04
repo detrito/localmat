@@ -4,8 +4,7 @@ TODO
 FEATURESTOADD
 -------------
 
-* Shorted list of articles under /articles (like cords: 50 availables, 30 borrowed)
-* Add a model type for items without description (e.g. amount of availables/borrowed carabines)
+* Function return $articles to $user
 
 THINGSTOFIX
 -----------
