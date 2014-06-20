@@ -105,6 +105,15 @@ class UsersController extends BaseController
 			->withErrors($validator);
 	}
 
+	public function login($user_id)
+	{
+		$user = User::find($user_id);
+		Auth::login($user);
+		
+		return Redirect::action('UsersController@index')
+			->with('flash_notice', 'You are now logged-in as '.$user->email);
+	}
+
 	public function edit($user_id)
     {
 		$user = User::find($user_id);

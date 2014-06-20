@@ -70,6 +70,7 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	// users	
 	Route::get('/users/add', 'UsersController@add');
 	Route::post('/users/add', 'UsersController@handle_add');
+	Route::get('/users/login/{user_id}', 'UsersController@login');	
 	// FIXME also allow user $user to modify its data
 	Route::get('/users/edit/{user_id}', 'UsersController@edit');
 	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');

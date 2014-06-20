@@ -35,6 +35,9 @@ Users
 						<td>{{ $user->admin }}</td>
                     	<td>
                         	<a href="{{
+							action('UsersController@login',
+							array('user_id'=>$user->id)) }}">Log-in</a>                    	
+                        	<a href="{{
 							action('UsersController@edit',
 							array('user_id'=>$user->id)) }}">Edit</a>
                         	<a href="{{
