@@ -36,7 +36,7 @@ Route::group(array('before' => 'auth|enabled'), function()
 	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
 });
 
-// routes accessibles onl to logged-in and enabled administrators users
+// routes accessibles only to logged-in and enabled administrators users
 Route::group(array('before' => 'auth|enabled|admin'), function()
 {
 	Route::get('/admin', function()
@@ -71,10 +71,11 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/users/add', 'UsersController@add');
 	Route::post('/users/add', 'UsersController@handle_add');
 	Route::get('/users/login/{user_id}', 'UsersController@login');	
+	Route::get('/users/trash/{user_id}', 'UsersController@trash');	
+	Route::get('/users/restore/{user_id}', 'UsersController@restore');
 	// FIXME also allow user $user to modify its data
 	Route::get('/users/edit/{user_id}', 'UsersController@edit');
 	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
-	Route::get('/users/delete/{user_id}', 'UsersController@delete');
 });
 
 // users

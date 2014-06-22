@@ -6,17 +6,30 @@ class UsersController extends BaseController
 {
     public function index()
     {
-        // Show a listing of games.
-        $users = User::
-			orderBy('given_name', 'asc')
-			->orderBy('family_name', 'asc')
-			->get();
+		if (Auth::check() && Auth::user()->admin)
+		{
+	        $users = User::
+	        	withTrashed()
+				->orderBy('given_name', 'asc')
+				->orderBy('family_name', 'asc')
+				->get();
+		}
+		else
+		{
+	        $users = User::
+				orderBy('given_name', 'asc')
+				->orderBy('family_name', 'asc')
+				->get();		
+		}
+			
         return View::make('user_index', compact('users'));
     }
 
 	public function view($user_id)
 	{
-		$user = User::find($user_id);
+		$user = User::
+			withTrashed()
+			->find($user_id);
 
 		$history_borrowed = History::whereUser($user_id)
 			->whereBorrowed()
@@ -75,7 +88,7 @@ class UsersController extends BaseController
 			}
 			elseif ($action == 'edit')
 			{
-				$user = User::find($user_id);
+				$user = User::withTrashed()->find($user_id);
 			}
 
 			$user->email = $data['email'];
@@ -116,7 +129,7 @@ class UsersController extends BaseController
 
 	public function edit($user_id)
     {
-		$user = User::find($user_id);
+		$user = User::withTrashed()->find($user_id);
 
 		return View::make('user_form',compact('user'))
 			->with('action', 'edit');
@@ -128,7 +141,7 @@ class UsersController extends BaseController
 		return $this->insert_data($data, 'edit', $user_id);
 	}
 
-	public function delete($user_id)
+	public function trash($user_id)
     {
         $user = User::find($user_id);
 		$history_borrowed = History::whereUser($user_id)
@@ -140,11 +153,23 @@ class UsersController extends BaseController
 			// softDelete this user
 			$user->delete();
 			return Redirect::action('UsersController@index')
-				->with('flash_notice', 'User successfully deleted.');
+				->with('flash_notice', 'User successfully trashed.');
 		}
 		return Redirect::action('UsersController@index')
 				->with('flash_error', 'This user still has borrowed articles!
-					Make sure that he returned all his articles before to delete it.');
+					Make sure that he returned all his articles before to trash it.');
+    }
+    
+    public function restore($user_id)
+    {
+    	$user = User::withTrashed()->find($user_id);
+    	if(isset($user->deleted_at))
+    	{
+    		$user->restore();
+    	
+			return Redirect::action('UsersController@index')
+					->with('flash_notice', 'User sucessfully restored.');
+		}
     }
 }
 

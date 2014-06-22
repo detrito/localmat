@@ -24,6 +24,22 @@
 	</tr>
 </table>
 
+<h3>Status:</h3>
+
+@if($user->enabled)
+	Enabled
+@else
+	Disabled
+@endif
+
+@if(isset($user->deleted_at))
+	, TRASHED
+@endif
+
+@if($user->admin)
+	, Admin
+@endif
+
 <h3>Currently borrowed articles:</h3>
 
 @if ( empty($history_borrowed->first()) )

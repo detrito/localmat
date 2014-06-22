@@ -12,6 +12,14 @@ a {
     color: #4183C4;
 }
 
+.inactive td {
+	color: #999;
+}
+
+.inactive td a {
+	color: #999;
+}
+
 table { margin: 1em; border-collapse: collapse; }
 
 td {

@@ -23,30 +23,44 @@ Users
 					</tr>
             </thead>
             <tbody>
-                @foreach($users as $user)
-                <tr>
-                    <td><a href="{{
-						action('UsersController@view',
-							array('user_id'=>$user->id) )}}">
-						{{ $user->given_name }} {{ $user->family_name }}</a>
-					</td>
-					@if (Auth::check() && Auth::user()->admin)
-						<td>{{ $user->enabled }}</td>
-						<td>{{ $user->admin }}</td>
-                    	<td>
-                        	<a href="{{
-							action('UsersController@login',
-							array('user_id'=>$user->id)) }}">Log-in</a>                    	
-                        	<a href="{{
-							action('UsersController@edit',
-							array('user_id'=>$user->id)) }}">Edit</a>
-                        	<a href="{{
-							action('UsersController@delete',
-							array($user->id)) }}">Delete</a>
-                    	</td>
-					@endif
-                </tr>
-                @endforeach
+            	@foreach($users as $user)
+		        	
+		        	@if(isset($user->deleted_at))
+		        		<tr class="inactive">
+		        	@else
+		        		<tr>
+                	@endif
+                	
+		            	<td><a href="{{
+								action('UsersController@view',
+									array('user_id'=>$user->id) )}}">
+								{{ $user->given_name }} {{ $user->family_name }}</a>
+						</td>
+					
+						@if (Auth::check() && Auth::user()->admin)
+							<td>{{ $user->enabled }}</td>
+							<td>{{ $user->admin }}</td>
+		                	<td>
+		                    	<a href="{{
+								action('UsersController@login',
+								array('user_id'=>$user->id)) }}">Log-in</a>                    	
+		                    	<a href="{{
+								action('UsersController@edit',
+								array('user_id'=>$user->id)) }}">Edit</a>
+								
+								@if (! isset($user->deleted_at))
+				                	<a href="{{
+									action('UsersController@trash',
+									array($user->id)) }}">Trash</a>
+								@else
+									<a href="{{
+									action('UsersController@restore',
+									array($user->id)) }}">Restore</a>
+								@endif
+		                	</td>
+						@endif
+		            </tr>
+		            @endforeach
             </tbody>
         </table>
 @endif
