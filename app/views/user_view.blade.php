@@ -40,6 +40,13 @@
 	, Admin
 @endif
 
+@if(Auth::check() && Auth::user()->id == $user->id)
+	<h3>Actions:</h3>
+	<a href="{{
+	action('UsersController@edit',
+	array('user_id'=>$user->id)) }}">Edit user data</a>
+@endif
+
 <h3>Currently borrowed articles:</h3>
 
 @if ( empty($history_borrowed->first()) )

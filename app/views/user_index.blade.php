@@ -43,10 +43,7 @@ Users
 		                	<td>
 		                    	<a href="{{
 								action('UsersController@login',
-								array('user_id'=>$user->id)) }}">Log-in</a>                    	
-		                    	<a href="{{
-								action('UsersController@edit',
-								array('user_id'=>$user->id)) }}">Edit</a>
+								array('user_id'=>$user->id)) }}">Log-in</a>
 								
 								@if (! isset($user->deleted_at))
 				                	<a href="{{

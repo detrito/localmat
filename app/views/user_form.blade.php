@@ -91,6 +91,8 @@
 </td>
 </tr>
 
+{{-- FIXME allow admin and active checkboboxes only for admins in a cleaner way--}}
+@if (Auth::check() && Auth::user()->admin)	
 <tr>
 <td> {{ Form::label('admin', 'Administrator') }} </td>
 <td>
@@ -101,6 +103,7 @@
 @endif
 </td>
 </tr>
+@endif
 
 </table>
 

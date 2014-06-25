@@ -73,7 +73,14 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/users/login/{user_id}', 'UsersController@login');	
 	Route::get('/users/trash/{user_id}', 'UsersController@trash');	
 	Route::get('/users/restore/{user_id}', 'UsersController@restore');
-	// FIXME also allow user $user to modify its data
+	Route::get('/users/edit/{user_id}', 'UsersController@edit');
+	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
+
+});
+
+Route::group(array('before' => 'auth|owner'), function()
+{
+	// FIXME also allow admin users to edit other users
 	Route::get('/users/edit/{user_id}', 'UsersController@edit');
 	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
 });

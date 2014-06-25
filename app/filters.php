@@ -70,6 +70,15 @@ Route::filter('admin', function()
 	}
 });
 
+// check if id of the logged-in user correspond to $user_id
+Route::filter('owner', function($route) {
+    if ($route->getParameter('user_id') !=  Auth::user()->id)
+    {
+        return Redirect::to('/')
+			->with('flash_error', 'Only owners can view this page!');
+    }
+});
+
 
 /*
 |--------------------------------------------------------------------------
