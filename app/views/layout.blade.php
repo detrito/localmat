@@ -25,6 +25,7 @@
 			<li><a href="{{ url('/') }}">Home</a></li>
     		<li><a href="{{ action('ArticlesController@index') }}">Articles</a></li>
 			<li><a href="{{ action('UsersController@index') }}">Users</a></li>
+			<li><a href="{{ action('HistoryController@index') }}">History</a></li>
 			@if (Auth::check())
 				<li><a href="{{ action('UsersController@view',
 					array(Auth::user()->id) ) }}">Me</a></li>

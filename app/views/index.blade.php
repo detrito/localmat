@@ -39,4 +39,115 @@ the <a href="http://www.gnu.org/licenses/quick-guide-gplv3.html">GPLv3</a>
 license. Patches and bug reports can be sent over GitHub or by 
 {{ HTML::mailto('detrito(at}inventati(dot}org','e-mail') }}.
 
+
+<h3>Last borrowed articles</h3>
+
+@if ( empty($history_borrowed->first()) )
+	<p>No articles habe been borrowed yet.</p>
+@else
+	<table>
+		<thead>
+			<tr>
+				<th>Article</th>
+				<th>Items</th>
+				<th>User</th>
+				<th>Borrowed date</th>
+				<th>Time span</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach($history_borrowed as $history_item)
+			
+				@if(isset($history_item->user))
+					<?php $user = $history_item->user ?>
+					<tr>
+				@else
+					{{-- Load the attributes of the softDeleted user --}}
+					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
+					<tr class="inactive">
+				@endif
+				
+                    <td><a href="{{
+						action('ArticlesController@view',
+							array('article_id'=>$history_item->article_id) )}}">
+						{{ $history_item->article->category->name }}</a>
+					</td>
+					<td>
+						@if($history_item->amount_items == 0)
+							1
+						@else
+							{{ $history_item->amount_items }}
+						@endif
+					</td>
+					<td><a href="{{
+						action('UsersController@view',
+							array('user_id'=>$user->id) )}}">
+						{{$user->given_name }}
+						{{$user->family_name }}
+						</a>
+					</td>
+					<td>{{$history_item->getBorrowedDate()}}</td>
+					<td>{{$history_item->getTimeSpan()}}</td>
+				</tr>		
+			@endforeach
+		</tbody>
+	</table>
+@endif
+
+<h3>Last returned articles</h3>
+
+@if ( empty($history_returned->first()) )
+	<p>No articles habe been returned yet.</p>
+@else
+	<table>
+		<thead>
+			<tr>
+				<th>Article</th>
+				<th>Items</th>
+				<th>User</th>
+				<th>Borrowed date</th>
+				<th>Time span</th>
+			</tr>
+		</thead>
+		<tbody>
+			@foreach($history_returned as $history_item)
+			
+				@if(isset($history_item->user))
+					<?php $user = $history_item->user ?>
+					<tr>
+				@else
+					{{-- Load the attributes of the softDeleted user --}}
+					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
+					<tr class="inactive">
+				@endif
+				
+                    <td><a href="{{
+						action('ArticlesController@view',
+							array('article_id'=>$history_item->article_id) )}}">
+						{{ $history_item->article->category->name }}</a>
+					</td>
+					<td>
+						@if($history_item->amount_items == 0)
+							1
+						@else
+							{{ $history_item->amount_items }}
+						@endif
+					</td>
+					<td><a href="{{
+						action('UsersController@view',
+							array('user_id'=>$user->id) )}}">
+						{{$user->given_name }}
+						{{$user->family_name }}
+						</a>
+					</td>
+					<td>{{$history_item->getBorrowedDate()}}</td>
+					<td>{{$history_item->getTimeSpan()}}</td>
+				</tr>		
+			@endforeach
+		</tbody>
+	</table>
+@endif
+
+
+
 @stop

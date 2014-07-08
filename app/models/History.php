@@ -9,7 +9,10 @@ class History extends Eloquent
 	public $timestamps = true;
 
 	// Status-names allowed for the articles
-	protected static $status_names = array('all','available','borrowed');	
+	protected static $article_status_names = array('all','available','borrowed');
+
+	// Status-names allowed for the histories
+	protected static $history_status_names = array('all','returned','borrowed');
 
 	// History __has_one__ Article
 	public function article()
@@ -23,7 +26,7 @@ class History extends Eloquent
 		return $this->belongsTo('User');
 	}
 
-	// Select articles who belongs to category $name
+	// Select Histories who belongs to user $user_od
 	public function scopewhereUser($query,$user_id)
 	{
 		return $query->whereHas('User', function($query) use($user_id)
@@ -32,16 +35,45 @@ class History extends Eloquent
 		});
 	}
 	
-	// Select articles who belongs to category $name
+	// Select currently still borrowed Histories
 	public function scopewhereBorrowed($query)
 	{
 		return $query->whereNull('returned_at');
 	}
 
-	public static function getStatusNames()
+	// Select returned Histories
+	public function scopewhereReturned($query)
 	{
-		return self::$status_names;
+		return $query->whereNotNull('returned_at');
 	}
+
+	// Select Histories with status $status_name
+	public function scopewhereStatus($query, $status_name)
+	{
+		switch($status_name)
+		{
+			case 'all':
+				return $query;
+				break;
+			case 'returned':
+				return $query->whereReturned();
+				break;
+			case 'borrowed':
+				return $query->whereBorrowed();
+				break;
+		}
+	}
+
+	public static function getArticleStatusNames()
+	{
+		return self::$article_status_names;
+	}
+	
+	public static function getHistoryStatusNames()
+	{
+		return self::$history_status_names;
+	}
+
 
 	public function isBorrowed()
 	{

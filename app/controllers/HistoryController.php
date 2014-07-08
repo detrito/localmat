@@ -1,7 +1,28 @@
 <?php
 
 class HistoryController extends BaseController
-{	
+{
+	public function index()
+	{
+		return $this->lists();
+  	}
+	
+	public function lists($status_name='all')
+	{
+		// Get list of status names
+		$status_names = History::getHistoryStatusNames();
+	
+		// FIXME load automatically also softDeleted users
+		$history = History::
+			whereStatus($status_name)
+			->with('user','article')
+			->orderBy('created_at','desc')
+			->paginate(10);
+	
+		return View::make('history_lists', compact('history','status_names'))
+			->with( array('status_name'=>$status_name));
+	}
+
 	public function handle_borrow()
 	{
 		$user = User::find( Auth::user()->id );

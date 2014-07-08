@@ -12,28 +12,31 @@
 */
 
 // bind route parameters.
-Route::model('user', 'User');
+//Route::model('user', 'User');
 
 // index
-Route::get('/', function()
-{
-	return View::make('index');
-});
+Route::get('/', 'IndexController@index');
 
-// articles
-Route::get('/articles', 'ArticlesController@index');
-Route::get('/articles/lists/{status_name?}/{category_id?}/{field_id?}',
-	'ArticlesController@lists');
-Route::get('/articles/view/{article_id}', 'ArticlesController@view');
+// users
+Route::get('/users', 'UsersController@index');
 
 // routes accessibles only to logged-in and enabled users
 Route::group(array('before' => 'auth|enabled'), function()
 {
 	//users
 	Route::get('/users/view/{user_id}', 'UsersController@view');
+
 	//article
+	Route::get('/articles', 'ArticlesController@index');
+	Route::get('/articles/lists/{status_name?}/{category_id?}/{field_id?}',
+	'ArticlesController@lists');
+	Route::get('/articles/view/{article_id}', 'ArticlesController@view');
 	Route::post('/articles/borrow/', 'HistoryController@handle_borrow');
 	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
+	
+	// history
+	Route::get('/history/', 'HistoryController@index');	
+	Route::get('/history/{status_name?}', 'HistoryController@lists');
 });
 
 // routes accessibles only to logged-in and enabled administrators users
@@ -75,7 +78,6 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/users/restore/{user_id}', 'UsersController@restore');
 	Route::get('/users/edit/{user_id}', 'UsersController@edit');
 	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
-
 });
 
 Route::group(array('before' => 'auth|owner'), function()
@@ -84,9 +86,6 @@ Route::group(array('before' => 'auth|owner'), function()
 	Route::get('/users/edit/{user_id}', 'UsersController@edit');
 	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
 });
-
-// users
-Route::get('/users', 'UsersController@index');
 
 // secret content
 Route::get('/secret', array(
