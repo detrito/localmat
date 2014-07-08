@@ -77,14 +77,21 @@
 		</thead>
 		<tbody>
 			@foreach($history as $history_item)
-				<tr>
+				@if(isset($history_item->user))
+					<?php $user = $history_item->user ?>
+					<tr>
+				@else
+					{{-- Load the attributes of the softDeleted user --}}
+					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
+					<tr class="inactive">
+				@endif
 					<td>{{$history_item->id}}</td>
-					<td><a href="{{
-						action('UsersController@view',
-							array('user_id'=>$history_item->user->id) )}}">
-						{{$history_item->user->given_name}}
-						{{$history_item->user->family_name}}
-						</a>
+					<td>
+						<a href="{{
+							action('UsersController@view',
+								array('user_id'=>$user->id) )}}">
+							{{ $user->given_name }}
+							{{ $user->family_name }}</a>
 					</td>
 					<td>{{$history_item->getBorrowedDate()}}</td>
 					<td>{{$history_item->getTimeSpan()}}</td>

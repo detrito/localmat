@@ -17,6 +17,7 @@ class UsersController extends BaseController
 		else
 		{
 	        $users = User::
+
 				orderBy('given_name', 'asc')
 				->orderBy('family_name', 'asc')
 				->get();		
@@ -31,12 +32,12 @@ class UsersController extends BaseController
 			withTrashed()
 			->find($user_id);
 
-		$history_borrowed = History::whereUser($user_id)
+		$history_borrowed = $user->histories()
 			->whereBorrowed()
 			->orderBy('created_at','desc')
 			->get();
 
-		$history_all = History::whereUser($user_id)
+		$history_all = $user->histories()
 			->orderBy('created_at','desc')
 			->get();
 
@@ -120,11 +121,11 @@ class UsersController extends BaseController
 
 	public function login($user_id)
 	{
-		$user = User::find($user_id);
+		$user = User::findOrFail($user_id);
 		Auth::login($user);
 		
 		return Redirect::action('UsersController@index')
-			->with('flash_notice', 'You are now logged-in as '.$user->email);
+				->with('flash_notice', 'You are now logged-in as '.$user->email);
 	}
 
 	public function edit($user_id)
