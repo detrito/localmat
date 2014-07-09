@@ -27,16 +27,7 @@ class ArticlesController extends BaseController
 						
 			// If a category_id is specified
 			default:				
-				// Check if the category exists
-				if ( Category::find($category_id)->exists() )
-				{
-					$category = Category::find($category_id);
-				}
-				else
-				{
-					return Redirect::action('ArticlesController@lists')
-						->with('flash_notice', 'Category '.$category_name.' not found');
-				}
+				$category = Category::findOrFail($category_id);
 			
 				// Call the lists method of the $article_class model
 				$article_class = $category->article_class;
@@ -46,7 +37,7 @@ class ArticlesController extends BaseController
 
 	public function view($article_id)
 	{
-		$article = Article::find($article_id);
+		$article = Article::findOrFail($article_id);
 		
 		// Call the view method of the $article_class model
 		$article_class = $article->proprieties_type;
@@ -65,29 +56,21 @@ class ArticlesController extends BaseController
 		}
 		else
 		{
-			if ( Category::find($category_id)->exists() )
+			$category = Category::findOrFail($category_id);
+			
+			// This method only exist for the ArticleSingle class
+			if($category->article_class == 'ArticleSingle')
 			{
-				$category = Category::find($category_id);
-				
-				// This method only exist for the ArticleSingle class
-				if($category->article_class == 'ArticleSingle')
-				{
-					// Call the add method of the $article_class model
-					$article_class = $category->article_class;
-					return $article_class::callAdd($category);
-				}
-			}
-			else
-			{
-				return Redirect::action('ArticlesController@add')
-						->with('flash_notice', 'Category '.$category_name.' not found');
+				// Call the add method of the $article_class model
+				$article_class = $category->article_class;
+				return $article_class::callAdd($category);
 			}
 		}
 	}
 
 	public function handle_add($category_id)
 	{
-		$category = Category::find($category_id);
+		$category = Category::findOrFail($category_id);
 		
 		// This method only exist for the ArticleSingle class
 		if($category->article_class == 'ArticleSingle')
@@ -101,7 +84,7 @@ class ArticlesController extends BaseController
 	public function edit($article_id)
 	{
 		// Call the edit method of the $article_class model
-		$article = Article::find($article_id);
+		$article = Article::findOrFail($article_id);
 		$article_class = $article->proprieties_type;
 		return $article_class::callEdit($article);
 	}
@@ -109,7 +92,7 @@ class ArticlesController extends BaseController
 	public function handle_edit($article_id)
 	{
 		// Call the handle_edit method of the $article_class model
-		$article = Article::find($article_id);
+		$article = Article::findOrFail($article_id);
 		$article_class = $article->proprieties_type;
 		return $article_class::callHandleEdit($article);
 	}
@@ -117,7 +100,7 @@ class ArticlesController extends BaseController
 	public function delete($article_id)
 	{
 		// Call the handle_edit method of the $article_class model
-		$article = Article::find($article_id);
+		$article = Article::findOrFail($article_id);
 		$article_class = $article->proprieties_type;
 		return $article_class::callDelete($article);
 	}

@@ -51,7 +51,7 @@ class FieldsController extends BaseController
 	public function edit($field_id)
 	{
 		// get collection of this field		
-		$field = Field::find($field_id);
+		$field = Field::findOrFail($field_id);
 
 		$types = Field::getTypes();
 		// use $types as array-keys AND as array-values	
@@ -75,7 +75,7 @@ class FieldsController extends BaseController
 
 		if ($validator->passes())
 		{
-			$field = Field::find($field_id);
+			$field = Field::findOrFail($field_id);
 			$field->name = Input::get('name');
 			$field->type = Input::get('type');
 			if( Input::get('required') !== Null )
@@ -94,7 +94,7 @@ class FieldsController extends BaseController
 
 	public function delete($field_id)
 	{
-		$field = Field::find($field_id);
+		$field = Field::findOrFail($field_id);
 		if ( $field->fieldData()->get()->isEmpty() )
 		{
 			$field->delete();

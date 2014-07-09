@@ -17,7 +17,6 @@ class UsersController extends BaseController
 		else
 		{
 	        $users = User::
-
 				orderBy('given_name', 'asc')
 				->orderBy('family_name', 'asc')
 				->get();		
@@ -30,8 +29,8 @@ class UsersController extends BaseController
 	{
 		$user = User::
 			withTrashed()
-			->find($user_id);
-
+			->findOrFail($user_id);
+			
 		$history_borrowed = $user->histories()
 			->whereBorrowed()
 			->orderBy('created_at','desc')

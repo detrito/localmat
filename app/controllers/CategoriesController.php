@@ -31,7 +31,7 @@ class CategoriesController extends BaseController
 
 	public function edit($category_id)
 	{
-		$category = Category::find($category_id);
+		$category = Category::findOrFail($category_id);
 		
 		// Get Article classes
 		$article_classes = Article::getArticleClasses();
@@ -101,7 +101,7 @@ class CategoriesController extends BaseController
 			}
 			elseif ($action == 'edit')
 			{
-				$category = Category::find($category_id);
+				$category = Category::findOrFail($category_id);
 				$article_class = $category->article_class;
 			}
 			
@@ -181,7 +181,7 @@ class CategoriesController extends BaseController
 
 	public function delete($category_id)
 	{
-		$category = Category::find($category_id);
+		$category = Category::findOrFail($category_id);
 		if ( $category->articles()->get()->isEmpty() )
 		{
 			// remove all relationships to the fields for this category

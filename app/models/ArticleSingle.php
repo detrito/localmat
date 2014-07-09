@@ -37,10 +37,13 @@ class ArticleSingle extends BaseEloquent
 		{
 			case 'all':
 				return $query;
+				break;
 			case 'available':
 				return $query->where('borrowed','=',0);
+				break;
 			case 'borrowed':
 				return $query->where('borrowed','=',1);
+				break;
 		}
 	}
 
@@ -98,7 +101,7 @@ class ArticleSingle extends BaseEloquent
 		$categories = Category::all()->sortBy('name');
 
 		// Get list of status names
-		$status_names = History::getStatusNames();
+		$status_names = History::getArticleStatusNames();
 
 		// Get fields who belongs to this category
 		$fields = Category::find($category_id)->fields()->get();					
