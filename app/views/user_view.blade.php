@@ -64,7 +64,6 @@
 				@if (Auth::check() && Auth::user()->enabled && Auth::user()->id == $user->id)
 				<th></th>				
 				@endif
-				<th>Id</th>
 				<th>Article</th>
 				<th>Items</th>				
 				<th>Borrowed date</th>
@@ -78,7 +77,6 @@
 							type="checkbox"
 							value="{{$history_item->id}}"></th>
 					@endif
-					<td>{{$history_item->id}}</td>
                     <td><a href="{{
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article->id) )}}">
@@ -112,7 +110,6 @@
 	<table>
 		<thead>
 			<tr>
-				<th>Id</th>
 				<th>Article</th>
 				<th>Items</th>
 				<th>Borrowed date</th>
@@ -122,7 +119,6 @@
 		<tbody>
 			@foreach($history_all as $history_item)
 				<tr>
-					<td>{{$history_item->id}}</td>
                     <td><a href="{{
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article->id) )}}">

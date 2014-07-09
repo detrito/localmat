@@ -14,7 +14,6 @@
 	<table>
             <thead>
                 <tr>
-                    <th>Id</th>
 					{{-- Loop throught fields --}}
 					@foreach ($field_names as $field_name)
 						<th>{{ $field_name }}</th>
@@ -25,8 +24,6 @@
 
             <tbody>				
 				<tr>
-                    <td>{{ $article->id }}</td>
-					
 					{{-- Loop througt article's field-data --}}
 						@foreach ($article->proprieties->fieldData as $field_data)
 							<td>{{ $field_data->value }}</td>
@@ -69,7 +66,6 @@
 	<table>
 		<thead>
 			<tr>
-				<th>Id</th>
 				<th>User</th>
 				<th>Borrowed date</th>
 				<th>Time span</th>
@@ -85,7 +81,6 @@
 					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
 					<tr class="inactive">
 				@endif
-					<td>{{$history_item->id}}</td>
 					<td>
 						<a href="{{
 							action('UsersController@view',

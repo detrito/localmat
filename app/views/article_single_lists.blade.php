@@ -53,16 +53,13 @@
 	<table>
             <thead>
                 <tr>
-					{{-- column for the checkboxes --}}					
+					{{-- Column for the checkboxes --}}					
 					@if (Auth::check() && Auth::user()->enabled)
 					<th></th>
 					@endif
 
-					{{-- ID column --}}
-                    <th><a href="{{ action('ArticlesController@lists',
-						array('status_name'=>$status_name,
-						'category_id'=>$category_id,
-						'field_id'=>Null) ) }}">Id</a>
+					{{-- Link to view article --}}
+                    <th>
 					</th>
 
 					{{-- Loop throught fields --}}
@@ -101,7 +98,7 @@
                     <td><a href="{{
 						action('ArticlesController@view',
 							array('article_id'=>$article_single->article->id) )}}">
-						{{ $article_single->article->id }}</a>
+						&#8680;</a>
 					</td>
 					
 					{{-- Loop througt article's attributes using field-ids as keys --}}

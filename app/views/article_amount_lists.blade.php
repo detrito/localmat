@@ -85,7 +85,6 @@
 	<table>
 		<thead>
 			<tr>
-				<th>Id</th>
 				<th>User</th>
 				<th>Items</th>
 				<th>Borrowed date</th>
@@ -95,7 +94,6 @@
 		<tbody>
 			@foreach($history as $history_item)
 				<tr>
-					<td>{{$history_item->id}}</td>
 					<td><a href="{{
 						action('UsersController@view',
 							array('user_id'=>$history_item->user->id) )}}">
