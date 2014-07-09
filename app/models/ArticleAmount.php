@@ -22,7 +22,7 @@ class ArticleAmount extends BaseEloquent
 		$categories = Category::all()->sortBy('name');
 
 		// Get list of status names
-		$status_names = History::getStatusNames();
+		$status_names = History::getArticleStatusNames();
 
 		// Retrive amount data (avaibale items, total items, ..) from the article
 		$article = Category::find($category_id)->articles()->first();
