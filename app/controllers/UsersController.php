@@ -24,6 +24,15 @@ class UsersController extends BaseController
 			
         return View::make('user_index', compact('users'));
     }
+    
+    public function login($user_id)
+	{
+		$user = User::findOrFail($user_id);
+		Auth::login($user);
+		
+		return Redirect::action('UsersController@index')
+				->with('flash_notice', 'You are now logged-in as '.$user->email);
+	}
 
 	public function view($user_id)
 	{
@@ -45,100 +54,123 @@ class UsersController extends BaseController
 
     public function add()
     {
-        return View::make('user_form')
-			->with('action', 'add');; 
+        return View::make('user_form_add');
 	}
 
 	public function handle_add()
 	{
 		$data = Input::all();
-		return $this->insert_data($data,'add');
-	}
-
-	private function insert_data($data, $action, $user_id=Null)
-	{
 		$rules = array(
 			'given_name' => 'required|alpha',
 			'family_name' => 'required|alpha',
-			'email' => 'required|email|unique:lm_users'
+			'email' => 'required|email|unique:lm_users',
+			'password' => 'required|alpha_dash|confirmed|min:6'
 		);
-
-		// force unique rule on email to ignore $user_id
-		if( $action == 'edit')
-		{
-			$rules['email'] .= ',email,'.$user_id;
-		}
-
-		// require password when
-		// 1. editing a user and a password has been entered
-		// 2. adding a new user		
-		if( $action == 'edit' &&  !empty($data['password']) || $action == 'add')
-		{
-			// add password-rule to $rules
-			$rules['password'] = 'required|alpha_dash|confirmed|min:6';
-		}
 
 		$validator = Validator::make($data, $rules);
 		
 		if ( $validator->passes() )
 		{
-			if ($action == 'add')
-			{
-				$user = new User;
-			}
-			elseif ($action == 'edit')
-			{
-				$user = User::withTrashed()->find($user_id);
-			}
-
+			$user = new User;
 			$user->email = $data['email'];
 			$user->given_name = $data['given_name'];
 			$user->family_name = $data['family_name'];
-			if( $action == 'edit' &&  !empty($data['password']) || $action == 'add')
-			{
-				$user->password = Hash::make($data['password']);
-			}			
+			$user->password = Hash::make($data['password']);
+						
 			// set to false if the input value has not be checked in the form
 			$user->enabled = isset($data['enabled']) ? true : false;
 			$user->admin = isset($data['admin']) ? true : false;		
 			$user->save();
 			
-			if($action == 'add')
-			{
-				return Redirect::action('UsersController@add')
-					->with('flash_notice', 'User successfully added.');
-			}
-			elseif($action == 'edit')
-			{
-				return Redirect::action('UsersController@index')
-					->with('flash_notice', 'User successfully modified.');
-			}
+			return Redirect::action('UsersController@add')
+				->with('flash_notice', 'User successfully added.');
 		}
 		return Redirect::back()
 			->withErrors($validator);
 	}
-
-	public function login($user_id)
-	{
-		$user = User::findOrFail($user_id);
-		Auth::login($user);
-		
-		return Redirect::action('UsersController@index')
-				->with('flash_notice', 'You are now logged-in as '.$user->email);
-	}
-
-	public function edit($user_id)
-    {
-		$user = User::withTrashed()->find($user_id);
-
-		return View::make('user_form',compact('user'))
-			->with('action', 'edit');
-    }
 	
-	public function handle_edit($user_id)
+	public function edit_permissions($user_id)
 	{
+		$user = User::withTrashed()->find($user_id);
+		return View::make('user_form_permissions', compact('user'));	
+	}
+	
+	public function handle_edit_permissions($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
 		$data = Input::all();
-		return $this->insert_data($data, 'edit', $user_id);
+
+		// set to false if the input value has not be checked in the form
+		$user->enabled = isset($data['enabled']) ? true : false;
+		$user->admin = isset($data['admin']) ? true : false;		
+		$user->save();
+			
+		return Redirect::action('UsersController@view',
+			array('user_id'=>$user->id) )
+			->with('flash_notice', 'User permissions successfully modified.');
+	}
+	
+	public function edit_password($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
+		return View::make('user_form_password',compact('user'));
+	}
+	
+	public function handle_edit_password($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
+		$data = Input::all();
+		$rules = array( 'password' => 'required|alpha_dash|confirmed|min:6' );
+		
+		$validator = Validator::make($data, $rules);
+		
+		if ( $validator->passes() )
+		{
+			$user = User::withTrashed()->find($user_id);
+			$user->password = Hash::make($data['password']);
+			$user->save();
+			
+			return Redirect::action('UsersController@view',
+				array('user_id'=>$user->id) )
+				->with('flash_notice', 'User password successfully modified.');
+		}
+		return Redirect::back()
+			->withErrors($validator);
+	}
+	
+	public function edit_profile($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
+		return View::make('user_form_profile',compact('user'));
+	}
+	
+	public function handle_edit_profile($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
+		$data = Input::all();
+	
+		$rules = array(
+			'given_name' => 'required|alpha',
+			'family_name' => 'required|alpha',
+			'email' => 'required|email|unique:lm_users,email,'.$user_id
+		);
+		
+		$validator = Validator::make($data, $rules);
+		
+		if ( $validator->passes() )
+		{
+			$user = User::withTrashed()->find($user_id);
+			$user->email = $data['email'];
+			$user->given_name = $data['given_name'];
+			$user->family_name = $data['family_name'];
+			$user->save();
+			
+			return Redirect::action('UsersController@view',
+				array('user_id'=>$user->id) )
+				->with('flash_notice', 'User profile successfully modified.');
+		}
+		return Redirect::back()
+			->withErrors($validator);
 	}
 
 	public function trash($user_id)

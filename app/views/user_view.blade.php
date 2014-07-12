@@ -7,6 +7,29 @@
 
 @section('content')
 
+<h3>Actions:</h3>
+View
+@if(Auth::check() && Auth::user()->id == $user->id)
+<a href="{{ action( 'UsersController@handle_edit_profile',
+	array('user_id'=>$user->id) ) }}">Edit profile</a>
+<a href="{{ action( 'UsersController@handle_edit_password',
+	array('user_id'=>$user->id) ) }}">Edit password</a>
+@endif
+
+@if (Auth::check() && Auth::user()->admin)
+	<a href="{{ action( 'UsersController@handle_edit_permissions',
+		array('user_id'=>$user->id) ) }}">Edit permissions</a>
+	<a href="{{	action('UsersController@login',
+		array('user_id'=>$user->id)) }}">Log-in</a>
+	@if (! isset($user->deleted_at))
+		<a href="{{ action('UsersController@trash',
+			array($user->id)) }}">Trash</a>
+	@else
+		<a href="{{ action('UsersController@restore',
+			array($user->id)) }}">Restore</a>
+	@endif
+@endif
+
 <h3>User data:</h3>
 
 <table>
@@ -38,13 +61,6 @@
 
 @if($user->admin)
 	, Admin
-@endif
-
-@if(Auth::check() && Auth::user()->id == $user->id)
-	<h3>Actions:</h3>
-	<a href="{{
-	action('UsersController@edit',
-	array('user_id'=>$user->id)) }}">Edit user data</a>
 @endif
 
 <h3>Currently borrowed articles:</h3>

@@ -76,15 +76,17 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/users/login/{user_id}', 'UsersController@login');	
 	Route::get('/users/trash/{user_id}', 'UsersController@trash');	
 	Route::get('/users/restore/{user_id}', 'UsersController@restore');
-	Route::get('/users/edit/{user_id}', 'UsersController@edit');
-	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
+	Route::get('/users/edit/permissions/{user_id}', 'UsersController@edit_permissions');
+	Route::post('/users/edit/permissions/{user_id}', 'UsersController@handle_edit_permissions');
 });
 
-Route::group(array('before' => 'auth|owner'), function()
+// routes accessibles only to logged-in and enabled owner users
+Route::group(array('before' => 'auth|enabled|owner'), function()
 {
-	// FIXME also allow admin users to edit other users
-	Route::get('/users/edit/{user_id}', 'UsersController@edit');
-	Route::post('/users/edit/{user_id}', 'UsersController@handle_edit');
+	Route::get('/users/edit/profile/{user_id}', 'UsersController@edit_profile');
+	Route::post('/users/edit/profile/{user_id}', 'UsersController@handle_edit_profile');
+	Route::get('/users/edit/password/{user_id}', 'UsersController@edit_password');
+	Route::post('/users/edit/password/{user_id}', 'UsersController@handle_edit_password');
 });
 
 // secret content

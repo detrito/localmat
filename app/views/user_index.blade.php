@@ -18,7 +18,6 @@ Users
 					@if (Auth::check() && Auth::user()->admin)
 						<th>Enabled</th>
 						<th>Admin</th>
-						<th>Actions</th>
 					@endif
 					</tr>
             </thead>
@@ -40,21 +39,6 @@ Users
 						@if (Auth::check() && Auth::user()->admin)
 							<td>{{ $user->enabled }}</td>
 							<td>{{ $user->admin }}</td>
-		                	<td>
-		                    	<a href="{{
-								action('UsersController@login',
-								array('user_id'=>$user->id)) }}">Log-in</a>
-								
-								@if (! isset($user->deleted_at))
-				                	<a href="{{
-									action('UsersController@trash',
-									array($user->id)) }}">Trash</a>
-								@else
-									<a href="{{
-									action('UsersController@restore',
-									array($user->id)) }}">Restore</a>
-								@endif
-		                	</td>
 						@endif
 		            </tr>
 		            @endforeach

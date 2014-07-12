@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
 	<title>LocalMat</title>
+	<link rel="stylesheet" type="text/css" href="{{ asset('/css/base.css') }}">
+	<link rel="stylesheet" type="text/css" href="{{ asset('/css/buttons.css') }}">
 	<link rel="stylesheet" type="text/css" href="{{ asset('/css/style.css') }}">
 </head>
 <body>
