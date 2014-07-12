@@ -30,8 +30,11 @@ pass: admin</p>
 
 <p>You can also login as <strong>unprivileged user</strong>
 with following credentials:<br />
-user: any e-mail listed under
-<a href="{{ action('UsersController@index') }}">Users</a><br />
+<?php
+	$user_id = Faker\Factory::create('en_GB')->randomNumber(2, 10);
+	$user = User::withTrashed()->findOrFail( $user_id );
+?>
+{{ $user->email }}<br />
 pass: 123asd</p>
 <p>LocalMat is written in PHP and is based on the <a href="http://laravel.com/">
 Laravel</a> framework. LocalMat requires PHP >= 5.3.7 and MySQL. The source code is available on this public <a href="http://github.com/detrito/localmat/">GitHub git repository</a> under
