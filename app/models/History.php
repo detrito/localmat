@@ -102,21 +102,32 @@ class History extends Eloquent
 
 	public function getFormattedDate($field_name)
 	{
+		// FIXME automatically get a carbon object also for returned_date
+		// $date = $this->$field_name
+		
+		$date = \Carbon\Carbon::createFromTimeStamp(
+			strtotime($this->$field_name) );
+	
 		// If more than a month has passed, use the formatted date string
-		if ($this->$field_name->diffInDays() > 30)
+		if ($date->diffInDays() > 30)
 		{
-			return $this->$field_name->format('d.m.Y');
+			return $date->format('d.m.Y');
 		}
 		// Else get the difference for humans
 		else
 		{
-			return $this->$field_name->diffForHumans();
+			return $date->diffForHumans();
 		}
 	}
 
 	public function getBorrowedDate()
 	{
 		return $this->getFormattedDate('created_at');
+	}
+	
+	public function getReturnedDate()
+	{
+		return $this->getFormattedDate('returned_at');
 	}
 
 	public function getTimeSpan()

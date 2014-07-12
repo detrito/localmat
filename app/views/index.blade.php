@@ -105,7 +105,7 @@ license. Patches and bug reports can be sent over GitHub or by
 				<th>Article</th>
 				<th>Items</th>
 				<th>User</th>
-				<th>Borrowed date</th>
+				<th>Returned date</th>
 				<th>Time span</th>
 			</tr>
 		</thead>
@@ -140,7 +140,7 @@ license. Patches and bug reports can be sent over GitHub or by
 						{{$user->family_name }}
 						</a>
 					</td>
-					<td>{{$history_item->getBorrowedDate()}}</td>
+					<td>{{$history_item->getReturnedDate()}}</td>
 					<td>{{$history_item->getTimeSpan()}}</td>
 				</tr>		
 			@endforeach

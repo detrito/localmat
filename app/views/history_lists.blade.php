@@ -29,7 +29,11 @@ Borrowing history
 				<th>Article</th>
 				<th>Items</th>
 				<th>User</th>
-				<th>Borrowed date</th>
+				@if($status_name == 'returned')
+					<th>Returned date</th>
+				@else
+					<th>Borrowed date</th>
+				@endif
 				<th>Time span</th>
 			</tr>
 		</thead>
@@ -65,7 +69,11 @@ Borrowing history
 							{{ $user->family_name }}
 						</a>
 					</td>
-					<td>{{$history_item->getBorrowedDate()}}</td>
+					@if($status_name == 'returned')
+						<td>{{$history_item->getReturnedDate()}}</td>
+					@else
+						<td>{{$history_item->getBorrowedDate()}}</td>
+					@endif
 					<td>{{$history_item->getTimeSpan()}}</td>
 				</tr>		
 			@endforeach

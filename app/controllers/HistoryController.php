@@ -15,9 +15,18 @@ class HistoryController extends BaseController
 		// FIXME load automatically also softDeleted users
 		$history = History::
 			whereStatus($status_name)
-			->with('user','article')
-			->orderBy('created_at','desc')
-			->paginate(10);
+			->with('user','article');
+		
+		if($status_name == 'returned')
+		{
+			$history = $history->orderBy('returned_at','desc');
+		}
+		else
+		{
+			$history = $history->orderBy('created_at','desc');
+		}
+		
+		$history = $history->paginate(10);
 	
 		return View::make('history_lists', compact('history','status_names'))
 			->with( array('status_name'=>$status_name));

@@ -1,3 +1,4 @@
+
 <?php
 
 class IndexController extends BaseController
@@ -13,7 +14,7 @@ class IndexController extends BaseController
 		$history_returned = History::
 			whereReturned()
 			->with('user','article')
-			->orderBy('created_at','desc')
+			->orderBy('returned_at','desc')
 			->take(5)
 			->get();
 		
