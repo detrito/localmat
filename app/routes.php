@@ -11,25 +11,19 @@
 |
 */
 
-// bind route parameters.
-//Route::model('user', 'User');
-
 // index
 Route::get('/', 'IndexController@index');
-
-// users
-Route::get('/users', 'UsersController@index');
 
 // routes accessibles only to logged-in and enabled users
 Route::group(array('before' => 'auth|enabled'), function()
 {
 	//users
+	Route::get('/users', 'UsersController@index');
 	Route::get('/users/view/{user_id}', 'UsersController@view');
 
 	//article
 	Route::get('/articles', 'ArticlesController@index');
-	Route::get('/articles/lists/{status_name?}/{category_id?}/{field_id?}',
-	'ArticlesController@lists');
+	Route::get('/articles/lists/{status_name?}/{category_id?}/{field_id?}','ArticlesController@lists');
 	Route::get('/articles/view/{article_id}', 'ArticlesController@view');
 	Route::post('/articles/borrow/', 'HistoryController@handle_borrow');
 	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
@@ -89,34 +83,7 @@ Route::group(array('before' => 'auth|enabled|owner'), function()
 	Route::post('/users/edit/password/{user_id}', 'UsersController@handle_edit_password');
 });
 
-// secret content
-Route::get('/secret', array(
-	'before' => 'auth',
-	function()
-	{
-		return Response::make('this is a very secret content!');
-	}
-));
-
-// me
-Route::get('/me', function()
-{
-	$me = Auth::user();
-	print_r($me);
-
-	if (Auth::check())
-	{
-    	return Response::make('You logged in!');
-	}
-	else
-	{
-		return Response::make('You are not logged in..');
-	}
-});
-
-// login stuff
-
-
+// login and logout pages
 Route::get('/login', array(
 	'before' => 'guest',
 	function()
@@ -154,7 +121,7 @@ Route::post('/login', function()
 		->with('flash_error', 'Your username/password combination is incorrect.');
 });
 
-
+// some extra validator types
 Validator::extend('alpha_spaces', function($attribute, $value)
 {
     return preg_match('/^[\pL\s]+$/u', $value);

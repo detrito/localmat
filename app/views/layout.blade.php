@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="en">
 <head>
@@ -25,9 +26,12 @@
 
 		<ul id="nav" class="drop">
 			<li><a href="{{ url('/') }}">Home</a></li>
+			@if (Auth::check())
     		<li><a href="{{ action('ArticlesController@index') }}">Articles</a></li>
-			<li><a href="{{ action('UsersController@index') }}">Users</a></li>
 			<li><a href="{{ action('HistoryController@index') }}">History</a></li>
+			<li><a href="{{ action('UsersController@index') }}">Users</a></li>
+			@endif
+
 			@if (Auth::check())
 				<li><a href="{{ action('UsersController@view',
 					array(Auth::user()->id) ) }}">Me</a></li>
