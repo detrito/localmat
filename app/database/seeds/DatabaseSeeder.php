@@ -5,9 +5,9 @@ class DatabaseSeeder extends Seeder {
 	protected static $number_articles_category = 10;
 
 	protected static $categories_amounts = array(
-		'Mousquetons' => array(25, 25),
-		'Combinaisons' => array(3, 5),
-		'Plaquettes' => array (22, 30)
+		'Mousquetons' => 25,
+		'Combinaisons' => 5,
+		'Plaquettes' => 30
 	);
 
 	protected static $categories_singles = array(
@@ -76,7 +76,7 @@ class DatabaseSeeder extends Seeder {
 		$this->call('CategorySingleTableSeeder');
 		$this->call('ArticleAmountTableSeeder');
 		$this->call('ArticleSingleTableSeeder');
-		$this->call('HistorySingleTableSeeder');
+		$this->call('HistorySingleTableSeeder');		
 	}
 }
 
@@ -155,7 +155,7 @@ class ArticleAmountTableSeeder extends Seeder {
 	{
 		$category_data = DatabaseSeeder::get_categories_amounts();
 
-		foreach($category_data as $category_name=>$values)
+		foreach($category_data as $category_name=>$amount)
 		{
 			// Create Category
 			$category = new Category;
@@ -170,8 +170,8 @@ class ArticleAmountTableSeeder extends Seeder {
 
 			// Create ArticleAmount and save $values
 			$article_amount = new ArticleAmount;
-			$article_amount->available_items = $values[0];
-			$article_amount->total_items = $values[1];
+			$article_amount->available_items = $amount;
+			$article_amount->total_items = $amount;
 			$article_amount->save();
 			// Associate ArticleAmount to Article
 			$article_amount->article()->save($article);				
@@ -260,38 +260,29 @@ class HistorySingleTableSeeder extends Seeder {
 					$faker->randomNumber(1,30).' day' );
 				$date_returned = clone $date_borrowed;
 				$date_returned->add($date_interval);
-
+				
+				// Set random $amount_items for articles of class ArticleAmount
+				$article = Article::find($article_id);
+				if($article->proprieties_type == 'ArticleAmount')
+				{
+					$categories_data = DatabaseSeeder::get_categories_amounts();
+					$max_amount = $categories_data[$article->category->name];
+					$amount_items = $faker->randomNumber(1,$max_amount);
+				}
+				else
+				{
+					$amount_items = 0;
+				}
+				
 				History::create(array(
 					'user_id' => $user->id,
 					'article_id' => $article_id,
+					'amount_items' => $amount_items,
 					'created_at' => $date_borrowed->format('Y-m-d H:i:s'),
 					'updated_at' => $date_borrowed->format('Y-m-d H:i:s'),
 					'returned_at' => $date_returned->format('Y-m-d H:i:s') ));
 			}
 
-			// currently borrowed articles
-			while ( $faker->boolean(50) )
-			{
-				$article_id = $faker->unique()->randomNumber(1, $max_id);
-
-				// check if article is available
-				if (Article::find($article_id)->proprieties->borrowed == true)
-				{
-					break;
-				}
-
-				$date_borrowed = $faker->dateTimeThisYear('now');
-
-				$article = Article::find($article_id);
-				$article->proprieties->borrowed = true;
-				$article->save();
-
-				History::create(array(
-					'user_id' => $user->id,
-					'article_id' => $article_id,
-					'created_at' => $date_borrowed->format('Y-m-d H:i:s'),
-					'updated_at' => $date_borrowed->format('Y-m-d H:i:s') ));
-			}
 		}
     }
 }
