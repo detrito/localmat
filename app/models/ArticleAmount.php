@@ -59,7 +59,7 @@ class ArticleAmount extends BaseEloquent
 		// delete the ArticleAmount
 		$article_single = $article->proprieties()->delete();
 		
-		$category = $article->category();
+		$category = $article->category;
 		
 		// now delete the Article
 		$article->delete();
@@ -68,8 +68,11 @@ class ArticleAmount extends BaseEloquent
 		$category->delete();
 		
 		// FIXME check if a previous page exists
+		$message = 'Category and articles successfully deleted.';
+		$message_verbose = $message.' Category ID '.$category->id.'.';
+		Log::info($message_verbose);
 		return Redirect::action('ArticlesController@index')
-			->with('flash_notice', 'Article and category successfully deleted.');
+			->with('flash_notice', $message);
 	}
 }
 

@@ -25,13 +25,59 @@ class UsersController extends BaseController
         return View::make('user_index', compact('users'));
     }
     
-    public function login($user_id)
+    public function login()
+    {
+    	return View::make('login');
+    }
+    
+    public function handle_login()
+    {
+    	$credentials = Input::only('email', 'password');
+		$remember = true;
+
+		if (Auth::attempt($credentials,$remember))
+		{
+			if(Auth::user()->enabled)
+			{
+				$user = Auth::user();
+				$message = 'You are now logged-in as '.$user->email;
+				$message_verbose = $message.' User ID '.$user->id.'.';
+				Log::info($message_verbose);
+				return Redirect::intended('/')
+					->with('flash_notice', $message);
+			}
+			else
+			{
+				return Auth::user()->errorDisabled();
+			}	
+		}
+		else	
+			return Redirect::to('login')
+			->with('flash_error', 'Your username/password combination is incorrect.');
+    }
+    
+    public function login_as($user_id)
 	{
 		$user = User::findOrFail($user_id);
 		Auth::login($user);
 		
+		$message = 'You switched user to '.$user->email;
+		$message_verbose = $message.' User ID '.$user->id.'.';
+		Log::info($message_verbose);
 		return Redirect::action('UsersController@index')
-				->with('flash_notice', 'You are now logged-in as '.$user->email);
+				->with('flash_notice', $message);
+	}
+	
+	public function logout()
+	{
+		$user = Auth::user();
+		Auth::logout();
+		
+		$message = 'You are successfully logged out.';
+		$message_verbose = $message.' User ID '.$user->id.'.';
+		Log::info($message_verbose);
+		return Redirect::action('IndexController@index')
+			->with('flash_notice', $message);
 	}
 
 	public function view($user_id)
@@ -82,8 +128,11 @@ class UsersController extends BaseController
 			$user->admin = isset($data['admin']) ? true : false;		
 			$user->save();
 			
+			$message = 'User successfully added.';
+			$message_verbose = $message.' User ID '.$user->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('UsersController@add')
-				->with('flash_notice', 'User successfully added.');
+				->with('flash_notice', $message);
 		}
 		return Redirect::back()
 			->withErrors($validator);
@@ -104,10 +153,13 @@ class UsersController extends BaseController
 		$user->enabled = isset($data['enabled']) ? true : false;
 		$user->admin = isset($data['admin']) ? true : false;		
 		$user->save();
-			
+		
+		$message = 'User\'s permissions successfully modified.';
+		$message_verbose = $message.' User ID '.$user->id.'.';
+		Log::info($message_verbose);
 		return Redirect::action('UsersController@view',
 			array('user_id'=>$user->id) )
-			->with('flash_notice', 'User permissions successfully modified.');
+			->with('flash_notice', $message);
 	}
 	
 	public function edit_password($user_id)
@@ -130,9 +182,12 @@ class UsersController extends BaseController
 			$user->password = Hash::make($data['password']);
 			$user->save();
 			
+			$message = 'User\'s password successfully modified.';
+			$message_verbose = $message.' User ID '.$user->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('UsersController@view',
 				array('user_id'=>$user->id) )
-				->with('flash_notice', 'User password successfully modified.');
+				->with('flash_notice', $message);
 		}
 		return Redirect::back()
 			->withErrors($validator);
@@ -165,9 +220,12 @@ class UsersController extends BaseController
 			$user->family_name = $data['family_name'];
 			$user->save();
 			
+			$message = 'User\'s profile successfully modified.';
+			$message_verbose = $message.' User ID '.$user->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('UsersController@view',
 				array('user_id'=>$user->id) )
-				->with('flash_notice', 'User profile successfully modified.');
+				->with('flash_notice', $message);
 		}
 		return Redirect::back()
 			->withErrors($validator);
@@ -184,8 +242,12 @@ class UsersController extends BaseController
 		{
 			// softDelete this user
 			$user->delete();
+			
+			$message = 'User successfully trashed.';
+			$message_verbose = $message.' User ID '.$user->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('UsersController@index')
-				->with('flash_notice', 'User successfully trashed.');
+				->with('flash_notice', $message);
 		}
 		return Redirect::action('UsersController@index')
 				->with('flash_error', 'This user still has borrowed articles!
@@ -199,8 +261,11 @@ class UsersController extends BaseController
     	{
     		$user->restore();
     	
+    		$message = 'User successfully restored.';
+			$message_verbose = $message.' User ID '.$user->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('UsersController@index')
-					->with('flash_notice', 'User sucessfully restored.');
+					->with('flash_notice', $message);
 		}
     }
 }

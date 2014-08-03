@@ -44,6 +44,7 @@
 					<li><a href="{{ action('CategoriesController@index') }}">Categories</a></li>
 					<li><a href="{{ action('CategoriesController@add') }}">Add new category</a></li>
 					<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
+					<li><a href="{{ action('AdminController@logs') }}" >View logs</a></li>
             	</ul>
 			</li>
 			@endif

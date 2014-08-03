@@ -165,14 +165,20 @@ class CategoriesController extends BaseController
 
 			if($action == 'add')
 			{
+				$message = 'Category successfully added.';
+				$message_verbose = $message.' Category ID '.$category->id.'.';
+				Log::info($message_verbose);
 				return Redirect::action('CategoriesController@add')
-					->with('flash_notice', 'Category successfully added.');
+					->with('flash_notice', $message);
 			}
 			elseif($action == 'edit')
 			{
+				$message = 'Category successfully modified.';
+				$message_verbose = $message.' Category ID '.$category->id.'.';
+				Log::info($message_verbose);
 				return Redirect::action('CategoriesController@index')
-					->with('flash_notice', 'Category successfully modified.');
-			}	
+					->with('flash_notice', $message);
+			}
 		}
 		
 		return Redirect::back()
@@ -187,10 +193,14 @@ class CategoriesController extends BaseController
 			// remove all relationships to the fields for this category
 			$category->fields()->detach();
 			$category->delete();
+			
+			$message = 'Category successfully deleted.';
+			$message_verbose = $message.' Category ID '.$category->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('CategoriesController@index')
-				->with('flash_notice', 'Category successfully deleted.');
+				->with('flash_notice', $message);
 		}
-		return Redirect::action('FieldsController@index')
+		return Redirect::action('CategoriesController@index')
 				->with('flash_error', 'This category is still used!
 					Make sure that no Article use it before to delete it.');
 	}

@@ -36,6 +36,7 @@ class HistoryController extends BaseController
 	{
 		$user = User::find( Auth::user()->id );
 		$article_ids = Input::except('amount_items');
+		$history_ids = array();
 		
 		foreach($article_ids as $article_id)
 		{
@@ -56,6 +57,8 @@ class HistoryController extends BaseController
 						$history->user()->associate($user);		
 						$history->article()->associate($article);	
 						$history->save();
+						
+						array_push($history_ids, $history->id);
 					}
 					else
 					{
@@ -78,6 +81,8 @@ class HistoryController extends BaseController
 						$history->article()->associate($article);
 						$history->amount_items = $amount_items;
 						$history->save();
+						
+						array_push($history_ids, $history->id);
 					}
 					else
 					{
@@ -87,16 +92,18 @@ class HistoryController extends BaseController
 					break;
 			}
 		}
-
+		
+		$message = 'Articles successfully borrowed.';
+		$message_verbose = $message.' User ID '.$user->id.'. History IDs '.implode(",", $history_ids).'.';
+		Log::info($message_verbose);
 		return Redirect::back()
-			->with('flash_notice', 'Articles successfully borrowed.');
+			->with('flash_notice', $message);
 	}
 
 	public function handle_return($user_id)
 	{
 		$history_ids = Input::all();
-		//var_dump($history_ids);
-		//;
+
 		foreach($history_ids as $history_id)
 		{
 			$history = History::find($history_id);
@@ -123,8 +130,13 @@ class HistoryController extends BaseController
 					break;
 			}
 		}
+		
+		$message = 'Articles successfully returned.';
+		$message_verbose = $message.' User ID '.$user_id.'. History IDs '.implode(",", $history_ids).'.';
+		Log::info($message_verbose);
 		return Redirect::action('UsersController@view',
 			array('user_id'=>$user_id) )
-			->with('flash_notice', 'Articles successfully returned.');
+			->with('flash_notice', $message);
 	}
 }
+

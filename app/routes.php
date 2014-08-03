@@ -14,9 +14,19 @@
 // index
 Route::get('/', 'IndexController@index');
 
+// routes accessibles only to guests (i.e. not yet logged-in users)
+Route::group(array('before' => 'guest'), function()
+{
+	Route::get('/login', 'UsersController@login');
+	Route::post('/login', 'UsersController@handle_login');
+});
+
 // routes accessibles only to logged-in and enabled users
 Route::group(array('before' => 'auth|enabled'), function()
 {
+	//logout
+	Route::get('/logout', 'UsersController@logout');
+
 	//users
 	Route::get('/users', 'UsersController@index');
 	Route::get('/users/view/{user_id}', 'UsersController@view');
@@ -36,10 +46,8 @@ Route::group(array('before' => 'auth|enabled'), function()
 // routes accessibles only to logged-in and enabled administrators users
 Route::group(array('before' => 'auth|enabled|admin'), function()
 {
-	Route::get('/admin', function()
-	{
-		return View::make('admin_index');
-	});
+	Route::get('/admin', 'AdminController@index');
+	Route::get('/admin/logs', 'AdminController@logs');
 	
 	// articles
 	Route::get('/articles/add/{category_id?}', 'ArticlesController@add');
@@ -67,7 +75,7 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	// users	
 	Route::get('/users/add', 'UsersController@add');
 	Route::post('/users/add', 'UsersController@handle_add');
-	Route::get('/users/login/{user_id}', 'UsersController@login');	
+	Route::get('/users/login/{user_id}', 'UsersController@login_as');	
 	Route::get('/users/trash/{user_id}', 'UsersController@trash');	
 	Route::get('/users/restore/{user_id}', 'UsersController@restore');
 	Route::get('/users/edit/permissions/{user_id}', 'UsersController@edit_permissions');
@@ -81,44 +89,6 @@ Route::group(array('before' => 'auth|enabled|owner'), function()
 	Route::post('/users/edit/profile/{user_id}', 'UsersController@handle_edit_profile');
 	Route::get('/users/edit/password/{user_id}', 'UsersController@edit_password');
 	Route::post('/users/edit/password/{user_id}', 'UsersController@handle_edit_password');
-});
-
-// login and logout pages
-Route::get('/login', array(
-	'before' => 'guest',
-	function()
-	{
-		return View::make('login');
-	}
-));
-
-Route::get('/logout', function()
-{
-	Auth::logout();
-	return Redirect::to(url('/'))
-		->with('flash_notice', 'You are successfully logged out.');
-});
-
-Route::post('/login', function()
-{
-	$credentials = Input::only('email', 'password');
-	$remember = true;
-
-	if (Auth::attempt($credentials,$remember))
-	{
-		if(Auth::user()->enabled)
-		{
-			return Redirect::intended('/')
-			->with('flash_notice', 'You are successfully logged in.');
-		}
-		else
-		{
-			return Auth::user()->errorDisabled();
-		}	
-	}
-	else	
-		return Redirect::to('login')
-		->with('flash_error', 'Your username/password combination is incorrect.');
 });
 
 // some extra validator types

@@ -40,8 +40,11 @@ class FieldsController extends BaseController
 				$field->required = 0;				
 			$field->save();
 			
+			$message = 'Field successfully added.';
+			$message_verbose = $message.' Field ID '.$field->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('FieldsController@add')
-				->with('flash_notice', 'Field successfully added.');
+				->with('flash_notice', $message);
 		}
 		
 		return Redirect::back()
@@ -84,8 +87,11 @@ class FieldsController extends BaseController
 				$field->required = 0;				
 			$field->save();
 
+			$message = 'Field successfully modified.';
+			$message_verbose = $message.' Field ID '.$field->id.'.';
+			Log::info($message_verbose);	
 			return Redirect::action('FieldsController@index')
-				->with('flash_notice', 'Field successfully modified.');
+				->with('flash_notice', $message);
 		}
 		
 		return Redirect::back()
@@ -98,9 +104,14 @@ class FieldsController extends BaseController
 		if ( $field->fieldData()->get()->isEmpty() )
 		{
 			$field->delete();
+			
+			$message = 'Field successfully deleted.';
+			$message_verbose = $message.' Field ID '.$field->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('FieldsController@index')
-				->with('flash_notice', 'Field successfully deleted.');
+				->with('flash_notice', $message);
 		}
+		
 		return Redirect::action('FieldsController@index')
 				->with('flash_error', 'This field is still used!
 					Make sure that no Category use it before to delete it.');

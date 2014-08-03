@@ -209,9 +209,13 @@ class ArticleSingle extends BaseEloquent
 				$article_single->article()->save($article);
 				
 			}
+			
+			$message = 'Article successfully added.';
+			$message_verbose = $message.' Article ID '.$article->id.'.';
+			Log::info($message_verbose);
 			return Redirect::action('ArticlesController@add',
 				array('category_id'=>$category->id) )
-				->with('flash_notice', 'Article successfully added.');
+				->with('flash_notice', $message);
 		}
 		return Redirect::back()
 			->withErrors($validator);
@@ -255,9 +259,12 @@ class ArticleSingle extends BaseEloquent
 				$field_datum->save();
 			}
 			
-		// FIXME redirect to page previous the form page
-		return Redirect::action('ArticlesController@index')
-			->with('flash_notice', 'Article successfully modified.');
+			$message = 'Article successfully modified.';
+			$message_verbose = $message.' Article ID '.$article->id.'.';
+			Log::info($message_verbose);
+			// FIXME redirect to page previous the form page
+			return Redirect::action('ArticlesController@index')
+				->with('flash_notice', $message);
 		}
 		return Redirect::back()
 			->withErrors($validator);		
@@ -277,8 +284,11 @@ class ArticleSingle extends BaseEloquent
 		// now delete the Article
 		$article->delete();
 
+		$message = 'Article successfully deleted.';
+		$message_verbose = $message.' Article ID '.$article->id.'.';
+		Log::info($message_verbose);
 		// FIXME check if a previous page exists
 		return Redirect::action('ArticlesController@index')
-			->with('flash_notice', 'Article successfully deleted.');
+			->with('flash_notice', $message);
 	}
 }

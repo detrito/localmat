@@ -31,6 +31,10 @@ Administration tasks:
 			<li><a href="{{ action('UsersController@index') }}" >Manage users</a></li>
 			<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
 		</ul>
+	<li>Laravel</li>
+		<ul>
+			<li><a href="{{ action('AdminController@logs') }}">View logs</a></li>
+		</ul>	
 </ul>
 
 @stop
