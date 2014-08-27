@@ -25,9 +25,9 @@ $app = new Illuminate\Foundation\Application;
 */
 
 $env = $app->detectEnvironment(array(
-
-	'local' => array('your-machine-name'),
-
+	'local' => array('tuilinn'),
+	'gsl' => array('localmat.speleo-lausanne.ch'),
+	'demo' => array('localmat-demo.speleo-lausanne.ch')
 ));
 
 /*

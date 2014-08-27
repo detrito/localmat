@@ -1,14 +1,9 @@
-# ignore all config files..
-/app/config/*
-# .. except localmat.php
-!/app/config/localmat.php
-
-# laravel files
+# laravel default
 /bootstrap/compiled.php
 /vendor
 composer.phar
 composer.lock
-.env.local.php
+.env.*.php
 .env.php
 .DS_Store
 Thumbs.db
@@ -17,3 +12,7 @@ Thumbs.db
 *~
 *.swp
 *.swo
+
+# ignore all local config files..
+/app/config/local
+
