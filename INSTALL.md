@@ -1,11 +1,6 @@
 INSTALL ON LOCALHOST
 ====================
 
-Clone the repository
---------------------
-
-> git clone https://github.com/detrito/localmat
-
 Install composer
 ----------------
 
@@ -13,8 +8,13 @@ Install composer
 
 > cp composer.phar /usr/local/bin/composer
 
-Install laravel framework
--------------------------
+Clone the localmat repository
+-----------------------------
+
+> git clone https://github.com/detrito/localmat
+
+Install laravel framework and other dependencies
+------------------------------------------------
 
 > cd localmat
 
@@ -27,7 +27,7 @@ Configure MySQL (or another database)
 
 > mysql -u root -h localhost -p
 
-> CREATE DATABASE mydbnbame;
+> CREATE DATABASE mydbname;
 
 > GRANT ALL ON mydbname.* TO 'myusername'@'localhost' IDENTIFIED BY 'mypassword';
 
@@ -37,6 +37,7 @@ Populate database
 -----------------
 
 > php artisan migrate
+
 > php artisan db:seed
 
 Enjoy
