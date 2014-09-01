@@ -31,7 +31,7 @@ pass: admin</p>
 <p>You can also login as <strong>unprivileged user</strong>
 with following credentials:<br />
 <?php
-	$user_id = Faker\Factory::create('en_GB')->randomNumber(2, 10);
+	$user_id = Faker\Factory::create('en_GB')->numberBetween(2, 10);
 	$user = User::withTrashed()->findOrFail( $user_id );
 ?>
 {{ $user->email }}<br />

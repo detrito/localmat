@@ -12,7 +12,8 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	public $timestamps = true;
 
 	// Enable softDelete
-	protected $softDelete = true;
+	use SoftDeletingTrait;
+    protected $dates = ['deleted_at'];
 
 	// User __hasMany__ History
 	public function histories()

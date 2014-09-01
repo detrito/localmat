@@ -15,4 +15,6 @@ Thumbs.db
 
 # ignore all local config files..
 /app/config/local
+/app/config/gsl
+/app/config/demo
 

@@ -215,13 +215,13 @@ class ArticleSingleTableSeeder extends Seeder {
 							$field_datum->value = $faker->sentence(3);
 							break;
 						case 'Année':
-							$field_datum->value = $faker->randomNumber(1990,2013);
+							$field_datum->value = $faker->numberBetween(1990,2013);
 							break;
 						case 'Corde statique':
 							$field_datum->value = $faker->boolean(80);
 							break;
 						case 'Longueur':
-							$field_datum->value = round($faker->randomNumber(10,150), -1);
+							$field_datum->value = round($faker->numberBetween(10,150), -1);
 							break;
 						case 'Code':
 							$field_datum->value = $faker->unique()->randomNumber(3);
@@ -254,10 +254,10 @@ class HistorySingleTableSeeder extends Seeder {
 			// history for some returned articles
 			while ( $faker->boolean(90) )
 			{
-				$article_id = $faker->randomNumber(1, $max_id);
+				$article_id = $faker->numberBetween(1, $max_id);
 				$date_borrowed = $faker->dateTimeThisDecade('now');
 				$date_interval = DateInterval::createFromDateString(
-					$faker->randomNumber(1,30).' day' );
+					$faker->numberBetween(1,30).' day' );
 				$date_returned = clone $date_borrowed;
 				$date_returned->add($date_interval);
 				
@@ -267,7 +267,7 @@ class HistorySingleTableSeeder extends Seeder {
 				{
 					$categories_data = DatabaseSeeder::get_categories_amounts();
 					$max_amount = $categories_data[$article->category->name];
-					$amount_items = $faker->randomNumber(1,$max_amount);
+					$amount_items = $faker->numberBetween(1,$max_amount);
 				}
 				else
 				{
