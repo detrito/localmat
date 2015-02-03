@@ -47,7 +47,8 @@ Route::group(array('before' => 'auth|enabled'), function()
 Route::group(array('before' => 'auth|enabled|admin'), function()
 {
 	Route::get('/admin', 'AdminController@index');
-	Route::get('/admin/logs', 'AdminController@logs');
+	Route::get('/admin/export/logs', 'AdminController@export_logs');
+	Route::get('/admin/export/articles', 'AdminController@export_articles');
 	
 	// articles
 	Route::get('/articles/add/{category_id?}', 'ArticlesController@add');
@@ -71,7 +72,6 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/categories/edit/{user_id}', 'CategoriesController@edit');
 	Route::post('/categories/edit/{user_id}', 'CategoriesController@handle_edit');
 	Route::get('/categories/delete/{user_id}', 'CategoriesController@delete');
-	Route::get('/categories/export', 'CategoriesController@export_all');
 
 	// users	
 	Route::get('/users/add', 'UsersController@add');

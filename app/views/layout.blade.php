@@ -44,8 +44,8 @@
 					<li><a href="{{ action('CategoriesController@index') }}">Categories</a></li>
 					<li><a href="{{ action('CategoriesController@add') }}">Add new category</a></li>
 					<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
-					<li><a href="{{ action('AdminController@logs') }}" >Export logs</a></li>
-					<li><a href="{{ action('CategoriesController@export_all') }}" >Export articles</a></li>
+					<li><a href="{{ action('AdminController@export_logs') }}" >Export logs</a></li>
+					<li><a href="{{ action('AdminController@export_articles') }}" >Export articles</a></li>
             	</ul>
 			</li>
 			@endif
