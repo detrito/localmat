@@ -74,5 +74,24 @@ class ArticleAmount extends BaseEloquent
 		return Redirect::action('ArticlesController@index')
 			->with('flash_notice', $message);
 	}
+	
+	public static function callExport($category_id)
+	{
+		// column to export
+		$column_names = array('available_items','total_items');
+		
+		// retrive one article for this category 
+		$article = Category::find($category_id)->articles()->first();
+		
+		// array with data to be returned
+		$a_articles = array();			
+		
+		// get and append article-id and article-values
+		$article_values = $article->proprieties()->get($column_names)->toArray();
+		$a_articles[0] = array_merge( array('Id'=>$article->id),
+			$article_values[0] );
+						
+		return $a_articles;
+	}
 }
 

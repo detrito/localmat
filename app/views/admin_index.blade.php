@@ -31,10 +31,11 @@ Administration tasks:
 			<li><a href="{{ action('UsersController@index') }}" >Manage users</a></li>
 			<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
 		</ul>
-	<li>Laravel</li>
+	<li>Download</li>
 		<ul>
-			<li><a href="{{ action('AdminController@logs') }}">View logs</a></li>
-		</ul>	
+			<li><a href="{{ action('AdminController@logs') }}">Laravel logs (plaintext)</a></li>
+			<li><a href="{{ action('CategoriesController@export_all') }}">Articles (excel)</a></li>
+		</ul>
 </ul>
 
 @stop

@@ -63,6 +63,15 @@ class History extends Eloquent
 				break;
 		}
 	}
+	
+	// Select Histories who belongs to article $article_id
+	public function scopewhereArticle($query,$article_id)
+	{
+		return $query->whereHas('Article', function($query) use($article_id)
+		{
+			$query->where('id', $article_id);
+		});
+	}
 
 	public static function getArticleStatusNames()
 	{
@@ -96,7 +105,7 @@ class History extends Eloquent
 
 	public function carbonReturnedDate()
 	{
-		return \Carbon\Carbon::createFromTimeStamp(
+		return Carbon::createFromTimeStamp(
 			strtotime($this->returned_at) );
 	}
 
@@ -105,7 +114,7 @@ class History extends Eloquent
 		// FIXME automatically get a carbon object also for returned_date
 		// $date = $this->$field_name
 		
-		$date = \Carbon\Carbon::createFromTimeStamp(
+		$date = Carbon::createFromTimeStamp(
 			strtotime($this->$field_name) );
 	
 		// If more than a month has passed, use the formatted date string

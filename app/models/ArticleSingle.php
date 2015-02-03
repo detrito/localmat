@@ -91,6 +91,12 @@ class ArticleSingle extends BaseEloquent
 		return $field_ids;
 	}
 
+	// get the User who is actually borrowing this Article 
+	public function getBorrowingUser()
+	{
+		return History::whereArticle($this->article->id)->whereBorrowed()->first()->user;
+	}
+
 	/*
 	 * Functions called from ArticleController to add, view, edit, delete, ...
 	*/
@@ -290,5 +296,43 @@ class ArticleSingle extends BaseEloquent
 		// FIXME check if a previous page exists
 		return Redirect::action('ArticlesController@index')
 			->with('flash_notice', $message);
+	}
+	
+	public static function callExport($category_id)
+	{
+		// retrive articles for this category 
+		$articles = Category::with('articles')
+			->find($category_id)->articles;
+		
+		// array with all articles
+		$a_articles = array();
+		
+		foreach ($articles as $key => $article)
+		{			
+			// array with data to be returned
+			$a_articles[$key] = array();			
+			
+			// append article id
+			$a_articles[$key]['Id'] = $article->id;			
+			
+			// append field-data values
+			foreach($article->proprieties->fieldData as $field_datum)
+			{
+				$a_articles[$key][$field_datum->field->name] = $field_datum->value;
+			}
+			
+			// if borrowed, append user's e-mail
+			if($article->proprieties()->pluck('borrowed'))
+			{
+				$user_string = $article->proprieties->getBorrowingUser()->email;
+				$a_articles[$key]['Borrowed'] = $user_string;
+			}
+			else
+			{
+				$a_articles[$key]['Borrowed'] = 0;
+			}
+		}
+		
+		return $a_articles;
 	}
 }

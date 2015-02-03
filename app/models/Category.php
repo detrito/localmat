@@ -77,4 +77,12 @@ class Category extends Eloquent
 			return $this->articles->first()->proprieties->available_items;
 		}
 	}
+	
+	public function exportArticles()
+	{
+		$article_class = $this->articles->first()->proprieties_type;
+		$article_array = $article_class::callExport($this->id);
+				
+		return $article_array;
+	}
 }

@@ -104,5 +104,4 @@ class ArticlesController extends BaseController
 		$article_class = $article->proprieties_type;
 		return $article_class::callDelete($article);
 	}
-
 }

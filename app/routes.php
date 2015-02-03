@@ -71,6 +71,7 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/categories/edit/{user_id}', 'CategoriesController@edit');
 	Route::post('/categories/edit/{user_id}', 'CategoriesController@handle_edit');
 	Route::get('/categories/delete/{user_id}', 'CategoriesController@delete');
+	Route::get('/categories/export', 'CategoriesController@export_all');
 
 	// users	
 	Route::get('/users/add', 'UsersController@add');
