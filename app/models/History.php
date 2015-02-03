@@ -174,7 +174,17 @@ class History extends Eloquent
 			$a_histories[$key]['Article_id'] = $history->article_id;
 			$a_histories[$key]['Category'] = $history->article->category->name;			
 			$a_histories[$key]['Amount items'] = $history->amount_items;
-			$a_histories[$key]['User'] = $history->user->email;			
+			
+			if( isset($history->user))
+			{
+					$user = $history->user;
+			}
+			else
+			{
+					$user = User::withTrashed()->find($history->user_id);
+			}
+			$a_histories[$key]['User'] = $user->email;
+						
 			$a_histories[$key]['Borrowed date'] = $history->getBorrowedDate();
 			$a_histories[$key]['Time span'] = $history->getTimeSpan();
 		}
