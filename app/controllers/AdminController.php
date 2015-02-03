@@ -10,15 +10,16 @@ class AdminController extends BaseController
 	
 	public function logs()
 	{
-		// FIXME automatically load filename
-		//$filename = Log::getMonolog();
-		//$filename = Log::getEventDispatcher();
-		$filename = storage_path()."/logs/laravel.log";
-
-		$handle = fopen($filename, "r");
-		$logs = fread($handle, filesize($filename));
-		fclose($handle);
-		
-		return View::make('admin_logs', compact('logs') );
+		// FIXME avoid hardcoded file name
+		$filename = storage_path()."/logs/laravel.log";		
+		return $this->download($filename);
+	}
+	
+	public function download($file)
+	{
+		header('Content-Type: application/octet-stream');
+		header('Content-Disposition: attachment; filename="'.basename($file).'"'); 
+		header('Content-Length: '.filesize($file));
+		readfile($file);
 	}
 }
