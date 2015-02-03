@@ -46,6 +46,7 @@
 					<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
 					<li><a href="{{ action('AdminController@export_logs') }}" >Export logs</a></li>
 					<li><a href="{{ action('AdminController@export_articles') }}" >Export articles</a></li>
+					<li><a href="{{ action('AdminController@export_histories') }}" >Export histories</a></li>
             	</ul>
 			</li>
 			@endif

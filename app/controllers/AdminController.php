@@ -34,7 +34,7 @@ class AdminController extends BaseController
 	public function export_articles()
 	{		
 		// document title
-		$title = self::append_environnement('Export all articles');
+		$title = self::append_environnement('Articles');
 		
 		// get all categories
 		$categories = Category::orderBy('name')->get();
@@ -55,5 +55,29 @@ class AdminController extends BaseController
 				});
 			}
 		})->export('xls');
+	}
+	
+	public function export_histories()
+	{
+		// document title
+		$title = self::append_environnement('Histories');
+		
+		// get all categories
+		//$histories = Category::orderBy('name')->get();
+		
+		// export to an excel file
+		Excel::create($title, function($excel) use($title)
+		{
+			// set file proprieties
+			$excel->setTitle($title);
+			$excel->setCreator( Config::get('localmat.title') );
+			
+			// create one single sheet
+			$excel->sheet('Histories', function($sheet) use($title)
+			{
+				$sheet->fromArray( History::exportHistories() );
+			});
+		})->export('xls');
+	
 	}
 }

@@ -153,5 +153,33 @@ class History extends Eloquent
 		}
 
 	}
+	
+	public static function exportHistories()
+	{
+		$histories = History::
+			with('user','article.category')
+			->orderBy('created_at','desc')
+			->get();
+		
+		// array with all histories
+		$a_histories = array();
+		
+		foreach ($histories as $key => $history)
+		{			
+			// array with data to be returned
+			$a_histories[$key] = array();
+			
+			// append history values
+			$a_histories[$key]['Id'] = $history->id;
+			$a_histories[$key]['Article_id'] = $history->article_id;
+			$a_histories[$key]['Category'] = $history->article->category->name;			
+			$a_histories[$key]['Amount items'] = $history->amount_items;
+			$a_histories[$key]['User'] = $history->user->email;			
+			$a_histories[$key]['Borrowed date'] = $history->getBorrowedDate();
+			$a_histories[$key]['Time span'] = $history->getTimeSpan();
+		}
+		
+		return $a_histories;
+	}
 }
 
