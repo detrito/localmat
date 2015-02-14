@@ -80,4 +80,41 @@ class AdminController extends BaseController
 		})->export('xls');
 	
 	}
+	
+	public function export_users()
+	{
+		// document title
+		$title = self::append_environnement('Users');
+		
+		// get all categories
+		$users = User::
+				with('histories','histories.article','histories.article.category')
+				->orderBy('given_name', 'asc')
+				->orderBy('family_name', 'asc')
+				->get();
+			
+		// export to an excel file
+		Excel::create($title, function($excel) use($users, $title)
+		{
+			// set file proprieties
+			$excel->setTitle($title);
+			$excel->setCreator( Config::get('localmat.title') );
+			
+			foreach($users as $user)
+			{
+				$user_fullname = $user->given_name." ".$user->family_name;
+				
+				// create one sheet for each category
+				$excel->sheet($user_fullname, function($sheet) use($user)
+				{
+						$sheet->fromArray($user->exportUserData());
+						// FIXME search some cleaner way to add a blank row
+						$emptyline = array( 0 => array(0 => "") );
+						$sheet->fromArray($emptyline);
+						$sheet->fromArray($user->exportUserHistories());
+				});
+			}
+		})->export('xls');	
+	}
 }
+

@@ -164,6 +164,10 @@ class History extends Eloquent
 		// array with all histories
 		$a_histories = array();
 		
+		  ///////////////
+		 // USER DATA //
+		///////////////
+		
 		foreach ($histories as $key => $history)
 		{			
 			// array with data to be returned

@@ -47,6 +47,7 @@
 					<li><a href="{{ action('AdminController@export_logs') }}" >Export logs</a></li>
 					<li><a href="{{ action('AdminController@export_articles') }}" >Export articles</a></li>
 					<li><a href="{{ action('AdminController@export_histories') }}" >Export histories</a></li>
+					<li><a href="{{ action('AdminController@export_users') }}" >Export users</a></li>
             	</ul>
 			</li>
 			@endif

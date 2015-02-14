@@ -36,6 +36,7 @@ Administration tasks:
 			<li><a href="{{ action('AdminController@export_logs') }}">Laravel logs (plaintext)</a></li>
 			<li><a href="{{ action('AdminController@export_articles') }}">List of all articles (excel)</a></li>
 			<li><a href="{{ action('AdminController@export_histories') }}">List of all histories (excel)</a></li>
+			<li><a href="{{ action('AdminController@export_users') }}">List of all users (excel)</a></li>
 		</ul>
 </ul>
 

@@ -50,6 +50,7 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	Route::get('/admin/export/logs', 'AdminController@export_logs');
 	Route::get('/admin/export/articles', 'AdminController@export_articles');
 	Route::get('/admin/export/histories', 'AdminController@export_histories');
+	Route::get('/admin/export/users', 'AdminController@export_users');
 	
 	// articles
 	Route::get('/articles/add/{category_id?}', 'ArticlesController@add');

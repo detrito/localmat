@@ -79,4 +79,46 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return Redirect::to('/')
 			->with('flash_error', 'This user has currently been disabled.');
 	}
+	
+	
+	// return an array with the user data
+	public function exportUserData()
+	{
+		// array with the stored values
+		$a_user = array();
+
+		// column to export
+		$columns = array('id', 'given_name','family_name','email');
+
+		foreach ($columns as $column)
+		{			
+			// array with data to be returned
+			$a_user[0][$column] = $this[$column];
+		}
+
+		return $a_user;
+	}
+	
+	// return an array with the user histories
+	public function exportUserHistories()
+	{
+		// array with the stored values
+		$a_histories = array();
+
+		// descending sort the collection of histories
+		$histories = $this->histories->sortByDesc('created_at');
+		
+		foreach ($histories as $key => $history)
+		{
+			$a_histories[$key]['history_id'] = $history->id;
+			$a_histories[$key]['article_id'] = $history->article->id;
+			$a_histories[$key]['category'] = $history->article->category->name;
+			$a_histories[$key]['amount_items'] = $history->amount_items;
+			$a_histories[$key]['borrowed_date'] = $history->getBorrowedDate();
+			$a_histories[$key]['time_span'] = $history->getTimeSpan();
+		}
+
+		return $a_histories;
+	}
+
 }
