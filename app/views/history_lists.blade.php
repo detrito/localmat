@@ -27,6 +27,7 @@ Borrowing history
 		<thead>
 			<tr>
 				<th>Article</th>
+				<th>{{ $main_field_name }}</th>
 				<th>Items</th>
 				<th>User</th>
 				@if($status_name == 'returned')
@@ -54,10 +55,15 @@ Borrowing history
 							array('article_id'=>$history_item->article_id) )}}">
 						{{ $history_item->article->category->name }}</a>
 					</td>
+					
 					<td>
-						@if($history_item->amount_items == 0)
-							1
-						@else
+						@if($history_item->article->getMainField() != 0)
+							{{ $history_item->article->getMainField() }}
+						@endif
+					</td>
+										
+					<td>
+						@if($history_item->amount_items != 0)
 							{{ $history_item->amount_items }}
 						@endif
 					</td>

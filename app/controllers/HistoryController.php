@@ -11,6 +11,9 @@ class HistoryController extends BaseController
 	{
 		// Get list of status names
 		$status_names = History::getHistoryStatusNames();
+		
+		// Get MainFieldName
+		$main_field_name = Field::getMainFieldName();
 	
 		// FIXME load automatically also softDeleted users
 		$history = History::
@@ -28,7 +31,8 @@ class HistoryController extends BaseController
 		
 		$history = $history->paginate(10);
 	
-		return View::make('history_lists', compact('history','status_names'))
+		return View::make('history_lists', compact('history','status_names',
+			'main_field_name'))
 			->with( array('status_name'=>$status_name));
 	}
 

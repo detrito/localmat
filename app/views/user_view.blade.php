@@ -81,6 +81,7 @@ View
 				<th></th>				
 				@endif
 				<th>Article</th>
+				<th>{{ $main_field_name }}</th>
 				<th>Items</th>				
 				<th>Borrowed date</th>
 			</tr>
@@ -98,13 +99,19 @@ View
 							array('article_id'=>$history_item->article->id) )}}">
 						{{ $history_item->article->category->name }}</a>
 					</td>
+					
 					<td>
-						@if($history_item->amount_items == 0)
-							1
-						@else
+						@if($history_item->article->getMainField() != 0)
+							{{ $history_item->article->getMainField() }}
+						@endif
+					</td>
+					
+					<td>
+						@if($history_item->amount_items != 0)
 							{{ $history_item->amount_items }}
 						@endif
 					</td>
+					
 					<td>{{$history_item->getBorrowedDate()}}</td>
 				</tr>		
 			@endforeach
@@ -127,6 +134,7 @@ View
 		<thead>
 			<tr>
 				<th>Article</th>
+				<th>{{ $main_field_name }}</th>
 				<th>Items</th>
 				<th>Borrowed date</th>
 				<th>Time span</th>
@@ -140,13 +148,19 @@ View
 							array('article_id'=>$history_item->article->id) )}}">
 						{{ $history_item->article->category->name }}</a>
 					</td>
+					
 					<td>
-						@if($history_item->amount_items == 0)
-							1
-						@else
+						@if($history_item->article->getMainField() != 0)
+							{{ $history_item->article->getMainField() }}
+						@endif
+					</td>
+					
+					<td>
+						@if($history_item->amount_items != 0)
 							{{ $history_item->amount_items }}
 						@endif
 					</td>
+					
 					<td>{{$history_item->getBorrowedDate()}}</td>
 					<td>{{$history_item->getTimeSpan()}}</td>
 				</tr>		

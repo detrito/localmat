@@ -52,6 +52,7 @@ license. Patches and bug reports can be sent over GitHub or by
 		<thead>
 			<tr>
 				<th>Article</th>
+				<th>{{ $main_field_name }}</th>
 				<th>Items</th>
 				<th>User</th>
 				<th>Borrowed date</th>
@@ -76,9 +77,13 @@ license. Patches and bug reports can be sent over GitHub or by
 						{{ $history_item->article->category->name }}</a>
 					</td>
 					<td>
-						@if($history_item->amount_items == 0)
-							1
-						@else
+						@if($history_item->article->getMainField() != 0)
+							{{ $history_item->article->getMainField() }}
+						@endif
+					</td>
+					
+					<td>
+						@if($history_item->amount_items != 0)
 							{{ $history_item->amount_items }}
 						@endif
 					</td>
@@ -106,6 +111,7 @@ license. Patches and bug reports can be sent over GitHub or by
 		<thead>
 			<tr>
 				<th>Article</th>
+				<th>{{ $main_field_name }}</th>
 				<th>Items</th>
 				<th>User</th>
 				<th>Returned date</th>
@@ -130,9 +136,13 @@ license. Patches and bug reports can be sent over GitHub or by
 						{{ $history_item->article->category->name }}</a>
 					</td>
 					<td>
-						@if($history_item->amount_items == 0)
-							1
-						@else
+						@if($history_item->article->getMainField() != 0)
+							{{ $history_item->article->getMainField() }}
+						@endif
+					</td>
+					
+					<td>
+						@if($history_item->amount_items != 0)
 							{{ $history_item->amount_items }}
 						@endif
 					</td>

@@ -156,17 +156,16 @@ class History extends Eloquent
 	
 	public static function exportHistories()
 	{
+		// array with all histories
+		$a_histories = array();
+	
 		$histories = History::
 			with('user','article.category')
 			->orderBy('created_at','desc')
 			->get();
 		
-		// array with all histories
-		$a_histories = array();
-		
-		  ///////////////
-		 // USER DATA //
-		///////////////
+		// get main field name
+		$main_field_name = Field::getMainFieldName();
 		
 		foreach ($histories as $key => $history)
 		{			
@@ -176,7 +175,14 @@ class History extends Eloquent
 			// append history values
 			$a_histories[$key]['Id'] = $history->id;
 			$a_histories[$key]['Article_id'] = $history->article_id;
-			$a_histories[$key]['Category'] = $history->article->category->name;			
+			$a_histories[$key]['Category'] = $history->article->category->name;
+			
+			if( ! is_null($main_field_name) )
+			{
+				$a_histories[$key][$main_field_name] =
+				$history->article->getMainField();
+			}
+			
 			$a_histories[$key]['Amount items'] = $history->amount_items;
 			
 			if( isset($history->user))
@@ -187,7 +193,7 @@ class History extends Eloquent
 			{
 					$user = User::withTrashed()->find($history->user_id);
 			}
-			$a_histories[$key]['User'] = $user->email;
+			$a_histories[$key]['User'] = $user->given_name." ".$user->family_name;
 						
 			$a_histories[$key]['Borrowed date'] = $history->getBorrowedDate();
 			$a_histories[$key]['Time span'] = $history->getTimeSpan();

@@ -7,7 +7,7 @@ class Field extends BaseEloquent
 
 	// Enable timestamps	
 	public $timestamps = false;
-
+	
 	// Data-types allowed for the field $value
 	protected static $types = array('string', 'integer','integerpositive', 'boolean');	
 	
@@ -37,6 +37,16 @@ class Field extends BaseEloquent
 	public function fieldData()
 	{
 		return $this->hasMany('FieldDatum');
+	}
+	
+	public static function getMainFieldName()
+	{
+		return self::where('main','=',1)->pluck('name');
+	}
+	
+	public static function getMainFieldId()
+	{
+		return self::where('main','=',1)->pluck('id');
 	}
 	
 	public static function getTypes()
@@ -77,4 +87,10 @@ class Field extends BaseEloquent
 		});
 	}
 
+	public static function getMainFieldValue($article_single_id)
+	{
+		return FieldDatum::whereArticleSingle($article_single_id)
+			->whereFieldId(self::getMainFieldId())
+			->pluck('value');
+	}	
 }

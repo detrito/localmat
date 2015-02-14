@@ -38,5 +38,15 @@ class Article extends BaseEloquent
 	{
 		return self::$article_classes;
 	}
+	
+	// If available return the value of the $mainfield
+	public function getMainField()
+	{
+		// This method is only available for ArticleSingle articles
+		if($this->proprieties_type == 'ArticleSingle')
+		{
+			return Field::getMainFieldValue($this->proprieties->id);
+		}
+	}
 }
 

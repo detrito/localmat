@@ -108,11 +108,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		// descending sort the collection of histories
 		$histories = $this->histories->sortByDesc('created_at');
 		
+		// get main field name
+		$main_field_name = Field::getMainFieldName();
+		
 		foreach ($histories as $key => $history)
 		{
 			$a_histories[$key]['history_id'] = $history->id;
-			$a_histories[$key]['article_id'] = $history->article->id;
+			$a_histories[$key]['article_id'] = $history->article->id;			
 			$a_histories[$key]['category'] = $history->article->category->name;
+			if( ! is_null($main_field_name) )
+			{
+				$a_histories[$key][$main_field_name] =
+				$history->article->getMainField();
+			}
 			$a_histories[$key]['amount_items'] = $history->amount_items;
 			$a_histories[$key]['borrowed_date'] = $history->getBorrowedDate();
 			$a_histories[$key]['time_span'] = $history->getTimeSpan();

@@ -48,6 +48,18 @@
 <tr/>
 
 <tr>
+<td> {{ Form::label('main', 'Main') }}</td>
+<td>
+@if($action == 'add')
+	{{ Form::checkbox('main', 1) }}
+@elseif($action == 'edit')
+	{{ Form::checkbox('main', 1, $field->main) }}
+@endif
+</td>
+</tr>
+<tr/>
+
+<tr>
 {{ $errors->first('type', '<span class="error">:message</span>') }}
 <td> {{ Form::label('type', 'Type') }} </td>
 <td> 

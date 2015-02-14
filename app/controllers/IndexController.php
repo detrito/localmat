@@ -5,6 +5,9 @@ class IndexController extends BaseController
 {
 	public function index()
 	{
+		// Get MainFieldName
+		$main_field_name = Field::getMainFieldName();
+	
 		$history_borrowed = History::
 			with('user','article')
 			->orderBy('created_at','desc')
@@ -18,6 +21,7 @@ class IndexController extends BaseController
 			->take(5)
 			->get();
 		
-		return View::make('index', compact('history_borrowed','history_returned'));
+		return View::make('index', compact('main_field_name',
+			'history_borrowed','history_returned'));
 	}
 }

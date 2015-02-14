@@ -82,6 +82,9 @@ class UsersController extends BaseController
 
 	public function view($user_id)
 	{
+		// Get MainFieldName
+		$main_field_name = Field::getMainFieldName();
+	
 		$user = User::
 			withTrashed()
 			->findOrFail($user_id);
@@ -95,7 +98,8 @@ class UsersController extends BaseController
 			->orderBy('created_at','desc')
 			->get();
 
-		return View::make('user_view', compact('user','history_borrowed','history_all'));
+		return View::make('user_view', compact('user','history_borrowed',
+			'history_all','main_field_name'));
 	}
 
     public function add()

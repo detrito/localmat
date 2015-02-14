@@ -19,4 +19,9 @@ class FieldDatum extends Eloquent
 	{
 		return $this->belongsTo('Field');
 	}
+	
+	public function scopewhereArticleSingle($query, $article_single_id)
+	{
+		return $query->where('article_single_id','=',$article_single_id);
+	}
 }

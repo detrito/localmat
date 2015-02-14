@@ -13,6 +13,7 @@
                     <th>Field id</th>
                     <th>Name</th>
 					<th>Required</th>
+					<th>Main</th>
                     <th>Type</th>
 					<th>Admin</th>
                 </tr>
@@ -24,6 +25,7 @@
                     <td>{{ $field->id }}</td>
                     <td>{{ $field->name }}</td>
                     <td>{{ $field->required }}</td>
+                    <td>{{ $field->main }}</td>
 					<td>{{ $field->type }}</td>
                     <td>
                         <a href="{{

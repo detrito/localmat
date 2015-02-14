@@ -34,10 +34,32 @@ class FieldsController extends BaseController
 			$field = new Field;
 			$field->name = Input::get('name');
 			$field->type = Input::get('type');
+			
+			// handle required checkbox
 			if( Input::get('required') !== Null )
 				$field->required = Input::get('required');
 			else
-				$field->required = 0;				
+				$field->required = 0;
+			
+			// handle main checkbox
+			if( Input::get('main') !== Null)
+			{
+				if(Field::getMainFieldId() == 0)
+				{
+					$field->main = Input::get('main');
+				}
+				else
+				{
+					$message = 'Only one single field can be selected as main.';
+					return Redirect::action('FieldsController@index')
+						->with('flash_error', $message);
+				}
+			}	
+			else
+			{
+				$field->main = 0;
+			}
+			
 			$field->save();
 			
 			$message = 'Field successfully added.';
@@ -81,10 +103,32 @@ class FieldsController extends BaseController
 			$field = Field::findOrFail($field_id);
 			$field->name = Input::get('name');
 			$field->type = Input::get('type');
+			
+			// handle required checkbox
 			if( Input::get('required') !== Null )
 				$field->required = Input::get('required');
 			else
-				$field->required = 0;				
+				$field->required = 0;
+			
+			// handle main checkbox
+			if( Input::get('main') !== Null)
+			{
+				if(Field::getMainFieldId() == 0)
+				{
+					$field->main = Input::get('main');
+				}
+				else
+				{
+					$message = 'Only one single field can be selected as main.';
+					return Redirect::action('FieldsController@index')
+						->with('flash_error', $message);
+				}
+			}	
+			else
+			{
+				$field->main = 0;
+			}
+			
 			$field->save();
 
 			$message = 'Field successfully modified.';
