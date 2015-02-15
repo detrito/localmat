@@ -34,6 +34,11 @@ th {
 	border-bottom: 1px #ccc solid;
 }
 
+.vertical th {
+	border-bottom: 1px #ccc solid;
+	border-top: 1px #ccc solid;
+}
+
 .clear {
     clear: both;
     height: 0;

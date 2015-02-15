@@ -37,17 +37,17 @@ View
 
 <h3>User data:</h3>
 
-<table>
+<table class="vertical">
 	<tr>
-		<td>Given Name</td>
+		<th>Given Name</th>
 		<td>{{$user->given_name}}</td>
 	</tr>
 	<tr>
-		<td>Family Name</td>
+		<th>Family Name</th>
 		<td>{{$user->family_name}}</td>
 	</tr>
 		<tr>
-		<td>E-mail</td>
+		<th>E-mail</th>
 		<td><a href="mailto:{{$user->email}}">{{$user->email}}</a></td>
 	</tr>
 </table>

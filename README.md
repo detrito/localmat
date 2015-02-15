@@ -11,7 +11,7 @@ cord length, serial number, year of introduction, ...) that you wish. You can
 then start to add some Articles to those Categories. These Articles can be
 browsed and listed by their status (borrowed or available) and by their
 FieldData. Users can borrow and return the Articles, and their History can also
-be visualised.
+be visualised. The database can be exported in sql or viewed in excel format.
 
 A demonstration-website is available at http://localmat-demo.speleo-lausanne.ch
 

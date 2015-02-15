@@ -1,12 +1,13 @@
 {
-	"name": "laravel/laravel",
-	"description": "The Laravel Framework.",
-	"keywords": ["framework", "laravel"],
-	"license": "MIT",
+	"name": "detrito/localmat",
+	"description": "MVC web application to manage the equipement of caving organisations",
+	"keywords": ["localmat","caving","equipement","mvc","laravel"],
+	"license": "GPLv3",
 	"require": {
 		"laravel/framework": "4.2.*",
 		"fzaninotto/faker": "1.4.*",
-		"maatwebsite/excel": "1.3.*"
+		"maatwebsite/excel": "1.3.*",
+		"schickling/backup": "0.6.*"
 	},
 	"autoload": {
 		"classmap": [

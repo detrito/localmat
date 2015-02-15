@@ -33,6 +33,7 @@ Administration tasks:
 		</ul>
 	<li>Export</li>
 		<ul>
+			<li><a href="{{ action('AdminController@export_db') }}">Database backup (sql)</a></li>		
 			<li><a href="{{ action('AdminController@export_logs') }}">Laravel logs (plaintext)</a></li>
 			<li><a href="{{ action('AdminController@export_articles') }}">List of all articles (excel)</a></li>
 			<li><a href="{{ action('AdminController@export_histories') }}">List of all histories (excel)</a></li>

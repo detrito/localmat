@@ -19,7 +19,6 @@ class ArticlesController extends BaseController
 					->orderBy('name')
 					->get();
 
-				// FIXME implement view of other status
 				return View::make('article_lists_all',
 					compact('categories','status_names'))
 					->with( array('status_name'=>$status_name,

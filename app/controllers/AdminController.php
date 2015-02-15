@@ -1,5 +1,7 @@
 <?php
 
+use Symfony\Component\Console\Output\StreamOutput;
+
 class AdminController extends BaseController
 {
 	public function index()
@@ -19,9 +21,9 @@ class AdminController extends BaseController
 
 	public function append_environnement($action)
 	{
-		return Carbon::today()->toDateString()." ".
+		return Carbon::now()->toW3cString()."_".
 			Config::get('localmat.title')."-".
-			Config::get('localmat.version')." ".
+			Config::get('localmat.version')."_".
 			$action;
 	}
 	public function export_logs()
@@ -115,6 +117,17 @@ class AdminController extends BaseController
 				});
 			}
 		})->export('xls');	
+	}
+	
+	public function export_db()
+	{
+		$filename = storage_path()."/dumps/".self::append_environnement('DB.sql');
+		
+		// call schickling/laravel-backup by executing "php artisan db:backup"
+		Artisan::call('db:backup',['filename'=>$filename]);
+		
+		// now download the on the server stored backup
+		return $this->download($filename);
 	}
 }
 
