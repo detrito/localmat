@@ -19,8 +19,13 @@ View
 @if (Auth::check() && Auth::user()->admin)
 	<a href="{{ action( 'UsersController@handle_edit_permissions',
 		array('user_id'=>$user->id) ) }}">Edit permissions</a>
-	<a href="{{	action('UsersController@login_as',
-		array('user_id'=>$user->id)) }}">Log-in</a>
+	
+	{{-- allow to switch user if not already logged in --}}
+	@if (Auth::user()->id != $user->id)
+		<a href="{{	action('UsersController@login_as',
+			array('user_id'=>$user->id)) }}">Log-in</a>
+	@endif
+	
 	@if (! isset($user->deleted_at))
 		<a href="{{ action('UsersController@trash',
 			array($user->id)) }}">Trash</a>
