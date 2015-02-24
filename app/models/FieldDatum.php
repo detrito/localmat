@@ -24,4 +24,5 @@ class FieldDatum extends Eloquent
 	{
 		return $query->where('article_single_id','=',$article_single_id);
 	}
+	
 }

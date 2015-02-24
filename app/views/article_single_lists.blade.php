@@ -61,14 +61,31 @@
 					{{-- Link to view article --}}
                     <th>
 					</th>
-
+										
 					{{-- Loop throught fields --}}
 					@foreach ($fields as $field_item)
+					
+						<?php
+							// default order
+							$new_order = 'asc';
+							$arrow = '';
+							
+							// inverse order of current field
+							if($field_item->id == $field_id)
+							{
+								$new_order = ($order == 'asc'? 'desc' : 'asc');
+								$arrow = ($order == 'asc'? "&#x25BC;" : "&#x25B2;" );
+							}
+						?>
+
+					
 						<th><a href="{{ action('ArticlesController@lists',
 						array('status_name'=>$status_name,
 						'category_id'=>$category_id,
-						'field_id'=>$field_item->id) ) }}">
-						{{ $field_item->name }}</a></th>
+						'field_id'=>$field_item->id,
+						'order'=>$new_order ) ) }}">
+						{{ $field_item->name }}</a> {{$arrow}}
+						</th>
 					@endforeach
 
 					<th>Status</th>
@@ -140,10 +157,13 @@
 				@endforeach
             </tbody>
         </table>
+        
 		@if (Auth::check() && Auth::user()->enabled)
 			<p><input type="submit" value="Borrow"></p>
 			</form>
 		@endif
+		
+		<?php echo $articles_singles->links(); ?>
 @endif
 @stop
 

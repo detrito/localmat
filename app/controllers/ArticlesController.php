@@ -7,8 +7,9 @@ class ArticlesController extends BaseController
 		return $this->lists();
 	}
 
-    public function lists($status_name='all', $category_id = Null, $field_id = Null)
-    {		
+    public function lists($status_name='all', $category_id=Null, $field_id=Null,
+    	$order = 'asc')
+    {
 		switch($category_id)
 		{
 			// If no category is specified, make list of all categories
@@ -30,7 +31,8 @@ class ArticlesController extends BaseController
 			
 				// Call the lists method of the $article_class model
 				$article_class = $category->article_class;
-				return $article_class::callLists($status_name, $category_id, $field_id);
+				return $article_class::callLists($status_name, $category_id,
+					$field_id, $order);
 		}
     }
 

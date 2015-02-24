@@ -47,22 +47,35 @@ class ArticleSingle extends BaseEloquent
 		}
 	}
 
-	// Return
-	public static function getArticleIdsSortedByField($articles_singles, $field_id, $order='ASC')
+	// Sort the article_single model by the vaules of one of its fields
+	public function scopeSortByField($query, $field_id, $order='asc')
 	{
-		$article_ids = $articles_singles->fetch('id')->toArray();	
-	
+		// get array of article_single_id sorted by field
+		$ordered_ids = $this->getArticleIdsSortedByField($field_id, $order);
+		// explose array to string
+		$string_ids = implode(',', $ordered_ids);
+		// sort the article model by the array of ids $string_ids
+		$articles_singles = $query->orderByRaw(DB::raw( "FIELD(id, $string_ids)" ));
+	}
+
+	// Return array of article-ids sorted by a field value
+	public function getArticleIdsSortedByField($field_id, $order)
+	{
+		$article_ids = $this->lists('id');
+		
 		// retrive mysql cast type of the field $field_name
 		// in order to sort it as CHAR or as INTEGER
 		$field_type = Field::find($field_id)->type;
 		$field_cast_type = Field::getCastType($field_type);
 
-		$field_data = new FieldDatum;	
+		$field_data = new FieldDatum;
+		
 		return $field_data
 			->whereHas('Field', function($query) use($field_id)
 			{
 				$query->where('id', $field_id);
 			})
+			->whereIn('article_single_id', $article_ids)	
 			->select('article_single_id', 'value')
 			// FIXME this only works on MySQL
 			->orderBy(DB::raw('CAST(value AS '.$field_cast_type.')'), $order)
@@ -100,8 +113,8 @@ class ArticleSingle extends BaseEloquent
 	/*
 	 * Functions called from ArticleController to add, view, edit, delete, ...
 	*/
-
-	public static function callLists($status_name, $category_id, $field_id)
+	
+	public static function callLists($status_name, $category_id, $field_id, $order)
 	{
 		// Get list of all categories				
 		$categories = Category::all()->sortBy('name');
@@ -115,24 +128,26 @@ class ArticleSingle extends BaseEloquent
 		// Get the articles who belongs to $category and to $status
 		$articles_singles = ArticleSingle::whereCategory($category_id)
 			->whereStatus($status_name)
-			->with('article','fieldData')
-			->get();
-
-		if(! empty($articles_singles->first()))
+			->with('article','fieldData');
+		
+		if(! empty( $articles_singles->first() ))
 		{
-			// Order article's IDs by the value of $field_name
 			if($field_id!=Null)
 			{
-				$ordered_ids = ArticleSingle::getArticleIdsSortedByField($articles_singles,$field_id);
-				$articles_singles = $articles_singles->sortByOrder($ordered_ids);
+				// Sort the article model by the value of a field
+				$articles_singles->sortByField($field_id, $order);
 			}
 		}
+		
+		// paginate
+		$articles_singles = $articles_singles
+			->paginate(Config::get('localmat.itemsPerPage'));
 
 		return View::make('article_single_lists',
 			compact('categories','status_names','fields','articles_singles'))
 			->with( array('status_name'=>$status_name,
-				'category_id'=>$category_id,
-				'field_id'=>$field_id) );
+				'category_id'=>$category_id, 'field_id'=>$field_id,
+				'order' => $order) );
 	}
 
 	public static function callView($article)

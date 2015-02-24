@@ -2,7 +2,7 @@
 
 class DatabaseSeeder extends Seeder {
 
-	protected static $number_articles_category = 10;
+	protected static $number_articles_category = 60;
 
 	protected static $categories_amounts = array(
 		'Mousquetons' => 25,
@@ -24,22 +24,28 @@ class DatabaseSeeder extends Seeder {
 	protected static $fields = array(
 		"Description" => array(
 			'type' => "string",
-			'required' => false),
+			'required' => false,
+			'main' => 0),
 		"Année" => array(
 			'type' => "integerpositive",
-			'required' => false),
+			'required' => false,
+			'main' => 0),
 		"Corde statique" => array(
 			'type' => "boolean",
-			'required' => false),
+			'required' => false,
+			'main' => 0),
 		"Longueur" => array(
 			'type' => "integerpositive",
-			'required' => true),
+			'required' => true,
+			'main' => 0),
 		"Code" => array(
 			'type' => "integerpositive",
-			'required' => true),
+			'required' => true,
+			'main' => 1),
 		"Remarque" => array(
 			'type' => "string",
-			'required' => false)
+			'required' => false,
+			'main' => 0)
 	);
 
 	public static function get_categories_amounts()
@@ -96,7 +102,7 @@ class UserTableSeeder extends Seeder {
 
 		// 50 random generated users
 		$faker = Faker\Factory::create('en_GB');
-		$count = 10;
+		$count = 50;
 
 		for ($i = 0; $i < $count; $i++)
 		{
@@ -122,7 +128,8 @@ class FieldTableSeeder extends Seeder {
 			Field::create(array(
 				'name' => $field_name,
 				'type' => $data['type'],
-				'required' => $data['required'] ));
+				'required' => $data['required'],
+				'main' => $data['main'],));
 		}
 	}
 }
