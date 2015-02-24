@@ -47,7 +47,6 @@ Enjoy
 
 > firefox localhost:8000
 
-
 INSTALL ON REMOTE SERVER
 ========================
 

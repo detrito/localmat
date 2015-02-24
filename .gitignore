@@ -13,8 +13,11 @@ Thumbs.db
 *.swp
 *.swo
 
+# ignore storage files
+/app/storage
+
 # ignore all local config files..
 /app/config/local
 /app/config/gsl
 /app/config/demo
-
+/app/config/packages
