@@ -29,7 +29,7 @@ class HistoryController extends BaseController
 			$history = $history->orderBy('created_at','desc');
 		}
 		
-		$history = $history->paginate(10);
+		$history = $history->paginate(Config::get('localmat.itemsPerPage'));
 	
 		return View::make('history_lists', compact('history','status_names',
 			'main_field_name'))
