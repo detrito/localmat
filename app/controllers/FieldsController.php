@@ -113,7 +113,8 @@ class FieldsController extends BaseController
 			// handle main checkbox
 			if( Input::get('main') !== Null)
 			{
-				if(Field::getMainFieldId() == 0)
+				if(Field::getMainFieldId() == 0
+					|| Field::getMainFieldId() == $field_id)
 				{
 					$field->main = Input::get('main');
 				}

@@ -5,6 +5,7 @@ class IndexController extends BaseController
 {
 	public function index()
 	{
+	
 		// Get MainFieldName
 		$main_field_name = Field::getMainFieldName();
 	

@@ -77,9 +77,7 @@ license. Patches and bug reports can be sent over GitHub or by
 						{{ $history_item->article->category->name }}</a>
 					</td>
 					<td>
-						@if($history_item->article->getMainField() != 0)
-							{{ $history_item->article->getMainField() }}
-						@endif
+						{{ $history_item->article->getMainField() }}
 					</td>
 					
 					<td>
@@ -136,9 +134,7 @@ license. Patches and bug reports can be sent over GitHub or by
 						{{ $history_item->article->category->name }}</a>
 					</td>
 					<td>
-						@if($history_item->article->getMainField() != 0)
-							{{ $history_item->article->getMainField() }}
-						@endif
+						{{ $history_item->article->getMainField() }}
 					</td>
 					
 					<td>

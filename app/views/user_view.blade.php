@@ -106,9 +106,7 @@ View
 					</td>
 					
 					<td>
-						@if($history_item->article->getMainField() != 0)
-							{{ $history_item->article->getMainField() }}
-						@endif
+						{{ $history_item->article->getMainField() }}
 					</td>
 					
 					<td>
@@ -155,9 +153,7 @@ View
 					</td>
 					
 					<td>
-						@if($history_item->article->getMainField() != 0)
-							{{ $history_item->article->getMainField() }}
-						@endif
+						{{ $history_item->article->getMainField() }}
 					</td>
 					
 					<td>

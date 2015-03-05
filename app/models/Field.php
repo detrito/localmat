@@ -88,7 +88,7 @@ class Field extends BaseEloquent
 	}
 
 	public static function getMainFieldValue($article_single_id)
-	{
+	{	
 		return FieldDatum::whereArticleSingle($article_single_id)
 			->whereFieldId(self::getMainFieldId())
 			->pluck('value');
