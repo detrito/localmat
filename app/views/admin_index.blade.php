@@ -31,13 +31,17 @@ Administration tasks:
 			<li><a href="{{ action('UsersController@index') }}" >Manage users</a></li>
 			<li><a href="{{ action('UsersController@add') }}" >Add new user</a></li>
 		</ul>
-	<li>Export</li>
+	<li id="export">Export</li>
 		<ul>
-			<li><a href="{{ action('AdminController@export_db') }}">Database backup (sql)</a></li>		
+			@if( Config::get('localmat.export_mysql') )
+				<li><a href="{{ action('AdminController@export_db') }}">Database backup (sql)</a></li>
+			@endif
 			<li><a href="{{ action('AdminController@export_logs') }}">Laravel logs (plaintext)</a></li>
-			<li><a href="{{ action('AdminController@export_articles') }}">List of all articles (excel)</a></li>
-			<li><a href="{{ action('AdminController@export_histories') }}">List of all histories (excel)</a></li>
-			<li><a href="{{ action('AdminController@export_users') }}">List of all users (excel)</a></li>
+			@if( Config::get('localmat.export_excel') )
+				<li><a href="{{ action('AdminController@export_articles') }}">List of all articles (excel)</a></li>
+				<li><a href="{{ action('AdminController@export_histories') }}">List of all histories (excel)</a></li>
+				<li><a href="{{ action('AdminController@export_users') }}">List of all users (excel)</a></li>
+			@endif
 		</ul>
 </ul>
 

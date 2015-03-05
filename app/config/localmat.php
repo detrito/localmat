@@ -5,4 +5,6 @@
 		'title' => 'LocalMat',
 		'subtitle' => 'Demonstration website',
 		'itemsPerPage' => 20,
+		'export_excel' => 1,
+		'export_mysql' => 1,
 	);
