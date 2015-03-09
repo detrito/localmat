@@ -2,9 +2,9 @@
 
 @section('title')
 
-@if(isset($category_name))
+@if(isset($article))
 	<a href="{{ action('ArticlesController@lists')}}">Articles</a>
-	> {{ $category_name }} > {{ $status_name }}
+	> {{ $article->category->name }}
 @else
 	Articles
 @endif

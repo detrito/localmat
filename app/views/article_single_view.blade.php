@@ -3,6 +3,10 @@
 @section('title')
 
 <a href="{{ action('ArticlesController@lists')}}">Articles</a>
+	> <a href="{{ action('ArticlesController@lists', array(
+		'status_name'=>'all',
+		'category_id'=>$article->category->id) ) }}">
+		{{ $article->category->name }}</a>
 	> Article {{ $article->id }}
 
 @stop

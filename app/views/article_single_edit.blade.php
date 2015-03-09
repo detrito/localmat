@@ -3,8 +3,11 @@
 @section('title')
 
 <a href="{{ action('ArticlesController@index') }}">Articles</a>
+	> <a href="{{ action('ArticlesController@lists', array(
+		'status_name'=>'all',
+		'category_id'=>$article->category->id) ) }}">
+		{{ $article->category->name }}</a>
 	> Edit article (id {{$article->id}})
-
 @stop
 
 @section('content')
