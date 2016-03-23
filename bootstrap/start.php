@@ -25,7 +25,7 @@ $app = new Illuminate\Foundation\Application;
 */
 
 $env = $app->detectEnvironment(array(
-	'local' => array('tuilinn'),
+	'local' => array('aglareb'),
 	'gsl' => array('imu379')
 ));
 
