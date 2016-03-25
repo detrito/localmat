@@ -3,6 +3,7 @@
 class DatabaseSeeder extends Seeder {
 
 	protected static $number_articles_category = 60;
+	protected static $code_string = "GSL ";
 
 	protected static $categories_amounts = array(
 		'Mousquetons' => 25,
@@ -47,6 +48,11 @@ class DatabaseSeeder extends Seeder {
 			'required' => false,
 			'main' => 0)
 	);
+
+	public static function get_code_string()
+	{
+		return self::$code_string;
+	}
 
 	public static function get_categories_amounts()
 	{
@@ -231,7 +237,7 @@ class ArticleSingleTableSeeder extends Seeder {
 							$field_datum->value = round($faker->numberBetween(10,150), -1);
 							break;
 						case 'Code':
-							$field_datum->value = $faker->unique()->randomNumber(3);
+							$field_datum->value = DatabaseSeeder::get_code_string().$faker->unique()->randomNumber(3);
 							break;
 						case 'Remarque':
 							if($faker->boolean(10))
