@@ -70,8 +70,10 @@ class UsersController extends BaseController
 		$message = 'You switched user to '.$user->email;
 		$message_verbose = $message.' User ID '.$user->id.'.';
 		Log::info($message_verbose);
-		return Redirect::action('UsersController@index')
-				->with('flash_notice', $message);
+		
+		return Redirect::action('UsersController@view',
+			array('user_id'=>$user->id) )
+			->with('flash_notice', $message);
 	}
 	
 	public function login_back()
@@ -277,7 +279,7 @@ class UsersController extends BaseController
 			return Redirect::action('UsersController@index')
 				->with('flash_notice', $message);
 		}
-		return Redirect::action('UsersController@index')
+		return Redirect::back()
 				->with('flash_error', 'This user still has borrowed articles!
 					Make sure that he returned all his articles before to trash it.');
     }
