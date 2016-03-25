@@ -12,7 +12,13 @@
 
 		@if (Auth::check())
 			{{ Auth::user()->email }}
-			- <a href="{{ url('logout') }}">Logout</a>
+			
+			@if (Session::get('main_user_id'))
+				- <a href="{{ action('UsersController@login_back') }}">
+					Back to {{ Session::get('main_user_email') }}</a>
+			@else
+				- <a href="{{ url('logout') }}">Logout</a>
+			@endif
 		@else
 			<a href="{{ url('login') }}">Login</a>
 		@endif

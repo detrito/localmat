@@ -80,11 +80,18 @@ Route::group(array('before' => 'auth|enabled|admin'), function()
 	// users	
 	Route::get('/users/add', 'UsersController@add');
 	Route::post('/users/add', 'UsersController@handle_add');
-	Route::get('/users/login/{user_id}', 'UsersController@login_as');	
+	Route::get('/users/login/{user_id}', 'UsersController@login_as');
 	Route::get('/users/trash/{user_id}', 'UsersController@trash');	
 	Route::get('/users/restore/{user_id}', 'UsersController@restore');
 	Route::get('/users/edit/permissions/{user_id}', 'UsersController@edit_permissions');
 	Route::post('/users/edit/permissions/{user_id}', 'UsersController@handle_edit_permissions');
+});
+
+// routes accessibles only to user who where logged-in as administrators users
+Route::group(array('before' => 'auth|was_admin'), function()
+{
+	// users
+	Route::get('/users/login_back', 'UsersController@login_back');
 });
 
 // routes accessibles only to logged-in and enabled owner users

@@ -57,6 +57,17 @@ Route::filter('enabled', function()
 	}
 });
 
+// check user is able to switch back to a previous user
+Route::filter('was_admin', function()
+{
+	$user_id = Session::get('main_user_id');
+	if($user_id == NULL)
+	{
+		return Redirect::to('/')
+			->with('flash_error', 'Only administrators can view this page!');
+	}
+});
+
 // check if the user is an administrator
 Route::filter('admin', function()
 {

@@ -58,12 +58,36 @@ class UsersController extends BaseController
     
     public function login_as($user_id)
 	{
+		// remember main user
+		$main_user = Auth::user();
+		Session::put('main_user_id', $main_user->id);
+		Session::put('main_user_email', $main_user->email);
+		
+		// switch user
 		$user = User::findOrFail($user_id);
 		Auth::login($user);
 		
 		$message = 'You switched user to '.$user->email;
 		$message_verbose = $message.' User ID '.$user->id.'.';
 		Log::info($message_verbose);
+		return Redirect::action('UsersController@index')
+				->with('flash_notice', $message);
+	}
+	
+	public function login_back()
+	{
+		$user_id = Session::get('main_user_id');
+		$user = User::findOrFail($user_id);
+		
+		Auth::login($user);
+		
+		Session::forget('main_user_id');
+		Session::forget('main_user_email');
+		
+		$message = 'You switched back to user '.$user->email;
+		$message_verbose = $message.' User ID '.$user->id.'.';
+		Log::info($message_verbose);
+		
 		return Redirect::action('UsersController@index')
 				->with('flash_notice', $message);
 	}
