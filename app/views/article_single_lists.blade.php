@@ -48,7 +48,7 @@
 	<p>There are no articles in this category.</p>
 @else
 	@if (Auth::check() && Auth::user()->enabled)	
-		<form action="{{ action('HistoryController@handle_borrow') }}" method="post">
+		<form action="{{ action('HistoryController@handle_borrow_post') }}" method="post">
 	@endif
 	<table>
             <thead>
@@ -77,7 +77,6 @@
 								$arrow = ($order == 'asc'? "&#x25BC;" : "&#x25B2;" );
 							}
 						?>
-
 					
 						<th><a href="{{ action('ArticlesController@lists',
 						array('status_name'=>$status_name,

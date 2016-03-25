@@ -53,7 +53,7 @@
 
 @if (Auth::check() && Auth::user()->enabled)
 	<h3>Borrow articles</h3>
-	<form action="{{ action('HistoryController@handle_borrow') }}" method="post">
+	<form action="{{ action('HistoryController@handle_borrow_post') }}" method="post">
 		<p>
 		<input type="hidden"  name="{{$article->id}}"  value="{{ $article->id }}">
 		{{ Form::label('amount_items', 'Amount items') }}

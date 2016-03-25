@@ -39,7 +39,10 @@
 @if (Auth::check() && Auth::user()->enabled)
 	<h3>Actions</h3>
 	@if(!$article->proprieties->borrowed)
-		<a href="#">Borrow</a> -
+    <a href="{{
+		action('HistoryController@handle_borrow_get',
+		array($article->id))
+		}}">Borrow</a> - 
 	@endif
 	
 	@if (Auth::user()->admin)

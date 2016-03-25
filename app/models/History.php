@@ -95,6 +95,52 @@ class History extends Eloquent
 			return false;
 		}
 	}
+	
+	public static function borrowArticle($article, $amount_items = NULL)
+	{
+		$user = User::find( Auth::user()->id );
+
+		switch ($article->proprieties_type)
+		{
+			case 'ArticleSingle':
+				$article_single = $article->proprieties;		
+
+				// Check if article is not already borrowed			
+				if( $article_single->borrowed == false )
+				{
+					$article_single->borrowed = true;
+					$article_single->save();
+
+					$history = new History;
+					$history->user()->associate($user);		
+					$history->article()->associate($article);	
+					$history->save();
+					
+					return $history;
+				}
+				
+			case 'ArticleAmount':
+				$article_single = $article->proprieties;
+
+				if ($article_single->available_items >= $amount_items)
+				{
+					$article_single->available_items -= $amount_items;
+					$article_single->save();
+				
+					$history = new History;
+					$history->user()->associate($user);		
+					$history->article()->associate($article);
+					$history->amount_items = $amount_items;
+					$history->save();
+					
+					return $history;
+				}
+				break;
+			// return 1 if article no available
+			// or not enough items availables
+			return NULL;
+		}
+	}
 
 	public function setReturnedDate()
 	{

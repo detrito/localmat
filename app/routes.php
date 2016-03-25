@@ -35,7 +35,8 @@ Route::group(array('before' => 'auth|enabled'), function()
 	Route::get('/articles', 'ArticlesController@index');
 	Route::get('/articles/lists/{status_name?}/{category_id?}/{field_id?}/{order?}','ArticlesController@lists');
 	Route::get('/articles/view/{article_id}', 'ArticlesController@view');
-	Route::post('/articles/borrow/', 'HistoryController@handle_borrow');
+	Route::post('/articles/borrow/', 'HistoryController@handle_borrow_post');
+	Route::get('/articles/borrow/{article_id}', 'HistoryController@handle_borrow_get');
 	Route::post('/articles/view/{user_id}', 'HistoryController@handle_return');
 	
 	// history
