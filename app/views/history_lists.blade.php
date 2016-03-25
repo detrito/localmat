@@ -40,16 +40,7 @@ Borrowing history
 		</thead>
 		<tbody>
 			@foreach($history as $history_item)
-			
-				@if(isset($history_item->user))
-					<?php $user = $history_item->user ?>
-					<tr>
-				@else
-					{{-- Load the attributes of the softDeleted user --}}
-					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
-					<tr class="inactive">
-				@endif
-				
+				<tr>	
                     <td><a href="{{
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article_id) )}}">
@@ -65,7 +56,16 @@ Borrowing history
 							{{ $history_item->amount_items }}
 						@endif
 					</td>
-					<td>
+					
+					@if(isset($history_item->user))
+						<?php $user = $history_item->user ?>
+						<td>
+					@else
+						{{-- Load the attributes of the softDeleted user --}}
+						<?php $user = User::withTrashed()->find($history_item->user_id) ?>
+						<td class="inactive">
+					@endif
+					
 						<a href="{{
 							action('UsersController@view',
 								array('user_id'=>$history_item->user_id) )}}">

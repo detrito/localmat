@@ -16,7 +16,7 @@ be visualised. The database can be exported in sql or viewed in excel format.
 A demonstration-website is available at http://localmat-demo.speleo-lausanne.ch
 
 LocalMat is written in PHP and is based on the [Laravel](http://laravel.com)
-framework. LocalMat requires PHP >= 5.3.7 and MySQL. More details in the
+4.2 framework. LocalMat requires PHP >= 5.3.7 and MySQL. More details in the
 [install documentation](INSTALL.md). The [update documentation](UPDATE.md)
 explains how to update to v.0.2.
 

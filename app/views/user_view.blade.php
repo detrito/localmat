@@ -61,7 +61,7 @@ View
 @endif
 
 @if(isset($user->deleted_at))
-	, TRASHED
+	, <font color="#f00">TRASHED</font>
 @endif
 
 @if($user->admin)

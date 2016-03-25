@@ -12,13 +12,8 @@ a {
     color: #4183C4;
 }
 
-.inactive td {
+tr.inactive, tr.inactive a,  td.inactive, td.inactive a {
 	color: #999;
-}
-
-.inactive td a {
-	color: #999;
-	cursor:not-allowed;
 }
 
 table { margin: 1em; border-collapse: collapse; }

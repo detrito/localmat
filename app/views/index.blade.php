@@ -37,11 +37,12 @@ with following credentials:<br />
 {{ $user->email }}<br />
 pass: 123asd</p>
 <p>LocalMat is written in PHP and is based on the <a href="http://laravel.com/">
-Laravel</a> framework. LocalMat requires PHP >= 5.3.7 and MySQL. The source code is available on this public <a href="http://github.com/detrito/localmat/">GitHub git repository</a> under
-the <a href="http://www.gnu.org/licenses/quick-guide-gplv3.html">GPLv3</a>
+Laravel</a> 4.2 framework. LocalMat requires PHP >= 5.3.7 and MySQL. The source
+code is available on this public <a href="http://github.com/detrito/localmat/">
+GitHub git repository</a> under the
+<a href="http://www.gnu.org/licenses/quick-guide-gplv3.html">GPLv3</a>
 license. Patches and bug reports can be sent over GitHub or by 
 {{ HTML::mailto('detrito(at}inventati(dot}org','e-mail') }}.
-
 
 <h3>Last borrowed articles</h3>
 
@@ -61,17 +62,8 @@ license. Patches and bug reports can be sent over GitHub or by
 		</thead>
 		<tbody>
 			@foreach($history_borrowed as $history_item)
-			
-				@if(isset($history_item->user))
-					<?php $user = $history_item->user ?>
-					<tr>
-				@else
-					{{-- Load the attributes of the softDeleted user --}}
-					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
-					<tr class="inactive">
-				@endif
-				
-                    <td><a href="{{
+				<tr>
+					<td><a href="{{
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article_id) )}}">
 						{{ $history_item->article->category->name }}</a>
@@ -85,7 +77,17 @@ license. Patches and bug reports can be sent over GitHub or by
 							{{ $history_item->amount_items }}
 						@endif
 					</td>
-					<td><a href="{{
+					
+					@if(isset($history_item->user))
+						<?php $user = $history_item->user ?>
+						<td>
+					@else
+						{{-- Load the attributes of the softDeleted user --}}
+						<?php $user = User::withTrashed()->find($history_item->user_id) ?>
+						<td class="inactive">
+					@endif
+					
+					<a href="{{
 						action('UsersController@view',
 							array('user_id'=>$user->id) )}}">
 						{{$user->given_name }}
@@ -118,16 +120,7 @@ license. Patches and bug reports can be sent over GitHub or by
 		</thead>
 		<tbody>
 			@foreach($history_returned as $history_item)
-			
-				@if(isset($history_item->user))
-					<?php $user = $history_item->user ?>
-					<tr>
-				@else
-					{{-- Load the attributes of the softDeleted user --}}
-					<?php $user = User::withTrashed()->find($history_item->user_id) ?>
-					<tr class="inactive">
-				@endif
-				
+				<tr>
                     <td><a href="{{
 						action('ArticlesController@view',
 							array('article_id'=>$history_item->article_id) )}}">
@@ -142,7 +135,17 @@ license. Patches and bug reports can be sent over GitHub or by
 							{{ $history_item->amount_items }}
 						@endif
 					</td>
-					<td><a href="{{
+					
+					@if(isset($history_item->user))
+						<?php $user = $history_item->user ?>
+						<td>
+					@else
+						{{-- Load the attributes of the softDeleted user --}}
+						<?php $user = User::withTrashed()->find($history_item->user_id) ?>
+						<td class="inactive">
+					@endif
+					
+					<a href="{{
 						action('UsersController@view',
 							array('user_id'=>$user->id) )}}">
 						{{$user->given_name }}
