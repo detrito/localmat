@@ -30,6 +30,7 @@ Route::group(array('before' => 'auth|enabled'), function()
 	//users
 	Route::get('/users', 'UsersController@index');
 	Route::get('/users/view/{user_id}', 'UsersController@view');
+	Route::get('/users/history/{user_id}', 'UsersController@history');
 
 	//article
 	Route::get('/articles', 'ArticlesController@index');
@@ -95,11 +96,10 @@ Route::group(array('before' => 'auth|was_admin'), function()
 });
 
 // routes accessibles only to logged-in and enabled owner users
-Route::group(array('before' => 'auth|enabled|owner'), function()
+Route::group(array('before' => 'auth|enabled|admin_or_owner'), function()
 {
-	Route::get('/users/edit/profile/{user_id}', 'UsersController@edit_profile');
+	Route::get('/users/edit/{user_id}/{edit_option?}', 'UsersController@edit');
 	Route::post('/users/edit/profile/{user_id}', 'UsersController@handle_edit_profile');
-	Route::get('/users/edit/password/{user_id}', 'UsersController@edit_password');
 	Route::post('/users/edit/password/{user_id}', 'UsersController@handle_edit_password');
 });
 

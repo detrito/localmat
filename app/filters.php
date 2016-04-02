@@ -91,6 +91,20 @@ Route::filter('owner', function($route) {
 });
 
 
+// check if admin or owner
+Route::filter('admin_or_owner', function($route)
+{
+	if( ! Auth::guest())
+	{
+		// if user is not admin AND is not owner
+		if (Auth::user()->admin != 1 && $route->getParameter('user_id') !=  Auth::user()->id)
+		{
+			return Redirect::to('/')
+			->with('flash_error', 'Only owners and administrators can view this page!');
+		}
+	}
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter

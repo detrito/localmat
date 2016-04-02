@@ -120,13 +120,27 @@ class UsersController extends BaseController
 			->orderBy('created_at','desc')
 			->get();
 
-		$history_all = $user->histories()
-			->orderBy('created_at','desc')
-			->get();
-
 		return View::make('user_view', compact('user','history_borrowed',
-			'history_all','main_field_name'));
+			'main_field_name'));
 	}
+	
+	public function history($user_id)
+	{
+		// Get MainFieldName
+		$main_field_name = Field::getMainFieldName();
+	
+		$user = User::
+			withTrashed()
+			->findOrFail($user_id);
+		
+		$history = $user->histories()
+			->orderBy('created_at','desc')
+			->paginate(Config::get('localmat.itemsPerPage'));
+		
+		return View::make('user_history', compact('user','history',
+			'main_field_name'));	
+	}
+	
 
     public function add()
     {
@@ -168,65 +182,12 @@ class UsersController extends BaseController
 			->withErrors($validator);
 	}
 	
-	public function edit_permissions($user_id)
+	public function edit($user_id, $edit_option=Null)
 	{
 		$user = User::withTrashed()->find($user_id);
-		return View::make('user_form_permissions', compact('user'));	
-	}
-	
-	public function handle_edit_permissions($user_id)
-	{
-		$user = User::withTrashed()->find($user_id);
-		$data = Input::all();
-
-		// set to false if the input value has not be checked in the form
-		$user->enabled = isset($data['enabled']) ? true : false;
-		$user->admin = isset($data['admin']) ? true : false;		
-		$user->save();
-		
-		$message = 'User\'s permissions successfully modified.';
-		$message_verbose = $message.' User ID '.$user->id.'.';
-		Log::info($message_verbose);
-		return Redirect::action('UsersController@view',
-			array('user_id'=>$user->id) )
-			->with('flash_notice', $message);
-	}
-	
-	public function edit_password($user_id)
-	{
-		$user = User::withTrashed()->find($user_id);
-		return View::make('user_form_password',compact('user'));
-	}
-	
-	public function handle_edit_password($user_id)
-	{
-		$user = User::withTrashed()->find($user_id);
-		$data = Input::all();
-		$rules = array( 'password' => 'required|alpha_dash|confirmed|min:6' );
-		
-		$validator = Validator::make($data, $rules);
-		
-		if ( $validator->passes() )
-		{
-			$user = User::withTrashed()->find($user_id);
-			$user->password = Hash::make($data['password']);
-			$user->save();
-			
-			$message = 'User\'s password successfully modified.';
-			$message_verbose = $message.' User ID '.$user->id.'.';
-			Log::info($message_verbose);
-			return Redirect::action('UsersController@view',
-				array('user_id'=>$user->id) )
-				->with('flash_notice', $message);
-		}
-		return Redirect::back()
-			->withErrors($validator);
-	}
-	
-	public function edit_profile($user_id)
-	{
-		$user = User::withTrashed()->find($user_id);
-		return View::make('user_form_profile',compact('user'));
+		$edit_options = $user->getEditOptions();
+		//var_dump($edit_options);
+		return View::make('user_edit',compact('user','edit_options', 'edit_option'));
 	}
 	
 	public function handle_edit_profile($user_id)
@@ -260,7 +221,50 @@ class UsersController extends BaseController
 		return Redirect::back()
 			->withErrors($validator);
 	}
+	
+	public function handle_edit_permissions($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
+		$data = Input::all();
 
+		// set to false if the input value has not be checked in the form
+		$user->enabled = isset($data['enabled']) ? true : false;
+		$user->admin = isset($data['admin']) ? true : false;		
+		$user->save();
+		
+		$message = 'User\'s permissions successfully modified.';
+		$message_verbose = $message.' User ID '.$user->id.'.';
+		Log::info($message_verbose);
+		return Redirect::action('UsersController@view',
+			array('user_id'=>$user->id) )
+			->with('flash_notice', $message);
+	}
+	
+	public function handle_edit_password($user_id)
+	{
+		$user = User::withTrashed()->find($user_id);
+		$data = Input::all();
+		$rules = array( 'password' => 'required|alpha_dash|confirmed|min:6' );
+		
+		$validator = Validator::make($data, $rules);
+		
+		if ( $validator->passes() )
+		{
+			$user = User::withTrashed()->find($user_id);
+			$user->password = Hash::make($data['password']);
+			$user->save();
+			
+			$message = 'User\'s password successfully modified.';
+			$message_verbose = $message.' User ID '.$user->id.'.';
+			Log::info($message_verbose);
+			return Redirect::action('UsersController@view',
+				array('user_id'=>$user->id) )
+				->with('flash_notice', $message);
+		}
+		return Redirect::back()
+			->withErrors($validator);
+	}
+	
 	public function trash($user_id)
     {
         $user = User::find($user_id);

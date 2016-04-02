@@ -265,7 +265,7 @@ class HistorySingleTableSeeder extends Seeder {
 		foreach ($users as $user)
 		{
 			// history for some returned articles
-			while ( $faker->boolean(90) )
+			while ( $faker->boolean(95) )
 			{
 				$article_id = $faker->numberBetween(1, $max_id);
 				$date_borrowed = $faker->dateTimeThisDecade('now');

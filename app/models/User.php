@@ -14,7 +14,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	// Enable softDelete
 	use SoftDeletingTrait;
     protected $dates = ['deleted_at'];
-
+    
+    // edit options
+    protected static $root_edit_options = array('edit_profile', 'edit_password',
+    	'edit_permissions', 'delete_restore');
+    protected static $user_edit_options = array('edit_profile', 'edit_password');
+    
 	// User __hasMany__ History
 	public function histories()
 	{
@@ -128,5 +133,12 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 
 		return $a_histories;
 	}
-
+	
+	public function getEditOptions()
+	{
+		if(Auth::user()->admin)
+			return self::$root_edit_options;
+		else
+			return self::$user_edit_options;		
+	}
 }

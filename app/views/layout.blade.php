@@ -76,7 +76,7 @@
    	    <div id="flash_error">{{ Session::get('flash_error') }}</div>
     	@endif
 
-		<div>
+		<div id="content">
 		<h2>@yield('title')</h2>
 		<hr />	
         @yield('content')
