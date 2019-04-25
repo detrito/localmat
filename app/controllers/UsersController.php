@@ -196,8 +196,8 @@ class UsersController extends BaseController
 		$data = Input::all();
 	
 		$rules = array(
-			'given_name' => 'required|alpha',
-			'family_name' => 'required|alpha',
+			'given_name' => 'required',
+			'family_name' => 'required',
 			'email' => 'required|email|unique:lm_users,email,'.$user_id
 		);
 		
