@@ -85,3 +85,12 @@ For an intallation on an Apache webserver with a subdomain I used solution 2 wit
 
 </IfModule>
 ```
+
+MCRYPT
+===========================
+mcrypt is depcrecated since php 7.1 and doesn't work since php 7.2
+http://www.php.net/manual/en/migration71.deprecated.php
+
+Laravel 4.2 has a hardcoded check for the mcrypt extension, so that installation with php > 7.1 is complicated
+http://medium.com/@tomgrohl/making-laravel-4-2-work-with-php-7-2-e9149a9428c3
+http://medium.com/@tomgrohl/an-php-7-1-encrypter-for-laravel-4-2-932112405a45
