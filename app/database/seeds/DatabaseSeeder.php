@@ -40,7 +40,7 @@ class DatabaseSeeder extends Seeder {
 			'required' => true,
 			'main' => 0),
 		"Code" => array(
-			'type' => "integerpositive",
+			'type' => "string",
 			'required' => true,
 			'main' => 1),
 		"Remarque" => array(
