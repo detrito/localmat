@@ -80,7 +80,7 @@ return array(
 
 	'key' => 'Here your secret key!!!',
 
-	'cipher' => MCRYPT_RIJNDAEL_128,
+	'cipher' => 'AES-256-CBC',
 
 	/*
 	|--------------------------------------------------------------------------
@@ -123,6 +123,7 @@ return array(
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Maatwebsite\Excel\ExcelServiceProvider',
 		'Schickling\Backup\BackupServiceProvider',
+		'Tomgrohl\Laravel\Encryption\EncryptionServiceProvider'
 	),
 
 	/*

@@ -7,7 +7,8 @@
 		"laravel/framework": "4.2.*",
 		"fzaninotto/faker": "1.5.*",
 		"maatwebsite/excel": "1.3.*",
-		"schickling/backup": "0.6.*"
+		"schickling/backup": "0.6.*",
+		"tomgrohl/laravel4-php71-encrypter": "^1.1"
 	},
 	"autoload": {
 		"classmap": [

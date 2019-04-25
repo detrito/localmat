@@ -87,7 +87,7 @@ For an intallation on an Apache webserver with a subdomain I used solution 2 wit
 ```
 
 MCRYPT
-===========================
+======
 mcrypt is depcrecated since php 7.1 and doesn't work since php 7.2
 http://www.php.net/manual/en/migration71.deprecated.php
 
