@@ -114,3 +114,7 @@ Validator::extend('alpha_num_dash_spaces', function($attribute, $value)
 	return preg_match('/^[\w ]+$/u', $value);
 });
 
+Validator::extend('alpha_dash_spaces', function($attribute, $value)
+{
+	return preg_match("/^[a-z ,.'-]+$/i", $value);
+});

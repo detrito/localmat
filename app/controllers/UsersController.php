@@ -151,8 +151,8 @@ class UsersController extends BaseController
 	{
 		$data = Input::all();
 		$rules = array(
-			'given_name' => 'required|alpha_spaces',
-			'family_name' => 'required|alpha_spaces',
+			'given_name' => 'required',
+			'family_name' => 'required',
 			'email' => 'required|email|unique:lm_users',
 			'password' => 'required|alpha_dash|confirmed|min:6'
 		);
