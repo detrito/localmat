@@ -45,7 +45,11 @@
 		@else
 			<tr>
 			<td> {{ Form::label($field->name, $field->name) }} </td>
-			<td> {{ Form::text($field->name) }} </td>
+			@if ($field->main)
+				<td> {{ Form::text($field->name, Config::get('localmat.default_main_field_string')) }} </td>
+			@else
+				<td> {{ Form::text($field->name) }} </td>
+			@endif
 			</tr>
 		@endif
 	@endforeach
